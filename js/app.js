@@ -266,9 +266,9 @@ function saveCode(filename) {
     // Put all application files in subfolder for shell script
     var zipFolder = zip.folder("libraries");
     zipFolder.load(data);
-    
-    zipFolder.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n  </head>\n  <body>\n    '+ htmlCode +'\n    \n    <script src="js/animation.js"></script>\n    <script src="libraries/gsap/minified/gsap.min.js"></script>\n    <script src="libraries/gsap/minified/EasePack.min.js"></script>\n    <script src="libraries/gsap/minified/MotionPathPlugin.min.js"></script>\n    <script src="libraries/gsap/minified/TextPlugin.min.js"></script>\n    <script src="libraries/gsap/minified/CSSRulePlugin.min.js"></script>\n  </body>\n</html>');
-    zipFolder.file("js/animation.js", jsCode);
+
+    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n  </head>\n  <body>\n    <div class="vector">'+ htmlCode +'</div>\n    \n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="libraries/gsap-public/minified/EasePack.min.js"></script>\n    <script src="libraries/gsap-public/minified/MotionPathPlugin.min.js"></script>\n    <script src="libraries/gsap-public/minified/TextPlugin.min.js"></script>\n    <script src="libraries/gsap-public/minified/CSSRulePlugin.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
+    zip.file("js/animation.js", jsCode);
     var content = zip.generate({type:"blob"});
     saveAs(content, filename + ".zip");
   });
