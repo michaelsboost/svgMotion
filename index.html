@@ -40,7 +40,7 @@
               </button>
               &nbsp;
               &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="addHub">
+              <button id="menu-hub-types" class="mdl-button mdl-js-button mdl-button--icon">
                 <i class="material-icons">add</i>
               </button>
               &nbsp;
@@ -56,12 +56,62 @@
             </button>
           </nav>
           
+          <!-- Hub types dropdown -->
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-hub-types">
+            <li class="mdl-menu__item" data-description="Constructor" data-link="https://greensock.com/docs/v2/TimelineMax" data-add="hub">
+              <span>
+                TimelineMax
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that tweens backwards - you define the BEGINNING values and the current values are used as the destination values which is great for doing things like animating objects onto the screen because you can set them up initially the way you want them to look at the end of the tween and then animate in from elsewhere." data-link="https://greensock.com/docs/v2/TweenMax/static.from()" data-add="hub">
+              <span>
+                .from
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that animates to the specified destination values (from the current values)." data-link="https://greensock.com/docs/v2/TweenMax/static.to()" data-add="hub">
+              <span>
+                .to
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that allows you to define both the starting and ending values (as opposed to to() and from() tweens which are based on the target's current values at one end or the other)." data-link="https://greensock.com/docs/v2/TweenMax/static.fromTo()" data-add="hub">
+              <span>
+                .fromTo
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Immediately sets properties of the target accordingly - essentially a zero-duration to() tween with a more intuitive name." data-link="https://greensock.com/docs/v2/TweenMax/static.set()" data-add="hub">
+              <span>
+                .set
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Tweens an array of targets from a common set of destination values (using the current values as the destination), but staggers their start times by a specified amount of time, creating an evenly-spaced sequence with a surprisingly small amount of code." data-link="https://greensock.com/docs/v2/TweenMax/static.staggerFrom()" data-add="hub">
+              <span>
+                .staggerFrom
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Tweens an array of targets to a common set of destination values, but staggers their start times by a specified amount of time, creating an evenly-spaced sequence with a surprisingly small amount of code." data-link="https://greensock.com/docs/v2/TweenMax/static.staggerTo()" data-add="hub">
+              <span>
+                .staggerTo
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Tweens an array of targets from a common set of destination values to a common set of destination values, but staggers their start times by a specified amount of time, creating an evenly-spaced sequence with a surprisingly small amount of code." data-link="https://greensock.com/docs/v2/TweenMax/static.staggerFromTo()" data-add="hub">
+              <span>
+                .staggerFromTo
+              </span>
+            </li>
+          </ul>
+          
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
             <li class="mdl-menu__item hide" data-export="zip" data-file="loaded">
               <i class="material-icons">save_alt</i>
               <span>
                 Export Zip
+              </span>
+            </li>
+            <li class="mdl-menu__item hide" data-export="sequence" data-file="loaded">
+              <i class="material-icons">image</i>
+              <span>
+                Export Sequence
               </span>
             </li>
             <li class="mdl-menu__item hide" data-export="gif" data-file="loaded">
@@ -104,8 +154,8 @@
           <a class="mdl-navigation__link ripple" href="./tutorials.html" target="_blank">
             <i class="material-icons" role="presentation">video_library</i> &nbsp; Tutorials
           </a>
-          <a class="mdl-navigation__link ripple" href="https://michaelsboost.github.io/store/" target="_blank">
-            <i class="material-icons" role="presentation">store</i> &nbsp; Store
+          <a class="mdl-navigation__link ripple" href="https://greensock.com/docs/v2" target="_blank">
+            <i class="material-icons" role="presentation">library_books</i> &nbsp; Documentation
           </a>
           <a class="mdl-navigation__link ripple" href="https://michaelsboost.github.io/donate/" target="_blank">
             <i class="material-icons" role="presentation">favorite</i> &nbsp; Donate

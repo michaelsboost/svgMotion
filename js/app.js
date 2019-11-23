@@ -1,5 +1,51 @@
 // variables
 var htmlCode = "", jsCode = "";
+var loadHubs = { 
+  "svg": $(".vector").html(),
+  "settings": [{
+  	"width": "1080",
+  	"height": "1080",
+    "fps": "30"
+  }],
+  "hubs" : [{
+    "title": ".from",
+    "link": "https://greensock.com/docs/v2/TweenMax/static.from()",
+    "description": "[static] Static method for creating a TweenMax instance that tweens backwards - you define the BEGINNING values and the current values are used as the destination values which is great for doing things like animating objects onto the screen because you can set them up initially the way you want them to look at the end of the tween and then animate in from elsewhere.",
+    "selector": "svg > g > g",
+    "speed": "1.5",
+    "keys": ""
+  }, {
+    "title": ".to",
+    "link": "https://greensock.com/docs/v2/TweenMax/static.to()",
+    "description": "[static] Static method for creating a TweenMax instance that animates to the specified destination values (from the current values).",
+    "selector": "svg > g > g:nth-child(4) > g",
+    "speed": "2.0",
+    "keys": ""
+  }]
+};
+//loadHubs.settings[0].width
+function loadHubsTest() {
+  $("[data-grab=hubs]").empty();
+  
+  for (var i = 0; i < loadHubs.hubs.length; i++) {
+    var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ loadHubs.hubs[i].title +'</h2>&nbsp;<a href="'+ loadHubs.hubs[i].link +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ loadHubs.hubs[i].description +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ loadHubs.hubs[i].selector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ loadHubs.hubs[i].speed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ loadHubs.hubs[i].keys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
+
+    // append hub
+    $("[data-grab=hubs]").append(hubStr);
+    draggableHub();
+
+    // add key via enterkey
+    $("[data-enter=click]").on("keydown", function(e) {
+      // look for window.event in case event isn't passed in
+      e = e || window.event;
+      if (e.keyCode == 13) {
+        this.parentNode.parentNode.querySelector("[data-action=addKey]").click();
+        return false;
+      }
+      return true;
+    });
+  }
+}
 
 $.fn.ignore = function(sel) {
   return this.clone().find(sel||">*").remove().end();
@@ -90,6 +136,9 @@ function refresh() {
 
 // run hub code
 $("[data-play=animation]").click(function() {
+  alertify.log("coming soon...");
+  return false;
+  
   var elm = $("[data-play=animation] .material-icons");
 
   if (elm.text() === "play_arrow") {
@@ -125,29 +174,38 @@ $("[data-play=animation]").click(function() {
 });
 
 // add a hub
-$("[data-action=addHub]").click(function() {
+$("[data-add=hub]").click(function(e) {
   if (this.hasAttribute("data-disabled")) {
     alertify.log('Not available in demos');
+  }
+  if (this.hasAttribute("disabled")) {
+    e.preventDefault();
+    return false;
   } else {
     if (!$(".vector").html()) {
       alertify.error('Error: No svg file detected!');
     } else {
-      var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">.to</h2>&nbsp;<a href="https://greensock.com/docs/v2/TweenMax/static.to()" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">[static] Static method for creating a TweenMax instance that animates to the specified destination values (from the current values).</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="svg > g > g" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="1.5" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key"><div class="mdl-card__actions mdl-card--border"><div class="mdl-card__actions"><span>force3D:</span> &nbsp;<div class="mdl-textfield__input w100p tc" data-placeholder="true/false" contenteditable>true</div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)"><i class="material-icons">clear</i></button></div></div><div class="mdl-card__actions mdl-card--border"><div class="mdl-card__actions"><span>yoyo:</span> &nbsp;<div class="mdl-textfield__input w100p tc" data-placeholder="true/false" contenteditable>false</div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)"><i class="material-icons">clear</i></button></div></div><div class="mdl-card__actions mdl-card--border"><div class="mdl-card__actions"><span>repeat:</span> &nbsp;<div class="mdl-textfield__input w100p tc" data-placeholder="-1" contenteditable>-1</div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)"><i class="material-icons">clear</i></button></div></div><div class="mdl-card__actions mdl-card--border"><div class="mdl-card__actions"><span>repeatDelay:</span> &nbsp;<div class="mdl-textfield__input w100p tc" data-placeholder="0" contenteditable>0</div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)"><i class="material-icons">clear</i></button></div></div><div class="mdl-card__actions mdl-card--border"><div class="mdl-card__actions"><span>ease:</span> &nbsp;<div class="mdl-textfield__input w100p tc" data-placeholder="Power0.easeOut" contenteditable>Power0.easeOut</div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)"><i class="material-icons">clear</i></button></div></div></div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." data-enter="click"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
+      var hubTitle, hubLink, hubDesc, hubSelector, hubSpeed, hubKeys;
+      hubTitle = this.textContent.replace(/\n/g, "").replace(/ /g, "");
+      hubLink = this.getAttribute("data-link");
+      hubDesc = this.getAttribute("data-description");
+      hubSelector = "svg > g";
+      hubSpeed = "1.5";
+      hubKeys = "";
+      
+      if (hubTitle === "TimelineMax") {
+        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div></div>';
+        $(this).fadeOut(400, function() {
+          $(this).remove();
+          $("[data-add=hub]").removeAttr('disabled');
+        });
+      } else {
+        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ hubSelector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ hubSpeed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
+      }
       
       // append hub
       $("[data-grab=hubs]").append(hubStr);
       draggableHub();
-      
-      // add key via enterkey
-      $("[data-enter=click]").on("keydown", function(e) {
-        // look for window.event in case event isn't passed in
-        e = e || window.event;
-        if (e.keyCode == 13) {
-          this.parentNode.parentNode.querySelector("[data-action=addKey]").click();
-          return false;
-        }
-        return true;
-      });
     }
   }
 });
@@ -164,26 +222,35 @@ function addKey(e) {
   } else {
     var val = $(e).parent().find("input").val();
     if (!val.replace(/ /g, "")) {
-      alertify.error("Error: Value is empty!");
+      // alertify.error("Error: Value is empty!");
     } else {
       val = val.replace(/ /g, "");
-      $(e).parent().prev().append('<div class="mdl-card__actions mdl-card--border">\n<div class="mdl-card__actions"><span>'+ val +':</span> &nbsp;\n<div class="mdl-textfield__input w100p tc" contenteditable></div>\n<div class="mdl-layout-spacer"></div>\n<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)">\n<i class="material-icons">clear</i>\n</button>\n</div>\n</div>');
-      $(e).parent().find("input").val("");
-      $(e).parent().prev().scrollTop($(e).parent().prev().prop("scrollHeight"));
-  //    $(window).scrollTop($(document).height());
+      // check if key already exists
+      var str = $(e).parent().prev().find("span").text().toLowerCase();
+      if (val === str.substr(0, str.length - 1)) {
+        alertify.error("Error: Same key detected!");
+        return false;
+      } else {
+        $(e).parent().prev().append('<div class="mdl-card__actions mdl-card--border">\n<div class="mdl-card__actions"><span>'+ val +':</span> &nbsp;\n<div class="mdl-textfield__input w100p tc" contenteditable></div>\n<div class="mdl-layout-spacer"></div>\n<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)">\n<i class="material-icons">clear</i>\n</button>\n</div>\n</div>');
+        $(e).parent().find("input").val("");
+        $(e).parent().prev().scrollTop($(e).parent().prev().prop("scrollHeight"));
+//        $(window).scrollTop($(document).height());
+        $(e).parent().prev().find("div[contenteditable]:last").focus();
+        e.preventDefault();
+      }
     }
   }
 }
-$("[data-enter=click]").on("keydown", function(e) {
+function enterKey(e) {
   // look for window.event in case event isn't passed in
   e = e || window.event;
   if (e.keyCode == 13) {
-    this.parentNode.parentNode.querySelector("[data-action=addKey]").click();
-//    $(this).parent().parent().find("[data-action=addKey]").trigger("click");
+    e.target.parentNode.parentNode.querySelector("[data-action=addKey]").click();
+    e.preventDefault();
     return false;
   }
   return true;
-});
+};
 
 // delete key
 function deleteKey(e) {

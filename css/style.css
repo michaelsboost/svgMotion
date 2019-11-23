@@ -167,13 +167,15 @@ a, a:hover {
 }
 .mdl-card {
   width: 256px;
+  height: fit-content;
+  min-height: auto;
 }
 .mdl-card .number {
   line-height: 24px;
   width: 24px;
 }
 .mdl-card .keyplace {
-  height: 124px;
+  max-height: 124px;
   overflow: auto;
 }
 .mdl-card__actions {
