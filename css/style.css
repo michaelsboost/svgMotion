@@ -11,17 +11,6 @@ a, a:hover {
   text-decoration: none;
 }
 
-/* for donate dialog */
-.donatebanner {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  position: fixed;
-  background: #ebfff1;
-  z-index: 2;
-}
-
 /* Center content horizontally and vertically */
 .table {
   display: table;
@@ -57,7 +46,7 @@ a, a:hover {
 .vector-container h1 {
   transform: scale(5);
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 .vector-container svg {
   width:  100%;
@@ -113,6 +102,11 @@ a, a:hover {
 }
 
 /* MDL - Material Design Lite */
+.mdl-layout {
+  position: relative;
+  z-index: 1;
+}
+
 /* Header */
 .mdl-layout__header {
   background-color: transparent!important;

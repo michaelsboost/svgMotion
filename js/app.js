@@ -53,7 +53,7 @@ function imageLoaded() {
     $("[data-file=loaded]").fadeIn();
     $("[data-call=openfile]").parent().remove();
 
-    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 2;"></div>');
+    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
     $("[data-action=fadeOut]").fadeOut(400, function() {
       $("[data-action=fadeOut]").remove();
     });
