@@ -1,0 +1,195 @@
+/* css resets */
+@font-face {
+  font-family: Lato;
+  src: url("../libraries/font-awesome/Lato-Light.ttf");
+}
+html, body {
+/*  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  background: #f7f7f7;
+}
+a, a:hover {
+  text-decoration: none;
+}
+
+/* for donate dialog */
+.donatebanner {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  background: #ebfff1;
+  z-index: 2;
+}
+
+/* Center content horizontally and vertically */
+.table {
+  display: table;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+.cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* click colors */
+.vector-container h1 {
+  color: #9d9d9d;
+  transition: all linear 150ms;
+}
+.vector-container h1:hover {
+  color: #878787;
+}
+
+/* vector */
+.vector-container,
+.vector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+/*  margin: 70px 80px;*/
+  bottom: 0;
+}
+.vector-container h1 {
+  transform: scale(5);
+  position: relative;
+  z-index: 1;
+}
+.vector-container svg {
+  width:  100%;
+  height: 100%;
+}
+
+/* global classes */
+.ib {
+  display: inline-block;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.hide {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+.tl {
+  text-align: left;
+}
+.tc {
+  text-align: center;
+}
+.tr {
+  text-align: right;
+}
+.w100p {
+  width: 100%;
+}
+.purple {
+  color: #551a8b!important;
+}
+.move {
+  cursor: move;
+}
+
+/* contentEditable */
+[contenteditable]:empty:before {
+  content: attr(data-placeholder);
+  display: inline-block;
+  color: grey;
+}
+
+/* SWAL */
+.swal2-icon.swal2-warning {
+  font-size: inherit!important;
+  line-height: initial!important;
+}
+
+/* MDL - Material Design Lite */
+/* Header */
+.mdl-layout__header {
+  background-color: transparent!important;
+  box-shadow: 0 0 0 transparent!important;
+}
+.mdl-layout__header .material-icons {
+  color: #9d9d9d!important;
+/*  color: #575757!important;*/
+}
+.mdl-layout__header .mdl-menu__item .material-icons {
+  color: #575757!important;
+}
+.mdl-navigation .ripple {
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+.mdl-navigation .ripple:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #000 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform .5s, opacity 1s;
+}
+.mdl-navigation .ripple:active:after {
+  transform: scale(0, 0);
+  opacity: .3;
+  transition: 0s;
+}
+
+/* Header menu dropdown */
+.mdl-menu a {
+  text-decoration: none;
+  color: #000;
+}
+.mdl-menu .mdl-menu__item .material-icons {
+  display: inline-block;
+  position: relative;
+  top: 7px;
+  margin: 0 5px 0 -5px;
+}
+.mdl-menu .mdl-menu__item span {
+  display: inline-block;
+}
+
+/* Cards */
+.mdl-layout__content .material-icons {
+  color: #575757;
+}
+.mdl-card {
+  width: 256px;
+}
+.mdl-card .number {
+  line-height: 24px;
+  width: 24px;
+}
+.mdl-card .keyplace {
+  height: 124px;
+  overflow: auto;
+}
+.mdl-card__actions {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.mdl-card__actions {
+  display: flex;
+  box-sizing:border-box;
+  align-items: center;
+}
+.mdl-card__actions > .material-icons {
+  padding-right: 10px;
+}
