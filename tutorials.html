@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>svgMotion: A vector animation tool</title>
+    <title>svgMotion: Tutorials</title>
     <meta charset="utf-8">
 <!--    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">-->
     <meta name="viewport"  content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <meta name="description" content="A vector animation tool.">
-    <meta name="author" content="Michael Schwartz">
     <link rel="stylesheet" href="libraries/mdl/material.min.css" />
-    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css" />
-    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css" />
-    <link rel="stylesheet" href="libraries/sweetalert2/sweetalert2.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <!-- Material Design icon font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,100&amp;subset=latin,latin-ext'>
     <meta property="og:url"         content="https://michaelsboost.com/svgMotion" />
     <meta property="og:type"        content="website" />
-    <meta property="og:title"       content="svgMotion" />
+    <meta property="og:title"       content="svgMotion: Tutorials" />
     <meta property="og:description" content="A vector animation tool" />
     <meta property="og:image"       content="https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/header.png" />
   </head>
@@ -29,28 +24,6 @@
           
           <!-- Top right button navigation -->
           <nav class="mdl-navigation">
-            <span class="hide" data-file="loaded">
-              <button class="mdl-button mdl-js-button mdl-button--icon" onClick="refresh()">
-                <i class="material-icons">fiber_new</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="hideHubs">
-                <i class="material-icons">check_box</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="addHub">
-                <i class="material-icons">add</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-play="animation">
-                <i class="material-icons">play_arrow</i>
-              </button>
-              &nbsp;
-              &nbsp;
-            </span>
             <button id="menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
               <i class="material-icons">more_vert</i>
             </button>
@@ -58,24 +31,6 @@
           
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
-            <li class="mdl-menu__item hide" data-export="zip" data-file="loaded">
-              <i class="material-icons">save_alt</i>
-              <span>
-                Export Zip
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-export="gif" data-file="loaded">
-              <i class="material-icons">image</i>
-              <span>
-                Export Gif
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-export="vid" data-file="loaded">
-              <i class="material-icons">videocam</i>
-              <span>
-                Export Video
-              </span>
-            </li>
             <a href="https://michaelsboost.github.io/" target="_blank">
               <li class="mdl-menu__item">
                 <i class="material-icons">thumb_up_alt</i>
@@ -101,8 +56,8 @@
         <span class="mdl-layout-title">Navigation</span>
         <hr>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link ripple" href="./tutorials.html" target="_blank">
-            <i class="material-icons" role="presentation">video_library</i> &nbsp; Tutorials
+          <a class="mdl-navigation__link ripple" href="./index.html" target="_blank">
+            <i class="material-icons" role="presentation">build</i> &nbsp; Application
           </a>
           <a class="mdl-navigation__link ripple" href="https://michaelsboost.github.io/store/" target="_blank">
             <i class="material-icons" role="presentation">store</i> &nbsp; Store
@@ -130,7 +85,9 @@
       </div>
       
       <main class="mdl-layout__content">
-        <div class="mdl-grid" data-grab="hubs"></div>
+        <div class="mdl-grid">
+          
+        </div>
       </main>
     </div>
     
@@ -139,35 +96,13 @@
       <div class="table">
         <div class="cell">
           <div class="vector" data-output="svg"></div>
-          <h1 class="ib">
-            <i class="pointer material-icons" data-call="openfile" style="position: relative; z-index: 1;">add_a_photo</i>
-          </h1>
+          <h2 class="ib" style="color: #9d9d9d;">
+            coming soon...
+          </h2>
         </div>
       </div>
     </div>
     
-    <!-- load svg file -->
-    <div class="hide">
-      <input type="file" accept="image/svg+xml" data-input="openfile">
-    </div>
-    
     <script src="libraries/mdl/material.min.js"></script>
-    <script src="libraries/alertifyjs/alertify.min.js"></script>
-    <script src="libraries/sweetalert2/sweetalert2.min.js"></script>
-    <script src="libraries/jquery/jquery.js"></script>
-    <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
-    <script src="libraries/jqueryui/jqueryui.min.js"></script>
-    <script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"></script>
-    <script src="libraries/jszip/Blob.js"></script>
-    <script src="libraries/jszip/FileSaver.js"></script>
-    <script src="libraries/jszip/jszip.min.js"></script>
-    <script src="libraries/jszip/jszip-utils.js"></script>
-    <script src="libraries/hammer/hammer.min.js"></script>
-    <script src="libraries/gsap/minified/gsap.min.js"></script>
-    <script src="libraries/gsap/minified/EasePack.min.js"></script>
-    <script src="libraries/gsap/minified/MotionPathPlugin.min.js"></script>
-    <script src="libraries/gsap/minified/TextPlugin.min.js"></script>
-    <script src="libraries/gsap/minified/CSSRulePlugin.min.js"></script>
-    <script src="js/app.js"></script>
   </body>
 </html>
