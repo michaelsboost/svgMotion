@@ -169,7 +169,6 @@ $("[data-play=animation]").click(function() {
     var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
     jsCode += endCodeStr;
     setTimeout(jsCode, 1);
-    
   } else {
     // stop animation
     // reset initial svg code
@@ -318,18 +317,33 @@ $("[data-action=hideHubs]").click(function() {
 // export files
 function getCode() {
   // clear full code string
-  htmlCode = $(".vector").html();
   jsCode = "";
 
+  // play animation
+  htmlCode = $(".vector").html();
+
   var hubs = document.querySelectorAll("[data-grab=hubs] > div");
+  if (hubs[0].querySelector("h2").textContent != "TimelineMax") {
+    alertify.error('Abort Operation: First hub MUST be "TimelineMax"!');
+    return false;
+  }
+
   for (var i = 0; i < hubs.length; i++) {
-    var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
-    var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
+    var hubType = hubs[i].querySelector("h2").textContent;
     var hubKeyStr = hubs[i].querySelector("[data-place=key]").textContent.toString().replace(/ /g, "").replace(/\n/g, "").replace(/clear/g, ",\n");
     var hubKeys = hubKeyStr.substr(0, hubKeyStr.length - 2);
-    var codeStr = 'TweenMax.to(".vector '+ hubSelector +'", '+ hubSpeed +', {\n'+ hubKeys +'\n});\n\n';
+    if (i > 0) {
+      var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
+      var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
+      var codeStr = hubType + '(".vector '+ hubSelector +'", '+ hubSpeed +', { '+ hubKeys +' }, 0)\n';
+    } else {
+      var codeStr = 'var tl = new TimelineMax({ '+ hubKeys +' })\n';
+    }
     jsCode += codeStr;
   }
+
+  var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
+  jsCode += endCodeStr;
 }
 function saveCode(filename) {
   JSZipUtils.getBinaryContent("zips/gsap-public.zip", function(err, data) {
