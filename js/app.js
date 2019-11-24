@@ -163,6 +163,10 @@ function refresh() {
 
 // run hub code
 $("[data-play=animation]").click(function() {
+  if (!$("[data-grab=hubs]").html()) {
+    alertify.error("Abort Operation: No hubs detected!");
+    return false;
+  }
   var elm = $("[data-play=animation] .material-icons");
 
   if (elm.text() === "play_arrow") {
