@@ -136,9 +136,6 @@ function refresh() {
 
 // run hub code
 $("[data-play=animation]").click(function() {
-  alertify.log("coming soon...");
-  return false;
-  
   var elm = $("[data-play=animation] .material-icons");
 
   if (elm.text() === "play_arrow") {
@@ -150,19 +147,29 @@ $("[data-play=animation]").click(function() {
     elm.text("stop");
 
     var hubs = document.querySelectorAll("[data-grab=hubs] > div");
+    if (hubs[0].querySelector("h2").textContent != "TimelineMax") {
+      alertify.error('Abort Operation: First hub MUST be "TimelineMax"!');
+      return false;
+    }
 
     for (var i = 0; i < hubs.length; i++) {
-      var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
-      var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
+      var hubType = hubs[i].querySelector("h2").textContent;
       var hubKeyStr = hubs[i].querySelector("[data-place=key]").textContent.toString().replace(/ /g, "").replace(/\n/g, "").replace(/clear/g, ",\n");
       var hubKeys = hubKeyStr.substr(0, hubKeyStr.length - 2);
-      var codeStr = 'TweenMax.to(".vector '+ hubSelector +'", '+ hubSpeed +', {\n'+ hubKeys +'\n});\n\n';
+      if (i > 0) {
+        var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
+        var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
+        var codeStr = hubType + '(".vector '+ hubSelector +'", '+ hubSpeed +', { '+ hubKeys +' }, 0)\n';
+      } else {
+        var codeStr = 'var tl = new TimelineMax({ '+ hubKeys +' })\n';
+      }
       jsCode += codeStr;
-
-//      console.log(codeStr);
-//      setTimeout(codeStr, 1);
     }
+
+    var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
+    jsCode += endCodeStr;
     setTimeout(jsCode, 1);
+    
   } else {
     // stop animation
     // reset initial svg code
@@ -175,9 +182,6 @@ $("[data-play=animation]").click(function() {
 
 // add a hub
 $("[data-add=hub]").click(function(e) {
-  if (this.hasAttribute("data-disabled")) {
-    alertify.log('Not available in demos');
-  }
   if (this.hasAttribute("disabled")) {
     e.preventDefault();
     return false;
@@ -208,6 +212,11 @@ $("[data-add=hub]").click(function(e) {
       draggableHub();
     }
   }
+});
+
+// is disabled
+$("[data-disabled]").click(function(e) {
+  alertify.log('Not available in demos');
 });
 
 // delete a hub
