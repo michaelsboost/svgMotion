@@ -140,9 +140,11 @@ $("[data-play=animation]").click(function() {
 
   if (elm.text() === "play_arrow") {
     elm.text("stop");
+    $("[data-detect=animation]").show();
     
     getCode();
     var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
+    
     jsCode += endCodeStr;
     setTimeout(jsCode, 1);
   } else {
@@ -152,6 +154,7 @@ $("[data-play=animation]").click(function() {
     
     // reset icon
     elm.text("play_arrow");
+    $("[data-detect=animation]").hide();
   }
 });
 
