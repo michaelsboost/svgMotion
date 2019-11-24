@@ -186,9 +186,7 @@ a, a:hover {
   z-index: 2;
 }
 .projectSettings {
-  position: relative;
-  top: 50%;
-  transform: translateY(25%);
+  width: inherit;
   z-index: 3;
 }
 .projectSettings > div {
