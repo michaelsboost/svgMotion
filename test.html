@@ -5,6 +5,7 @@
     <meta charset="utf-8">
 <!--    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">-->
     <meta name="viewport"  content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <link rel="stylesheet" href="libraries/polyui/polyui.css" />
     <link rel="stylesheet" href="libraries/mdl/material.min.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css" />
@@ -95,6 +96,12 @@
           
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
+            <li class="mdl-menu__item hide" data-open="projectSettings" data-file="loaded">
+              <i class="material-icons">settings_applications</i>
+              <span>
+                Project Settings
+              </span>
+            </li>
             <li class="mdl-menu__item" data-export="zip" data-file="loaded">
               <i class="material-icons">save_alt</i>
               <span>
@@ -315,6 +322,29 @@
     </g>
   </g>
 </svg></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- project settings -->
+    <div class="divfill pointer projectsettingsbg hide" data-close="projectSettings"></div>
+    <div class="hide projectSettings" data-projectSettings>
+      <div class="grid">
+        <div class="grid__col--12">
+          <h2 class="headline-secondary--grouped nomarb">Project name</h2>
+          <input class="form__input" type="text" data-project="name" value="My Test Animation" disabled>
+
+          <div class="grid__col--6">
+            <h2 class="headline-secondary--grouped nomarb">Choose canvas size</h2>
+            <input class="form__input" type="text" data-project="size" value="1080x1080" disabled>
+          </div>
+
+          <div class="grid__col--6">
+            <h2 class="headline-secondary--grouped nomarb">Choose frames per second</h2>
+            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30" disabled>
+          </div>
+          <p>&nbsp;</p>
+          <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>
         </div>
       </div>
     </div>

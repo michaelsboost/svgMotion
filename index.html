@@ -7,6 +7,7 @@
     <meta name="viewport"  content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <meta name="description" content="A vector animation tool.">
     <meta name="author" content="Michael Schwartz">
+    <link rel="stylesheet" href="libraries/polyui/polyui.css" />
     <link rel="stylesheet" href="libraries/mdl/material.min.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css" />
@@ -102,7 +103,7 @@
           
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
-            <li class="mdl-menu__item hide" data-open="projectSettings">
+            <li class="mdl-menu__item hide" data-open="projectSettings" data-file="loaded">
               <i class="material-icons">settings_applications</i>
               <span>
                 Project Settings
@@ -181,9 +182,6 @@
       
       <main class="mdl-layout__content">
         <div class="mdl-grid" data-grab="hubs"></div>
-        <div class="mdl-grid hide" data-projectSettings>
-          project settings
-        </div>
       </main>
     </div>
     
@@ -193,8 +191,31 @@
         <div class="cell">
           <div class="vector" data-output="svg"></div>
           <h1 class="ib">
-            <i class="pointer material-icons" data-call="openfile" style="position: relative; z-index: 1;">add_a_photo</i>
+            <i class="pointer material-icons" data-call="openfile">add_a_photo</i>
           </h1>
+        </div>
+      </div>
+    </div>
+    
+    <!-- project settings -->
+    <div class="divfill pointer projectsettingsbg hide" data-close="projectSettings"></div>
+    <div class="hide projectSettings" data-projectSettings>
+      <div class="grid">
+        <div class="grid__col--12">
+          <h2 class="headline-secondary--grouped nomarb">Project name</h2>
+          <input class="form__input" type="text" data-project="name" value="My Awesome Animation">
+
+          <div class="grid__col--6">
+            <h2 class="headline-secondary--grouped nomarb">Choose canvas size</h2>
+            <input class="form__input" type="text" data-project="size" value="800x600">
+          </div>
+
+          <div class="grid__col--6">
+            <h2 class="headline-secondary--grouped nomarb">Choose frames per second</h2>
+            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30">
+          </div>
+          <p>&nbsp;</p>
+          <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>
         </div>
       </div>
     </div>

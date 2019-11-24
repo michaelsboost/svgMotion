@@ -1,5 +1,9 @@
 // variables
+var projectName = $("[data-project=name]")[0];
+var projectSize = $("[data-project=size]");
+var projectFPS = $("[data-project=fps]").val();
 var w = 100, h = 100, htmlCode = "", jsCode = "";
+
 var loadHubs = { 
   "svg": $(".vector").html(),
   "settings": [{
@@ -115,6 +119,11 @@ function imageLoaded() {
   if (document.querySelector("[data-output=svg] > svg")) {
     // remove width/height attributes if detected
     if (document.querySelector("[data-output=svg] > svg").getAttribute("width") || document.querySelector("[data-output=svg] > svg").getAttribute("height")) {
+      w = document.querySelector("[data-output=svg] > svg").getAttribute("width");
+      w = parseFloat(w, 10);
+      h = document.querySelector("[data-output=svg] > svg").getAttribute("height");
+      h = parseFloat(h, 10);
+      projectSize.val(w + "x" + h).trigger('change');
       document.querySelector("[data-output=svg] > svg").removeAttribute("width");
       document.querySelector("[data-output=svg] > svg").removeAttribute("height");
       alertify.log("Width/Height attributes removed for background display.");
@@ -146,6 +155,11 @@ document.addEventListener("drop", function(e) {
   var file = e.dataTransfer.files[0];
   dropfile(file);
 });
+
+// project name show in document title
+projectName.onclick = function() {
+  document.title = "svgMotion: " + this.value;
+};
 
 // new/reload
 function refresh() {
@@ -179,7 +193,7 @@ $("[data-play=animation]").click(function() {
     getCode();
     setTimeout(jsCode, 1);
     setTimeout(function() {
-      var fps = 30;
+      var fps = projectFPS;
       var duration = tl.duration();
       var frames   = Math.ceil(duration / 1 * fps);
       var current  = 0;
@@ -227,34 +241,15 @@ $("[data-play=animation]").click(function() {
               numWorkers: 2,
               },function(obj) {
                 if(!obj.error) {
-                  swal({
-                    title: 'File name below!',
-                    input: 'text',
-                    inputPlaceholder: ".gif is added on save",
-                    showCancelButton: true,
-                    confirmButtonText: 'Save',
-                    showLoaderOnConfirm: true
-                  }).then((result) => {
-                    if (result.value) {
-                      var a = document.createElement("a");
-                      a.href = obj.image;
-                      a.download = result.value;
-                      a.target = "_blank";
-                      a.click();
-                      
-                      swal(
-                        'Yay!',
-                        'You\'re GreenSock Animation was successfully saved!',
-                        'success'
-                      );
-                    } else {
-                      swal(
-                        'Oops!',
-                        console.error().toString(),
-                        'error'
-                      );
-                    }
-                  });
+                var a = document.createElement("a");
+                a.href = obj.image;
+                var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+                if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+                  projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+                }
+                a.download = projectname;
+                a.target = "_blank";
+                a.click();
                 
                 $("[data-show=preloader]").remove();
                 $(".vector").removeClass("hide")
@@ -270,32 +265,12 @@ $("[data-play=animation]").click(function() {
               zip.file("frame-"+[i]+".png", jsonStr[i].split('base64,')[1],{base64: true});
             }
 
-            // export zip
-            swal({
-              title: 'File name below!',
-              input: 'text',
-              inputPlaceholder: ".zip is added on save",
-              showCancelButton: true,
-              confirmButtonText: 'Save',
-              showLoaderOnConfirm: true
-            }).then((result) => {
-              if (result.value) {
-                var content = zip.generate({type:"blob"});
-                saveAs(content, result.value + ".zip");
-
-                swal(
-                  'Yay!',
-                  'You\'re GreenSock Animation was successfully saved!',
-                  'success'
-                );
-              } else {
-                swal(
-                  'Oops!',
-                  console.error().toString(),
-                  'error'
-                );
-              }
-            });
+            var content = zip.generate({type:"blob"});
+            var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+            if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+              projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+            }
+            saveAs(content, projectname + ".zip");
           };
         };
 
@@ -462,9 +437,11 @@ $("[data-action=hideHubs]").click(function() {
 
 // open/close project settings
 $("[data-open=projectSettings]").click(function() {
+  $(".projectsettingsbg").fadeIn();
   $("[data-projectSettings]").fadeIn();
 });
 $("[data-close=projectSettings]").click(function() {
+  $(".projectsettingsbg").fadeOut();
   $("[data-projectSettings]").fadeOut();
 });
 
@@ -510,39 +487,12 @@ function saveCode(filename) {
 
     zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n  </head>\n  <body>\n    <div class="vector">'+ htmlCode +'</div>\n    \n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="libraries/gsap-public/minified/EasePack.min.js"></script>\n    <script src="libraries/gsap-public/minified/MotionPathPlugin.min.js"></script>\n    <script src="libraries/gsap-public/minified/TextPlugin.min.js"></script>\n    <script src="libraries/gsap-public/minified/CSSRulePlugin.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
 
-    var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
+    var endCodeStr = 'var fps = '+ projectFPS +';\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
     jsCode += endCodeStr;
 
     zip.file("js/animation.js", jsCode);
     var content = zip.generate({type:"blob"});
     saveAs(content, filename + ".zip");
-  });
-}
-function saveDialog() {
-  swal({
-    title: 'File name below!',
-    input: 'text',
-    inputPlaceholder: ".zip is added on save",
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    showLoaderOnConfirm: true
-  }).then((result) => {
-    if (result.value) {
-      getCode();
-      saveCode(result.value);
-
-      swal(
-        'Yay!',
-        'You\'re GreenSock Animation was successfully saved!',
-        'success'
-      );
-    } else {
-      swal(
-        'Oops!',
-        console.error().toString(),
-        'error'
-      );
-    }
   });
 }
 $("[data-export=zip]").click(function() {
@@ -551,9 +501,18 @@ $("[data-export=zip]").click(function() {
   if (elm.text() === "stop") {
     // stop animation from playing...
     $("[data-play=animation]").trigger("click");
-    saveDialog();
+    getCode();
+    var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+    if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+      projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+    }
   } else {
-    saveDialog();
+    getCode();
+    var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+    if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+      projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+    }
+    saveCode(projectname);
   }
 });
 

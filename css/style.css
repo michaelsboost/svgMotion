@@ -46,7 +46,7 @@ a, a:hover {
 .vector-container h1 {
   transform: scale(5);
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 .vector-container svg {
   width:  100%;
@@ -163,6 +163,7 @@ a, a:hover {
   width: 256px;
   height: fit-content;
   min-height: auto;
+  color: #575757;
 }
 .mdl-card .number {
   line-height: 24px;
@@ -182,6 +183,23 @@ a, a:hover {
 }
 .mdl-card__actions > .material-icons {
   padding-right: 10px;
+}
+
+/* Project Settings */
+.projectsettingsbg {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+.projectSettings {
+  position: relative;
+  top: 50%;
+  transform: translateY(25%);
+  z-index: 3;
+}
+.projectSettings > div {
+  background: #fff;
+  border-radius: 1em;
+  padding: 1em 2em;
 }
 
 /* global classes */
@@ -217,4 +235,14 @@ a, a:hover {
 }
 .move {
   cursor: move;
+}
+.nomarb {
+  margin-bottom: 0;
+}
+.divfill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
