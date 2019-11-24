@@ -53,6 +53,7 @@ a, a:hover {
   height: 100%;
 }
 
+/* interactjs  touch interaction */
 .hubs, .hubs > div {
   touch-action: none;
 }
