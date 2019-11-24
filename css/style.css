@@ -114,9 +114,15 @@ body > .preloader svg {
 }
 
 /* SWAL */
-.swal2-icon.swal2-warning {
+.swal2-icon.swal2-warning,
+.swal2-icon.swal2-question {
   font-size: inherit!important;
   line-height: initial!important;
+}
+
+.swal2-icon.swal2-warning > .swal2-icon-text,
+.swal2-icon.swal2-question > .swal2-icon-text {
+  margin: auto;
 }
 
 /* MDL - Material Design Lite */

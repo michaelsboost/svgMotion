@@ -86,9 +86,22 @@ function dropfile(file) {
       if (elm.text() === "check_box_outline_blank") {
         $("[data-action=hideHubs]").click();
       }
+      
+      var hubs = document.querySelector("[data-grab=hubs]");
+      if (hubs.innerHTML) {
+        swal({
+          title: 'Hubs Detected!',
+          text: "Would you like to clear these?",
+          type: 'question',
+          showCancelButton: true
+        }).then((result) => {
+          if (result.value) {
+            hubs.innerHTML = "";
+            $("[data-add=hub]").show().not("[data-add=hub]:first").attr('disabled', "true");
+          }
+        })
+      }
 
-      document.querySelector("[data-grab=hubs]").innerHTML = "";
-      $("[data-add=hub]").show().not("[data-add=hub]:first").attr('disabled', "true");
       document.querySelector("[data-output=svg]").innerHTML = e.target.result;
       imageLoaded();
     } else {
@@ -325,7 +338,7 @@ $("[data-add=hub]").click(function(e) {
       
       if (hubTitle === "TimelineMax") {
         var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div></div>';
-        $(this).hide();
+        $(this).fadeOut(400);
         $("[data-add=hub]").removeAttr('disabled');
       } else {
         var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ hubSelector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ hubSpeed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
