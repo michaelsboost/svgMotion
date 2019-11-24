@@ -53,6 +53,24 @@ a, a:hover {
   height: 100%;
 }
 
+body > .preloader svg {
+  width: 100%;
+}
+.preloader tspan {
+  stroke: #666;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 5s linear alternate infinite;
+}
+@keyframes draw {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
 /* global classes */
 .ib {
   display: inline-block;

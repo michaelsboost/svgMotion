@@ -1,5 +1,5 @@
 // variables
-var htmlCode = "", jsCode = "";
+var w = 100, h = 100, htmlCode = "", jsCode = "";
 var loadHubs = { 
   "svg": $(".vector").html(),
   "settings": [{
@@ -141,12 +141,141 @@ $("[data-play=animation]").click(function() {
   if (elm.text() === "play_arrow") {
     elm.text("stop");
     $("[data-detect=animation]").show();
+    if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
+      $("[data-action=hideHubs]").click();
+    }
     
     getCode();
-    var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
-    
-    jsCode += endCodeStr;
     setTimeout(jsCode, 1);
+    setTimeout(function() {
+      var fps = 30;
+      var duration = tl.duration();
+      var frames   = Math.ceil(duration / 1 * fps);
+      var current  = 0;
+
+      // canvas
+      var svg  = document.querySelector(".vector svg");
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      canvas.width = w;
+      canvas.height = h;
+      var jsonStr = [];
+
+      function processImage() {
+        tl.progress(current++ / frames);
+
+        var xml  = new XMLSerializer().serializeToString(svg);
+        var blob = window.btoa(xml);
+        var img  = new Image();
+        img.src  = "data:image/svg+xml;base64," + blob;
+
+        img.crossOrigin = "Anonymous";
+        img.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(this, 0, 0);
+          var imgType = canvas.toDataURL("image/png");
+          var image = new Image();
+          image.src = imgType;
+          jsonStr.push(imgType);
+          
+          // export gif animation
+          document.querySelector("[data-export=gif]").onclick = function() {
+            if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
+              $("[data-action=hideHubs]").click();
+            }
+            
+            $(".vector").addClass("hide").parent().append('<div class="preloader" data-show="preloader"><svg viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div>');
+
+            gifshot.createGIF({
+              images: jsonStr,
+              gifWidth: canvas.width,
+              gifHeight: canvas.height,
+              interval: fps / 1000, // seconds
+              progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
+              completeCallback: function() { console.log('completed!!!'); },
+              numWorkers: 2,
+              },function(obj) {
+                if(!obj.error) {
+                  swal({
+                    title: 'File name below!',
+                    input: 'text',
+                    inputPlaceholder: ".gif is added on save",
+                    showCancelButton: true,
+                    confirmButtonText: 'Save',
+                    showLoaderOnConfirm: true
+                  }).then((result) => {
+                    if (result.value) {
+                      var a = document.createElement("a");
+                      a.href = obj.image;
+                      a.download = result.value;
+                      a.target = "_blank";
+                      a.click();
+                      
+                      swal(
+                        'Yay!',
+                        'You\'re GreenSock Animation was successfully saved!',
+                        'success'
+                      );
+                    } else {
+                      swal(
+                        'Oops!',
+                        console.error().toString(),
+                        'error'
+                      );
+                    }
+                  });
+                
+                $("[data-show=preloader]").remove();
+                $(".vector").removeClass("hide")
+              }
+            });
+          };
+          
+          // export image sequence
+          document.querySelector("[data-export=sequence]").onclick = function() {
+            var zip = new JSZip();
+
+            for (var i = 0; i < jsonStr.length; i++) {
+              zip.file("frame-"+[i]+".png", jsonStr[i].split('base64,')[1],{base64: true});
+            }
+
+            // export zip
+            swal({
+              title: 'File name below!',
+              input: 'text',
+              inputPlaceholder: ".zip is added on save",
+              showCancelButton: true,
+              confirmButtonText: 'Save',
+              showLoaderOnConfirm: true
+            }).then((result) => {
+              if (result.value) {
+                var content = zip.generate({type:"blob"});
+                saveAs(content, result.value + ".zip");
+
+                swal(
+                  'Yay!',
+                  'You\'re GreenSock Animation was successfully saved!',
+                  'success'
+                );
+              } else {
+                swal(
+                  'Oops!',
+                  console.error().toString(),
+                  'error'
+                );
+              }
+            });
+          };
+        };
+
+        if (current <= frames) {
+          processImage();
+        } else {
+          tl.play(0).timeScale(1);
+        }
+      }
+      processImage();
+    }, 2);
   } else {
     // stop animation
     // reset initial svg code
@@ -380,15 +509,6 @@ $("[data-export=zip]").click(function() {
   } else {
     saveDialog();
   }
-});
-$("[data-export=sequence]").click(function() {
-  alertify.log("coming soon...");
-});
-$("[data-export=gif]").click(function() {
-  alertify.log("coming soon...");
-});
-$("[data-export=vid]").click(function() {
-  alertify.log("coming soon...");
 });
 
 // alert the user feature is coming soon
