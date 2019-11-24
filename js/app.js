@@ -387,6 +387,9 @@ $("[data-export=zip]").click(function() {
     saveDialog();
   }
 });
+$("[data-export=sequence]").click(function() {
+  alertify.log("coming soon...");
+});
 $("[data-export=gif]").click(function() {
   alertify.log("coming soon...");
 });
