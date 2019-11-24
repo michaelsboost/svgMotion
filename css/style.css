@@ -24,7 +24,7 @@ a, a:hover {
   vertical-align: middle;
 }
 
-/* click colors */
+/* import file color */
 .vector-container h1 {
   color: #9d9d9d;
   transition: all linear 150ms;
@@ -53,7 +53,12 @@ a, a:hover {
   height: 100%;
 }
 
-body > .preloader svg {
+.hubs, .hubs > div {
+  touch-action: none;
+}
+
+/* gif export preloader */
+.preloader svg {
   width: 100%;
 }
 .preloader tspan {
@@ -69,41 +74,6 @@ body > .preloader svg {
   100% {
     stroke-dashoffset: 0;
   }
-}
-
-/* global classes */
-.ib {
-  display: inline-block;
-}
-.fl {
-  float: left;
-}
-.fr {
-  float: right;
-}
-.hide {
-  display: none;
-}
-.pointer {
-  cursor: pointer;
-}
-.tl {
-  text-align: left;
-}
-.tc {
-  text-align: center;
-}
-.tr {
-  text-align: right;
-}
-.w100p {
-  width: 100%;
-}
-.purple {
-  color: #551a8b!important;
-}
-.move {
-  cursor: move;
 }
 
 /* contentEditable */
@@ -211,4 +181,39 @@ body > .preloader svg {
 }
 .mdl-card__actions > .material-icons {
   padding-right: 10px;
+}
+
+/* global classes */
+.ib {
+  display: inline-block;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.hide {
+  display: none;
+}
+.pointer {
+  cursor: pointer;
+}
+.tl {
+  text-align: left;
+}
+.tc {
+  text-align: center;
+}
+.tr {
+  text-align: right;
+}
+.w100p {
+  width: 100%;
+}
+.purple {
+  color: #551a8b!important;
+}
+.move {
+  cursor: move;
 }
