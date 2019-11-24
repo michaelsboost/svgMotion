@@ -139,33 +139,9 @@ $("[data-play=animation]").click(function() {
   var elm = $("[data-play=animation] .material-icons");
 
   if (elm.text() === "play_arrow") {
-    // clear full code string
-    jsCode = "";
-    
-    // play animation
-    htmlCode = $(".vector").html();
     elm.text("stop");
-
-    var hubs = document.querySelectorAll("[data-grab=hubs] > div");
-    if (hubs[0].querySelector("h2").textContent != "TimelineMax") {
-      alertify.error('Abort Operation: First hub MUST be "TimelineMax"!');
-      return false;
-    }
-
-    for (var i = 0; i < hubs.length; i++) {
-      var hubType = hubs[i].querySelector("h2").textContent;
-      var hubKeyStr = hubs[i].querySelector("[data-place=key]").textContent.toString().replace(/ /g, "").replace(/\n/g, "").replace(/clear/g, ",\n");
-      var hubKeys = hubKeyStr.substr(0, hubKeyStr.length - 2);
-      if (i > 0) {
-        var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
-        var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
-        var codeStr = hubType + '(".vector '+ hubSelector +'", '+ hubSpeed +', { '+ hubKeys +' }, 0)\n';
-      } else {
-        var codeStr = 'var tl = new TimelineMax({ '+ hubKeys +' })\n';
-      }
-      jsCode += codeStr;
-    }
-
+    
+    getCode();
     var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
     jsCode += endCodeStr;
     setTimeout(jsCode, 1);
