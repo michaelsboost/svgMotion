@@ -341,9 +341,6 @@ function getCode() {
     }
     jsCode += codeStr;
   }
-
-  var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
-  jsCode += endCodeStr;
 }
 function saveCode(filename) {
   JSZipUtils.getBinaryContent("zips/gsap-public.zip", function(err, data) {
@@ -358,6 +355,10 @@ function saveCode(filename) {
     zipFolder.load(data);
 
     zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n  </head>\n  <body>\n    <div class="vector">'+ htmlCode +'</div>\n    \n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="libraries/gsap-public/minified/EasePack.min.js"></script>\n    <script src="libraries/gsap-public/minified/MotionPathPlugin.min.js"></script>\n    <script src="libraries/gsap-public/minified/TextPlugin.min.js"></script>\n    <script src="libraries/gsap-public/minified/CSSRulePlugin.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
+
+    var endCodeStr = 'var fps = 30;\nvar duration = tl.duration();\nvar frames   = Math.ceil(duration / 1 * fps)\ntl.play(0).timeScale(1);'
+    jsCode += endCodeStr;
+
     zip.file("js/animation.js", jsCode);
     var content = zip.generate({type:"blob"});
     saveAs(content, filename + ".zip");
