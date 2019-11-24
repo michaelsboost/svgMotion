@@ -310,6 +310,11 @@ $("[data-add=hub]").click(function(e) {
     if (!$(".vector").html()) {
       alertify.error('Error: No svg file detected!');
     } else {
+      var elm = $("[data-action=hideHubs] .material-icons");
+      if (elm.text() === "check_box_outline_blank") {
+        $("[data-action=hideHubs]").click();
+      }
+      
       var hubTitle, hubLink, hubDesc, hubSelector, hubSpeed, hubKeys;
       hubTitle = this.textContent.replace(/\n/g, "").replace(/ /g, "");
       hubLink = this.getAttribute("data-link");
