@@ -586,7 +586,7 @@ $("[data-export=json]").click(function() {
     if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
       projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
     }
-    var blob = new Blob(["var loadedJSON = " + JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
+    var blob = new Blob(["JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
     saveAs(blob, projectname + ".json");
   }
 });
