@@ -28,6 +28,7 @@ var loadHubs = {
   }]
 };
 function loadHubsTest() {
+  $("[data-call=openfile]").parent().remove();
   $("[data-grab=hubs]").empty();
   
   for (var i = 0; i < loadHubs.hubs.length; i++) {
