@@ -119,7 +119,6 @@ body > .preloader svg {
   font-size: inherit!important;
   line-height: initial!important;
 }
-
 .swal2-icon.swal2-warning > .swal2-icon-text,
 .swal2-icon.swal2-question > .swal2-icon-text {
   margin: auto;

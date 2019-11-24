@@ -428,6 +428,10 @@ function draggableHub() {
   });
 }
 draggableHub();
+$("[data-grab=hubs] div").on("mousedown", function() {
+  $("[data-grab=hubs] div").css("z-index", "0");
+  $(this).css("z-index", $("[data-grab=hubs]").length);
+});
 
 // for contenteditable placeholders
 $("[contenteditable]").blur(function(){
@@ -454,6 +458,14 @@ $("[data-action=hideHubs]").click(function() {
     // show hubs
     $("[data-grab=hubs] > div").show();
   }
+});
+
+// open/close project settings
+$("[data-open=projectSettings]").click(function() {
+  $("[data-projectSettings]").fadeIn();
+});
+$("[data-close=projectSettings]").click(function() {
+  $("[data-projectSettings]").fadeOut();
 });
 
 // export files

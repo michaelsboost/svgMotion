@@ -102,6 +102,12 @@
           
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
+            <li class="mdl-menu__item hide" data-open="projectSettings">
+              <i class="material-icons">settings_applications</i>
+              <span>
+                Project Settings
+              </span>
+            </li>
             <li class="mdl-menu__item hide" data-export="zip" data-file="loaded">
               <i class="material-icons">save_alt</i>
               <span>
@@ -175,6 +181,9 @@
       
       <main class="mdl-layout__content">
         <div class="mdl-grid" data-grab="hubs"></div>
+        <div class="mdl-grid hide" data-projectSettings>
+          project settings
+        </div>
       </main>
     </div>
     
@@ -202,6 +211,7 @@
     <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
     <script src="libraries/jqueryui/jqueryui.min.js"></script>
     <script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"></script>
+    <script src="libraries/interactjs/interact.min.js"></script>
     <script src="libraries/jszip/Blob.js"></script>
     <script src="libraries/jszip/FileSaver.js"></script>
     <script src="libraries/jszip/jszip.min.js"></script>
