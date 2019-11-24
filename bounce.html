@@ -96,25 +96,25 @@
           
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
-            <li class="mdl-menu__item hide" data-open="projectSettings" data-file="loaded">
+            <li class="mdl-menu__item" data-open="projectSettings" data-file="loaded">
               <i class="material-icons">settings_applications</i>
               <span>
                 Project Settings
               </span>
             </li>
-            <li class="mdl-menu__item hide" data-export="zip" data-file="loaded">
+            <li class="mdl-menu__item" data-export="zip" data-file="loaded">
               <i class="material-icons">save_alt</i>
               <span>
                 Export Zip
               </span>
             </li>
-            <li class="mdl-menu__item hide" data-export="sequence" data-file="loaded">
+            <li class="mdl-menu__item hide" data-export="sequence" data-detect="animation">
               <i class="material-icons">image</i>
               <span>
                 Export Sequence
               </span>
             </li>
-            <li class="mdl-menu__item hide" data-export="gif" data-file="loaded">
+            <li class="mdl-menu__item hide" data-export="gif" data-detect="animation">
               <i class="material-icons">image</i>
               <span>
                 Export Gif
@@ -174,7 +174,7 @@
       </div>
       
       <main class="mdl-layout__content">
-        <div class="mdl-grid hubs" data-grab="hubs"><div class="mdl-cell mdl-card mdl-shadow--2dp ui-draggable" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">TimelineMax</h2>&nbsp;<a href="https://greensock.com/docs/v2/TimelineMax" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">Constructor</div><div class="keyplace" data-place="key"><div class="mdl-card__actions mdl-card--border">
+        <div class="mdl-grid" data-grab="hubs"><div class="mdl-cell mdl-card mdl-shadow--2dp ui-draggable" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">TimelineMax</h2>&nbsp;<a href="https://greensock.com/docs/v2/TimelineMax" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">Constructor</div><div class="keyplace" data-place="key"><div class="mdl-card__actions mdl-card--border">
 <div class="mdl-card__actions"><span>repeat:</span> &nbsp;
 <div class="mdl-textfield__input w100p tc" contenteditable="">-1</div>
 <div class="mdl-layout-spacer"></div>
@@ -332,16 +332,16 @@
       <div class="grid">
         <div class="grid__col--12">
           <h2 class="headline-secondary--grouped nomarb">Project name</h2>
-          <input class="form__input" type="text" data-project="name" value="Bounce Reveal Demo" disabled>
+          <input class="form__input" type="text" data-project="name" value="My Test Animation">
 
           <div class="grid__col--6">
             <h2 class="headline-secondary--grouped nomarb">Choose canvas size</h2>
-            <input class="form__input" type="text" data-project="size" value="1080x1080" disabled>
+            <input class="form__input" type="text" data-project="size" value="1080x1080">
           </div>
 
           <div class="grid__col--6">
             <h2 class="headline-secondary--grouped nomarb">Choose frames per second</h2>
-            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30" disabled>
+            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30">
           </div>
           <p>&nbsp;</p>
           <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>
@@ -365,6 +365,7 @@
     <script src="libraries/jszip/FileSaver.js"></script>
     <script src="libraries/jszip/jszip.min.js"></script>
     <script src="libraries/jszip/jszip-utils.js"></script>
+    <script src="libraries/gifshot/gifshot.min.js"></script>
     <script src="libraries/gsap/minified/gsap.min.js"></script>
     <script src="libraries/gsap/minified/EasePack.min.js"></script>
     <script src="libraries/gsap/minified/MotionPathPlugin.min.js"></script>

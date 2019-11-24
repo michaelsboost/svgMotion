@@ -96,7 +96,7 @@
           
           <!-- Top right button nav dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
-            <li class="mdl-menu__item hide" data-open="projectSettings" data-file="loaded">
+            <li class="mdl-menu__item" data-open="projectSettings" data-file="loaded">
               <i class="material-icons">settings_applications</i>
               <span>
                 Project Settings
@@ -332,16 +332,16 @@
       <div class="grid">
         <div class="grid__col--12">
           <h2 class="headline-secondary--grouped nomarb">Project name</h2>
-          <input class="form__input" type="text" data-project="name" value="My Test Animation" disabled>
+          <input class="form__input" type="text" data-project="name" value="My Test Animation">
 
           <div class="grid__col--6">
             <h2 class="headline-secondary--grouped nomarb">Choose canvas size</h2>
-            <input class="form__input" type="text" data-project="size" value="1080x1080" disabled>
+            <input class="form__input" type="text" data-project="size" value="1080x1080">
           </div>
 
           <div class="grid__col--6">
             <h2 class="headline-secondary--grouped nomarb">Choose frames per second</h2>
-            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30" disabled>
+            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30">
           </div>
           <p>&nbsp;</p>
           <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>

@@ -2,7 +2,7 @@
 var projectName = $("[data-project=name]")[0];
 var projectSize = $("[data-project=size]");
 var projectFPS = $("[data-project=fps]").val();
-var w = 100, h = 100, htmlCode = "", jsCode = "";
+var w, h, htmlCode = "", jsCode = "";
 
 var loadHubs = { 
   "svg": $(".vector").html(),
@@ -202,6 +202,13 @@ $("[data-play=animation]").click(function() {
       var svg  = document.querySelector(".vector svg");
       var canvas = document.createElement("canvas");
       var ctx = canvas.getContext("2d");
+      if (!projectSize.val()) {
+        projectSize.val("800x600");
+      }
+
+      var str = projectSize.val();
+      w = str.substr(0, str.indexOf('x'));
+      h = str.substring(str.length, str.indexOf('x') + 1);
       canvas.width = w;
       canvas.height = h;
       var jsonStr = [];
@@ -437,6 +444,11 @@ $("[data-action=hideHubs]").click(function() {
 
 // open/close project settings
 $("[data-open=projectSettings]").click(function() {
+  var elm = $("[data-play=animation] .material-icons");
+  if (elm.text() === "stop") {
+    $("[data-play=animation]").click();
+  }
+  
   $(".projectsettingsbg").fadeIn();
   $("[data-projectSettings]").fadeIn();
 });
