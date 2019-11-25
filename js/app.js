@@ -540,7 +540,7 @@ function getCode() {
 
   for (var i = 0; i < hubs.length; i++) {
     var hubType = hubs[i].querySelector("h2").textContent;
-    var hubKeyStr = hubs[i].querySelector("[data-place=key]").textContent.toString().replace(/ /g, "").replace(/\n/g, "").replace(/clear/g, ",\n");
+    var hubKeyStr = hubs[i].querySelector("[data-place=key]").textContent.toString().replace(/\n/g, "").replace(/clear/g, ",\n");
     var hubKeys = hubKeyStr.substr(0, hubKeyStr.length - 2);
     if (i > 0) {
       var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
