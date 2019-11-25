@@ -18,15 +18,11 @@ Version
 Development
 -------------
 
-Want to contribute? Great!  
-
-The animation is created via the [Greensock Animation Plugin](https://greensock.com/).
-
-If you're familiar with the [Greensock Animation Plugin](https://greensock.com/) and would like to collaborate please send me a message via [social media](https://michaelsboost.github.io/) or here on Github as I'm learning more about it as I'm making this application.
+Want to contribute? Great!
 
 You can submit a pull request or simply share the project :)
 
-Of course SVGAnimFrames is free and open source, so you can always fork the project and have fun :)
+Of course svgMotion is free and open source, so you can always fork the project and have fun :)
 
 [![ko-fi](https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0)](https://ko-fi.com/michaelsboost)
 

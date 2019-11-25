@@ -1,3 +1,11 @@
+/*
+  Version: 0.0.1
+  svgMotion, copyright (c) by Michael Schwartz
+  Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
+  
+  This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
+*/
+
 // variables
 var projectName = $("[data-project=name]")[0];
 var projectSize = $("[data-project=size]");
