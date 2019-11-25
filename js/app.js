@@ -77,13 +77,20 @@ function loadfile(input) {
   var reader = new FileReader();
   var path = input.value;
   reader.onload = function(e) {
-    if (path.toLowerCase().substring(path.length - 4 === ".svg")) {
+    if (path.toLowerCase().substring(path.length - 4) === ".svg") {
       document.querySelector("[data-output=svg]").innerHTML = e.target.result;
       imageLoaded();
-    } else if (path.toLowerCase().substring(path.length - 5 === ".json")) {
+    } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
       loadedJSON = JSON.parse(e.target.result);
-      console.log(loadedJSON)
       loadHubs();
+      
+      $("[data-file=loaded]").fadeIn();
+      $("[data-call=openfile]").parent().remove();
+
+      $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+      $("[data-action=fadeOut]").fadeOut(400, function() {
+        $("[data-action=fadeOut]").remove();
+      });
     } else {
       alertify.error("Sorry that file type is not supported. .svg and .json files only!");
     }
@@ -141,6 +148,14 @@ function dropfile(file) {
           if (result.value) {
             loadedJSON = JSON.parse(e.target.result);
             loadHubs();
+      
+            $("[data-file=loaded]").fadeIn();
+            $("[data-call=openfile]").parent().remove();
+
+            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+            $("[data-action=fadeOut]").fadeOut(400, function() {
+              $("[data-action=fadeOut]").remove();
+            });
           } else {
             return false;
           }
@@ -148,6 +163,14 @@ function dropfile(file) {
       } else {
         loadedJSON = JSON.parse(e.target.result);
         loadHubs();
+      
+        $("[data-file=loaded]").fadeIn();
+        $("[data-call=openfile]").parent().remove();
+
+        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+        $("[data-action=fadeOut]").fadeOut(400, function() {
+          $("[data-action=fadeOut]").remove();
+        });
       }
     } else {
       alertify.error("Sorry that file type is not supported. .svg and .json files only!");
@@ -586,7 +609,7 @@ $("[data-export=json]").click(function() {
     if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
       projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
     }
-    var blob = new Blob(["JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
+    var blob = new Blob(["var loadedJSON = " + JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
     saveAs(blob, projectname + ".json");
   }
 });
