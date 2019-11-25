@@ -484,7 +484,7 @@ function draggableHub() {
   });
 }
 draggableHub();
-$("[data-grab=hubs] div").on("mousedown", function() {
+$("[data-grab=hubs] div").on("mousedown touchstart", function() {
   $("[data-grab=hubs] div").css("z-index", "0");
   $(this).css("z-index", $("[data-grab=hubs]").length);
 });
