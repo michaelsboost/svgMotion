@@ -28,7 +28,7 @@
         <div class="mdl-layout__header-row">
           <div class="mdl-layout-spacer"></div>
           
-          <!-- Top right button navigation -->
+          <!-- editor navigation -->
           <nav class="mdl-navigation">
             <span class="hide" data-file="loaded">
               <button class="mdl-button mdl-js-button mdl-button--icon" onClick="refresh()">
@@ -94,6 +94,12 @@
                 Project Settings
               </span>
             </li>
+            <li class="mdl-menu__item hide" data-call="openfile" data-file="loaded">
+              <i class="material-icons">add_a_photo</i>
+              <span>
+                Import File
+              </span>
+            </li>
             <li class="mdl-menu__item hide" data-export="json" data-file="loaded">
               <i class="material-icons">save_alt</i>
               <span>
@@ -156,15 +162,20 @@
           <a class="mdl-navigation__link ripple" href="https://greensock.com/ease-visualizer" target="_blank">
             <i class="material-icons" role="presentation">timeline</i> &nbsp; Ease Visualizer
           </a>
-          <a class="mdl-navigation__link ripple" href="./bounce.html" target="_blank">
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="svgmotionheader">
+            <i class="material-icons" role="presentation">favorite</i> &nbsp; svgMotion Header
+          </a>
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="bouncereveal">
             <i class="material-icons" role="presentation">face</i> &nbsp; Bounce Reveal
           </a>
-          <a class="mdl-navigation__link ripple" href="./heartmonitor.html" target="_blank">
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="heartbeatmonitor">
             <i class="material-icons" role="presentation">favorite</i> &nbsp; Heart Monitor
+          </a>
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="wormwalk">
+            <i class="material-icons" role="presentation">favorite</i> &nbsp; Worm Walk
           </a>
         </nav>
       </div>
-      
       <main class="mdl-layout__content">
         <div class="mdl-grid" data-grab="hubs"></div>
       </main>
@@ -227,6 +238,7 @@
     <script src="libraries/gsap/minified/MotionPathPlugin.min.js"></script>
     <script src="libraries/gsap/minified/TextPlugin.min.js"></script>
     <script src="libraries/gsap/minified/CSSRulePlugin.min.js"></script>
+    <script src="js/demos.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

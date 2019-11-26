@@ -14,7 +14,7 @@ var w, h, htmlCode = "", jsCode = "", projectJSON;
 
 var loadedJSON = {};
 function loadHubs() {
-  $("[data-call=openfile]").parent().remove();
+  $(".vector-container > .table > .cell > h1").remove();
   $("[data-grab=hubs]").empty();
   
   for (var i = 0; i < loadedJSON.hubs.length; i++) {
@@ -43,6 +43,14 @@ function loadHubs() {
       return true;
     });
   }
+  
+  // remove TimelineMax hub after hubs have been loaded in
+  if ($("[data-add=hub]")[0].textContent.trim() === "TimelineMax") {
+    $("[data-add=hub]")[0].remove();
+  }
+  $("[data-add=hub]").removeAttr('disabled');
+  
+  $("[data-project=name]").trigger("keyup");
 }
 function getProjectJSON() {
   projectJSON = {
@@ -76,7 +84,7 @@ function onlyNumbers(e) {
 }
 
 // load svg file on click
-$("[data-call=openfile]").click(function() {
+$("[data-call=openfile]").on("click", function() {
   $("[data-input=openfile]").trigger("click");
 });
 
@@ -86,19 +94,77 @@ function loadfile(input) {
   var path = input.value;
   reader.onload = function(e) {
     if (path.toLowerCase().substring(path.length - 4) === ".svg") {
+      var elm = $("[data-play=animation] .material-icons");
+      if (elm.text() === "stop") {
+        $("[data-play=animation]").click();
+      }
+      elm = $("[data-action=hideHubs] .material-icons");
+      if (elm.text() === "check_box_outline_blank") {
+        $("[data-action=hideHubs]").click();
+      }
+      
+      var hubs = document.querySelector("[data-grab=hubs]");
+      if (hubs.innerHTML) {
+        swal({
+          title: 'Hubs Detected!',
+          text: "Would you like to clear these?",
+          type: 'question',
+          showCancelButton: true
+        }).then((result) => {
+          if (result.value) {
+            hubs.innerHTML = "";
+            $("[data-add=hub]").show().not("[data-add=hub]:first").attr('disabled', "true");
+          }
+        })
+      }
+
       document.querySelector("[data-output=svg]").innerHTML = e.target.result;
       imageLoaded();
     } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
-      loadedJSON = JSON.parse(e.target.result);
-      loadHubs();
+      var elm = $("[data-play=animation] .material-icons");
+      if (elm.text() === "stop") {
+        $("[data-play=animation]").click();
+      }
+      elm = $("[data-action=hideHubs] .material-icons");
+      if (elm.text() === "check_box_outline_blank") {
+        $("[data-action=hideHubs]").click();
+      }
       
-      $("[data-file=loaded]").fadeIn();
-      $("[data-call=openfile]").parent().remove();
+      var hubs = document.querySelector("[data-grab=hubs]");
+      if (hubs.innerHTML) {
+        swal({
+          title: 'Project Detected!',
+          text: "Are you sure you want to clear this?",
+          type: 'question',
+          showCancelButton: true
+        }).then((result) => {
+          if (result.value) {
+            loadedJSON = JSON.parse(e.target.result);
+            loadHubs();
+      
+            $("[data-file=loaded]").fadeIn();
+            $(".vector-container > .table > .cell > h1").remove();
 
-      $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-      $("[data-action=fadeOut]").fadeOut(400, function() {
-        $("[data-action=fadeOut]").remove();
-      });
+            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+            $("[data-action=fadeOut]").fadeOut(400, function() {
+              $("[data-action=fadeOut]").remove();
+            });
+          } else {
+            return false;
+          }
+        })
+      } else {
+        loadedJSON = JSON.parse(e.target.result);
+        loadHubs();
+      
+        $("[data-file=loaded]").fadeIn();
+        $(".vector-container > .table > .cell > h1").remove();
+
+        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+        $("[data-action=fadeOut]").fadeOut(400, function() {
+          $("[data-action=fadeOut]").remove();
+        });
+      }
     } else {
       alertify.error("Sorry that file type is not supported. .svg and .json files only!");
     }
@@ -158,7 +224,7 @@ function dropfile(file) {
             loadHubs();
       
             $("[data-file=loaded]").fadeIn();
-            $("[data-call=openfile]").parent().remove();
+            $(".vector-container > .table > .cell > h1").remove();
 
             $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
             $("[data-action=fadeOut]").fadeOut(400, function() {
@@ -173,7 +239,7 @@ function dropfile(file) {
         loadHubs();
       
         $("[data-file=loaded]").fadeIn();
-        $("[data-call=openfile]").parent().remove();
+        $(".vector-container > .table > .cell > h1").remove();
 
         $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
         $("[data-action=fadeOut]").fadeOut(400, function() {
@@ -204,12 +270,13 @@ function imageLoaded() {
     $("[data-output=svg] > svg *").removeAttr("vector-effect");
     
     $("[data-file=loaded]").fadeIn();
-    $("[data-call=openfile]").parent().remove();
+    $(".vector-container > .table > .cell > h1").remove();
 
     $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
     $("[data-action=fadeOut]").fadeOut(400, function() {
       $("[data-action=fadeOut]").remove();
     });
+    $("[data-project=name]").trigger("keyup");
   } else {
     alertify.error("Error: No svg element detected!");
   }
@@ -230,10 +297,64 @@ document.addEventListener("drop", function(e) {
   dropfile(file);
 });
 
+// open demos
+$("[data-loadJSON]").on("click", function() {
+  if ($(".mdl-layout__obfuscator").is(":visible")) {
+    $(".mdl-layout__obfuscator").click();
+  }
+  
+  var JSONDemo = $(this)[0].getAttribute("data-loadJSON");
+  
+  var elm = $("[data-play=animation] .material-icons");
+  if (elm.text() === "stop") {
+    $("[data-play=animation]").click();
+  }
+  elm = $("[data-action=hideHubs] .material-icons");
+  if (elm.text() === "check_box_outline_blank") {
+    $("[data-action=hideHubs]").click();
+  }
+
+  var hubs = document.querySelector("[data-grab=hubs]");
+  if (hubs.innerHTML) {
+    swal({
+      title: 'Project Detected!',
+      text: "Are you sure you want to clear this?",
+      type: 'question',
+      showCancelButton: true
+    }).then((result) => {
+      if (result.value) {
+        loadedJSON = JSONDemos[JSONDemo];
+        loadHubs();
+
+        $("[data-file=loaded]").fadeIn();
+        $(".vector-container > .table > .cell > h1").remove();
+
+        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+        $("[data-action=fadeOut]").fadeOut(400, function() {
+          $("[data-action=fadeOut]").remove();
+        });
+      } else {
+        return false;
+      }
+    })
+  } else {
+    loadedJSON = JSONDemos[JSONDemo];
+    loadHubs();
+
+    $("[data-file=loaded]").fadeIn();
+    $(".vector-container > .table > .cell > h1").remove();
+
+    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+    $("[data-action=fadeOut]").fadeOut(400, function() {
+      $("[data-action=fadeOut]").remove();
+    });
+  }
+});
+
 // project name show in document title
-projectName.onclick = function() {
+$("[data-project=name]").on("keyup", function() {
   document.title = "svgMotion: " + this.value;
-};
+});
 
 // new/reload
 function refresh() {
