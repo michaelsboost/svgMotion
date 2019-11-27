@@ -762,6 +762,3 @@ $("[data-export=json]").click(function() {
     saveAs(blob, projectname + ".json");
   }
 });
-
-// load demo
-$("[data-loadjson=bouncereveal]").click();
