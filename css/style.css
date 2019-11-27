@@ -87,6 +87,9 @@ background: transparent;
 box-shadow: 0 0 0;
 
 /* SWAL */
+.swal2-icon {
+  font-size: initial!important;
+}
 .swal2-icon.swal2-warning,
 .swal2-icon.swal2-question {
   font-size: inherit!important;
