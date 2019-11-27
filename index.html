@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css" />
     <link rel="stylesheet" href="libraries/sweetalert2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="libraries/jqueryminicolors/jquery.minicolors.css" />
     <link rel="stylesheet" href="css/style.css" />
     <!-- Material Design icon font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -41,6 +42,12 @@
               </button>
               &nbsp;
               &nbsp;
+              <button id="menu-color-picker" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">color_lens</i>
+              </button>
+              </button>
+              &nbsp;
+              &nbsp;
               <button id="menu-hub-types" class="mdl-button mdl-js-button mdl-button--icon">
                 <i class="material-icons">add</i>
               </button>
@@ -56,6 +63,11 @@
               <i class="material-icons">more_vert</i>
             </button>
           </nav>
+          
+          <!-- Hub types dropdown -->
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-color-picker" style="width: 214px; height: 200px; padding: 5px 7px;">
+            <input type="text" class="picker" data-picker value="rgba(0, 0, 0, 1)" data-opacity="1" style="color: #000; width: 207px;">
+          </ul>
           
           <!-- Hub types dropdown -->
           <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-hub-types">
@@ -225,6 +237,7 @@
     <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
     <script src="libraries/jqueryui/jqueryui.min.js"></script>
     <script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"></script>
+    <script src="libraries/jqueryminicolors/jquery.minicolors.min.js"></script>
     <script src="libraries/jszip/Blob.js"></script>
     <script src="libraries/jszip/FileSaver.js"></script>
     <script src="libraries/jszip/jszip.min.js"></script>

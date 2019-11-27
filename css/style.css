@@ -24,7 +24,7 @@ a, a:hover {
   vertical-align: middle;
 }
 
-/* import file color */
+/* import file icon color */
 .vector-container h1 {
   color: #9d9d9d;
   transition: all linear 150ms;
@@ -78,6 +78,13 @@ a, a:hover {
   display: inline-block;
   color: grey;
 }
+
+/* color picker input */
+.picker {
+  width: 175px;
+}
+background: transparent;
+box-shadow: 0 0 0;
 
 /* SWAL */
 .swal2-icon.swal2-warning,

@@ -9,9 +9,367 @@
 // variables
 var projectName = $("[data-project=name]")[0];
 var projectSize = $("[data-project=size]");
-var projectFPS = $("[data-project=fps]").val();
+var projectFPS  = $("[data-project=fps]").val();
 var w, h, htmlCode = "", jsCode = "", projectJSON;
 
+// open demos
+$("[data-loadJSON]").on("click", function() {
+  if ($(".mdl-layout__obfuscator").is(":visible")) {
+    $(".mdl-layout__obfuscator").click();
+  }
+  
+  var JSONDemo = $(this)[0].getAttribute("data-loadJSON");
+  
+  var elm = $("[data-play=animation] .material-icons");
+  if (elm.text() === "stop") {
+    $("[data-play=animation]").click();
+  }
+  elm = $("[data-action=hideHubs] .material-icons");
+  if (elm.text() === "check_box_outline_blank") {
+    $("[data-action=hideHubs]").click();
+  }
+
+  var hubs = document.querySelector("[data-grab=hubs]");
+  if (hubs.innerHTML) {
+    swal({
+      title: 'Project Detected!',
+      text: "Are you sure you want to clear this?",
+      type: 'question',
+      showCancelButton: true
+    }).then((result) => {
+      if (result.value) {
+        loadedJSON = JSONDemos[JSONDemo];
+        loadHubs();
+
+        $("[data-file=loaded]").fadeIn();
+        $(".vector-container > .table > .cell > h1").remove();
+
+        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+        $("[data-action=fadeOut]").fadeOut(400, function() {
+          $("[data-action=fadeOut]").remove();
+        });
+      } else {
+        return false;
+      }
+    })
+  } else {
+    loadedJSON = JSONDemos[JSONDemo];
+    loadHubs();
+
+    $("[data-file=loaded]").fadeIn();
+    $(".vector-container > .table > .cell > h1").remove();
+
+    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+    $("[data-action=fadeOut]").fadeOut(400, function() {
+      $("[data-action=fadeOut]").remove();
+    });
+  }
+});
+
+// project name show in document title
+$("[data-project=name]").on("keyup", function() {
+  document.title = "svgMotion: " + this.value;
+});
+
+// new/reload
+function refresh() {
+  swal({
+    title: 'Are you sure you want to reload?',
+    text: "You will loose all your work and you won't be able to revert this!",
+    type: 'warning',
+    showCancelButton: true
+  }).then((result) => {
+    if (result.value) {
+      window.location.href = "./index.html";
+    }
+  })
+}
+
+// hide Hubs
+$("[data-action=hideHubs]").click(function() {
+  var elm = $("[data-action=hideHubs] > .material-icons");
+
+  if (elm.text() === "check_box") {
+    // show see through icon
+    elm.text("check_box_outline_blank");
+    
+    // hide hubs
+    $("[data-grab=hubs] > div").hide();
+  } else {
+    // reset icon
+    elm.text("check_box");
+    
+    // show hubs
+    $("[data-grab=hubs] > div").show();
+  }
+});
+
+// enable color picker
+$("[data-picker]").minicolors({
+  format: "rgb",
+  opacity: true,
+  show: true,
+  position: "bottom left"
+}).minicolors("show", true);
+document.querySelector("[for=menu-color-picker]").addEventListener("click", function(e) {
+  e.stopPropagation();
+});
+
+// add a hub
+$("[data-add=hub]").click(function(e) {
+  if (this.hasAttribute("disabled")) {
+    e.preventDefault();
+    return false;
+  } else {
+    if (!$(".vector").html()) {
+      alertify.error('Error: No svg file detected!');
+    } else {
+      var elm = $("[data-action=hideHubs] .material-icons");
+      if (elm.text() === "check_box_outline_blank") {
+        $("[data-action=hideHubs]").click();
+      }
+      
+      var hubTitle, hubLink, hubDesc, hubSelector, hubSpeed, hubKeys;
+      hubTitle = this.textContent.replace(/\n/g, "").replace(/ /g, "");
+      hubLink = this.getAttribute("data-link");
+      hubDesc = this.getAttribute("data-description");
+      hubSelector = "svg > g";
+      hubSpeed = "1.5";
+      hubKeys = "";
+      
+      if (hubTitle === "TimelineMax") {
+        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div></div>';
+        $(this).fadeOut(400);
+        $("[data-add=hub]").removeAttr('disabled');
+      } else {
+        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ hubSelector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ hubSpeed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
+      }
+      
+      // append hub
+      $("[data-grab=hubs]").append(hubStr);
+      draggableHub();
+    }
+  }
+});
+
+// alert the user feature is coming soon
+$("[data-action=comingsoon]").click(function() {
+  alertify.log("coming soon...");
+  return false;
+});
+
+// run hub code
+$("[data-play=animation]").click(function() {
+  if (!$("[data-grab=hubs]").html()) {
+    alertify.error("Abort Operation: No hubs detected!");
+    return false;
+  }
+  var elm = $("[data-play=animation] .material-icons");
+
+  if (elm.text() === "play_arrow") {
+    elm.text("stop");
+    $("[data-detect=animation]").show();
+    if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
+      $("[data-action=hideHubs]").click();
+    }
+    
+    getCode();
+    setTimeout(jsCode, 1);
+    setTimeout(function() {
+      var fps = projectFPS;
+      var duration = tl.duration();
+      var frames   = Math.ceil(duration / 1 * fps);
+      var current  = 0;
+
+      // canvas
+      var svg  = document.querySelector(".vector svg");
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      if (!projectSize.val()) {
+        projectSize.val("800x600");
+      }
+
+      var str = projectSize.val();
+      w = str.substr(0, str.indexOf('x'));
+      h = str.substring(str.length, str.indexOf('x') + 1);
+      canvas.width = w;
+      canvas.height = h;
+      var jsonStr = [];
+
+      function processImage() {
+        tl.progress(current++ / frames);
+
+        var xml  = new XMLSerializer().serializeToString(svg);
+        var blob = window.btoa(xml);
+        var img  = new Image();
+        img.src  = "data:image/svg+xml;base64," + blob;
+
+        img.crossOrigin = "Anonymous";
+        img.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(this, 0, 0);
+          var imgType = canvas.toDataURL("image/png");
+          var image = new Image();
+          image.src = imgType;
+          jsonStr.push(imgType);
+          
+          // export gif animation
+          document.querySelector("[data-export=gif]").onclick = function() {
+            if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
+              $("[data-action=hideHubs]").click();
+            }
+            
+            $(".vector").addClass("hide").parent().append('<div class="preloader" data-show="preloader"><svg viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div>');
+
+            gifshot.createGIF({
+              images: jsonStr,
+              gifWidth: canvas.width,
+              gifHeight: canvas.height,
+              interval: fps / 1000, // seconds
+              progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
+              completeCallback: function() { console.log('completed!!!'); },
+              numWorkers: 2,
+              },function(obj) {
+                if(!obj.error) {
+                var a = document.createElement("a");
+                a.href = obj.image;
+                var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+                if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+                  projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+                }
+                a.download = projectname;
+                a.target = "_blank";
+                a.click();
+                
+                $("[data-show=preloader]").remove();
+                $(".vector").removeClass("hide")
+              }
+            });
+          };
+          
+          // export image sequence
+          document.querySelector("[data-export=sequence]").onclick = function() {
+            var zip = new JSZip();
+
+            for (var i = 0; i < jsonStr.length; i++) {
+              zip.file("frame-"+[i]+".png", jsonStr[i].split('base64,')[1],{base64: true});
+            }
+
+            var content = zip.generate({type:"blob"});
+            var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+            if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+              projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+            }
+            saveAs(content, projectname + ".zip");
+          };
+        };
+
+        if (current <= frames) {
+          processImage();
+        } else {
+          tl.play(0).timeScale(1);
+        }
+      }
+      processImage();
+    }, 2);
+  } else {
+    // stop animation
+    // reset initial svg code
+    $(".vector").html("").html(htmlCode);
+    
+    // reset icon
+    elm.text("play_arrow");
+    $("[data-detect=animation]").hide();
+  }
+});
+
+// is disabled
+$("[data-disabled]").click(function(e) {
+  alertify.log('Not available in demos');
+});
+
+// delete a hub
+function deleteHub(e) {
+  $(e).parent().parent().remove();
+}
+
+// add key
+function addKey(e) {
+  if (e.hasAttribute("data-disabled")) {
+    alertify.log('Not available in demos');
+  } else {
+    var val = $(e).parent().find("input").val();
+    if (!val.replace(/ /g, "")) {
+      // alertify.error("Error: Value is empty!");
+    } else {
+      val = val.replace(/ /g, "");
+      // check if key already exists
+      var str = $(e).parent().prev().find("span").text().toLowerCase();
+      if (val === str.substr(0, str.length - 1)) {
+        alertify.error("Error: Same key detected!");
+        return false;
+      } else {
+        $(e).parent().prev().append('<div class="mdl-card__actions mdl-card--border">\n<div class="mdl-card__actions"><span>'+ val +':</span> &nbsp;\n<div class="mdl-textfield__input w100p tc" contenteditable></div>\n<div class="mdl-layout-spacer"></div>\n<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)">\n<i class="material-icons">clear</i>\n</button>\n</div>\n</div>');
+        $(e).parent().find("input").val("");
+        $(e).parent().prev().scrollTop($(e).parent().prev().prop("scrollHeight"));
+//        $(window).scrollTop($(document).height());
+        $(e).parent().prev().find("div[contenteditable]:last").focus();
+        e.preventDefault();
+      }
+    }
+  }
+}
+function enterKey(e) {
+  // look for window.event in case event isn't passed in
+  e = e || window.event;
+  if (e.keyCode == 13) {
+    e.target.parentNode.parentNode.querySelector("[data-action=addKey]").click();
+    e.preventDefault();
+    return false;
+  }
+  return true;
+};
+
+// delete key
+function deleteKey(e) {
+  $(e).parent().parent().remove();
+}
+
+// clone a hub
+function cloneHub(e) {
+  $(e).parent().parent().clone().appendTo(".mdl-layout__content [data-grab=hubs]");
+  draggableHub();
+
+  $("[contenteditable]").blur(function(){
+    var $element = $(this);
+    if ($element.html().length && !$element.text().trim().length) {
+      $element.empty();
+    }
+  });
+}
+
+// make hub draggable
+function draggableHub() {
+  $("[data-action=draggable]").draggable({
+    handle: "[data-action=move]",
+    stack: $("[data-action=draggable]")
+  });
+}
+draggableHub();
+$("[data-grab=hubs] div").on("mousedown touchstart", function() {
+  $("[data-grab=hubs] div").css("z-index", "0");
+  $(this).css("z-index", $("[data-grab=hubs]").length);
+});
+
+// for contenteditable placeholders
+$("[contenteditable]").blur(function(){
+  var $element = $(this);
+  if ($element.html().length && !$element.text().trim().length) {
+    $element.empty();
+  }
+});
+
+// extra dropdown menu options
 var loadedJSON = {};
 function loadHubs() {
   $(".vector-container > .table > .cell > h1").remove();
@@ -297,346 +655,6 @@ document.addEventListener("drop", function(e) {
   dropfile(file);
 });
 
-// open demos
-$("[data-loadJSON]").on("click", function() {
-  if ($(".mdl-layout__obfuscator").is(":visible")) {
-    $(".mdl-layout__obfuscator").click();
-  }
-  
-  var JSONDemo = $(this)[0].getAttribute("data-loadJSON");
-  
-  var elm = $("[data-play=animation] .material-icons");
-  if (elm.text() === "stop") {
-    $("[data-play=animation]").click();
-  }
-  elm = $("[data-action=hideHubs] .material-icons");
-  if (elm.text() === "check_box_outline_blank") {
-    $("[data-action=hideHubs]").click();
-  }
-
-  var hubs = document.querySelector("[data-grab=hubs]");
-  if (hubs.innerHTML) {
-    swal({
-      title: 'Project Detected!',
-      text: "Are you sure you want to clear this?",
-      type: 'question',
-      showCancelButton: true
-    }).then((result) => {
-      if (result.value) {
-        loadedJSON = JSONDemos[JSONDemo];
-        loadHubs();
-
-        $("[data-file=loaded]").fadeIn();
-        $(".vector-container > .table > .cell > h1").remove();
-
-        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-        $("[data-action=fadeOut]").fadeOut(400, function() {
-          $("[data-action=fadeOut]").remove();
-        });
-      } else {
-        return false;
-      }
-    })
-  } else {
-    loadedJSON = JSONDemos[JSONDemo];
-    loadHubs();
-
-    $("[data-file=loaded]").fadeIn();
-    $(".vector-container > .table > .cell > h1").remove();
-
-    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-    $("[data-action=fadeOut]").fadeOut(400, function() {
-      $("[data-action=fadeOut]").remove();
-    });
-  }
-});
-
-// project name show in document title
-$("[data-project=name]").on("keyup", function() {
-  document.title = "svgMotion: " + this.value;
-});
-
-// new/reload
-function refresh() {
-  swal({
-    title: 'Are you sure you want to reload?',
-    text: "You will loose all your work and you won't be able to revert this!",
-    type: 'warning',
-    showCancelButton: true
-  }).then((result) => {
-    if (result.value) {
-      window.location.href = "./index.html";
-    }
-  })
-}
-
-// run hub code
-$("[data-play=animation]").click(function() {
-  if (!$("[data-grab=hubs]").html()) {
-    alertify.error("Abort Operation: No hubs detected!");
-    return false;
-  }
-  var elm = $("[data-play=animation] .material-icons");
-
-  if (elm.text() === "play_arrow") {
-    elm.text("stop");
-    $("[data-detect=animation]").show();
-    if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
-      $("[data-action=hideHubs]").click();
-    }
-    
-    getCode();
-    setTimeout(jsCode, 1);
-    setTimeout(function() {
-      var fps = projectFPS;
-      var duration = tl.duration();
-      var frames   = Math.ceil(duration / 1 * fps);
-      var current  = 0;
-
-      // canvas
-      var svg  = document.querySelector(".vector svg");
-      var canvas = document.createElement("canvas");
-      var ctx = canvas.getContext("2d");
-      if (!projectSize.val()) {
-        projectSize.val("800x600");
-      }
-
-      var str = projectSize.val();
-      w = str.substr(0, str.indexOf('x'));
-      h = str.substring(str.length, str.indexOf('x') + 1);
-      canvas.width = w;
-      canvas.height = h;
-      var jsonStr = [];
-
-      function processImage() {
-        tl.progress(current++ / frames);
-
-        var xml  = new XMLSerializer().serializeToString(svg);
-        var blob = window.btoa(xml);
-        var img  = new Image();
-        img.src  = "data:image/svg+xml;base64," + blob;
-
-        img.crossOrigin = "Anonymous";
-        img.onload = function() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(this, 0, 0);
-          var imgType = canvas.toDataURL("image/png");
-          var image = new Image();
-          image.src = imgType;
-          jsonStr.push(imgType);
-          
-          // export gif animation
-          document.querySelector("[data-export=gif]").onclick = function() {
-            if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
-              $("[data-action=hideHubs]").click();
-            }
-            
-            $(".vector").addClass("hide").parent().append('<div class="preloader" data-show="preloader"><svg viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div>');
-
-            gifshot.createGIF({
-              images: jsonStr,
-              gifWidth: canvas.width,
-              gifHeight: canvas.height,
-              interval: fps / 1000, // seconds
-              progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
-              completeCallback: function() { console.log('completed!!!'); },
-              numWorkers: 2,
-              },function(obj) {
-                if(!obj.error) {
-                var a = document.createElement("a");
-                a.href = obj.image;
-                var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-                if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-                  projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
-                }
-                a.download = projectname;
-                a.target = "_blank";
-                a.click();
-                
-                $("[data-show=preloader]").remove();
-                $(".vector").removeClass("hide")
-              }
-            });
-          };
-          
-          // export image sequence
-          document.querySelector("[data-export=sequence]").onclick = function() {
-            var zip = new JSZip();
-
-            for (var i = 0; i < jsonStr.length; i++) {
-              zip.file("frame-"+[i]+".png", jsonStr[i].split('base64,')[1],{base64: true});
-            }
-
-            var content = zip.generate({type:"blob"});
-            var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-            if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-              projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
-            }
-            saveAs(content, projectname + ".zip");
-          };
-        };
-
-        if (current <= frames) {
-          processImage();
-        } else {
-          tl.play(0).timeScale(1);
-        }
-      }
-      processImage();
-    }, 2);
-  } else {
-    // stop animation
-    // reset initial svg code
-    $(".vector").html("").html(htmlCode);
-    
-    // reset icon
-    elm.text("play_arrow");
-    $("[data-detect=animation]").hide();
-  }
-});
-
-// add a hub
-$("[data-add=hub]").click(function(e) {
-  if (this.hasAttribute("disabled")) {
-    e.preventDefault();
-    return false;
-  } else {
-    if (!$(".vector").html()) {
-      alertify.error('Error: No svg file detected!');
-    } else {
-      var elm = $("[data-action=hideHubs] .material-icons");
-      if (elm.text() === "check_box_outline_blank") {
-        $("[data-action=hideHubs]").click();
-      }
-      
-      var hubTitle, hubLink, hubDesc, hubSelector, hubSpeed, hubKeys;
-      hubTitle = this.textContent.replace(/\n/g, "").replace(/ /g, "");
-      hubLink = this.getAttribute("data-link");
-      hubDesc = this.getAttribute("data-description");
-      hubSelector = "svg > g";
-      hubSpeed = "1.5";
-      hubKeys = "";
-      
-      if (hubTitle === "TimelineMax") {
-        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div></div>';
-        $(this).fadeOut(400);
-        $("[data-add=hub]").removeAttr('disabled');
-      } else {
-        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ hubSelector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ hubSpeed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
-      }
-      
-      // append hub
-      $("[data-grab=hubs]").append(hubStr);
-      draggableHub();
-    }
-  }
-});
-
-// is disabled
-$("[data-disabled]").click(function(e) {
-  alertify.log('Not available in demos');
-});
-
-// delete a hub
-function deleteHub(e) {
-  $(e).parent().parent().remove();
-}
-
-// add key
-function addKey(e) {
-  if (e.hasAttribute("data-disabled")) {
-    alertify.log('Not available in demos');
-  } else {
-    var val = $(e).parent().find("input").val();
-    if (!val.replace(/ /g, "")) {
-      // alertify.error("Error: Value is empty!");
-    } else {
-      val = val.replace(/ /g, "");
-      // check if key already exists
-      var str = $(e).parent().prev().find("span").text().toLowerCase();
-      if (val === str.substr(0, str.length - 1)) {
-        alertify.error("Error: Same key detected!");
-        return false;
-      } else {
-        $(e).parent().prev().append('<div class="mdl-card__actions mdl-card--border">\n<div class="mdl-card__actions"><span>'+ val +':</span> &nbsp;\n<div class="mdl-textfield__input w100p tc" contenteditable></div>\n<div class="mdl-layout-spacer"></div>\n<button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" onClick="deleteKey(this)">\n<i class="material-icons">clear</i>\n</button>\n</div>\n</div>');
-        $(e).parent().find("input").val("");
-        $(e).parent().prev().scrollTop($(e).parent().prev().prop("scrollHeight"));
-//        $(window).scrollTop($(document).height());
-        $(e).parent().prev().find("div[contenteditable]:last").focus();
-        e.preventDefault();
-      }
-    }
-  }
-}
-function enterKey(e) {
-  // look for window.event in case event isn't passed in
-  e = e || window.event;
-  if (e.keyCode == 13) {
-    e.target.parentNode.parentNode.querySelector("[data-action=addKey]").click();
-    e.preventDefault();
-    return false;
-  }
-  return true;
-};
-
-// delete key
-function deleteKey(e) {
-  $(e).parent().parent().remove();
-}
-
-// clone a hub
-function cloneHub(e) {
-  $(e).parent().parent().clone().appendTo(".mdl-layout__content [data-grab=hubs]");
-  draggableHub();
-
-  $("[contenteditable]").blur(function(){
-    var $element = $(this);
-    if ($element.html().length && !$element.text().trim().length) {
-      $element.empty();
-    }
-  });
-}
-
-// make hub draggable
-function draggableHub() {
-  $("[data-action=draggable]").draggable({
-    handle: "[data-action=move]",
-    stack: $("[data-action=draggable]")
-  });
-}
-draggableHub();
-$("[data-grab=hubs] div").on("mousedown touchstart", function() {
-  $("[data-grab=hubs] div").css("z-index", "0");
-  $(this).css("z-index", $("[data-grab=hubs]").length);
-});
-
-// for contenteditable placeholders
-$("[contenteditable]").blur(function(){
-  var $element = $(this);
-  if ($element.html().length && !$element.text().trim().length) {
-    $element.empty();
-  }
-});
-
-// hide Hubs
-$("[data-action=hideHubs]").click(function() {
-  var elm = $("[data-action=hideHubs] > .material-icons");
-
-  if (elm.text() === "check_box") {
-    // show see through icon
-    elm.text("check_box_outline_blank");
-    
-    // hide hubs
-    $("[data-grab=hubs] > div").hide();
-  } else {
-    // reset icon
-    elm.text("check_box");
-    
-    // show hubs
-    $("[data-grab=hubs] > div").show();
-  }
-});
-
 // open/close project settings
 TweenMax.set("[data-projectSettings]", {xPercent:-50, left:"50%", yPercent:-50, top:"50%", position: "absolute"});
 $("[data-open=projectSettings]").click(function() {
@@ -745,8 +763,5 @@ $("[data-export=json]").click(function() {
   }
 });
 
-// alert the user feature is coming soon
-$("[data-action=comingsoon]").click(function() {
-  alertify.log("coming soon...");
-  return false;
-});
+// load demo
+$("[data-loadjson=bouncereveal]").click();
