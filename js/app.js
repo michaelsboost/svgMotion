@@ -20,6 +20,9 @@ $("[data-loadJSON]").on("click", function() {
   
   var JSONDemo = $(this)[0].getAttribute("data-loadJSON");
   
+  // add hash to url
+  window.location.hash = JSONDemo;
+  
   var elm = $("[data-play=animation] .material-icons");
   if (elm.text() === "stop") {
     $("[data-play=animation]").click();
@@ -65,6 +68,19 @@ $("[data-loadJSON]").on("click", function() {
     });
   }
 });
+if (window.location.hash) {
+  var str = window.location.hash;
+  str = str.substr(1, str.length);
+  if ($("[data-loadJSON=" + str + "]").is(":visible")) {
+    $("[data-loadJSON=" + str + "]").click();
+  } else {
+    var uri = window.location.toString();
+    if (uri.indexOf("#") > 0) {
+      var clean_uri = uri.substring(0, uri.indexOf("#"));
+      window.history.replaceState({}, document.title, clean_uri);
+    }
+  }
+}
 
 // project name show in document title
 $("[data-project=name]").on("keyup", function() {
