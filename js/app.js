@@ -244,6 +244,8 @@ $("[data-play=animation]").click(function() {
               $("[data-action=hideHubs]").click();
             }
             
+            $("#menu-hub-types").attr("disabled", true);
+            
             $(".vector").addClass("hide").parent().append('<div class="preloader" data-show="preloader"><svg viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div>');
 
             gifshot.createGIF({
@@ -267,7 +269,8 @@ $("[data-play=animation]").click(function() {
                 a.click();
                 
                 $("[data-show=preloader]").remove();
-                $(".vector").removeClass("hide")
+                $("#menu-hub-types").removeAttr("disabled");
+                $(".vector").removeClass("hide");
               }
             });
           };
