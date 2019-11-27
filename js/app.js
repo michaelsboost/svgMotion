@@ -409,6 +409,7 @@ function loadHubs() {
     projectName.value = loadedJSON.settings[0].name;
     projectSize[0].value = loadedJSON.settings[0].size;
     $("[data-project=fps]")[0].value = loadedJSON.settings[0].fps;
+    $("[data-project=notepad]")[0].value = loadedJSON.settings[0].notepad;
     draggableHub();
 
     // add key via enterkey
@@ -429,7 +430,9 @@ function loadHubs() {
   }
   $("[data-add=hub]").removeAttr('disabled');
   
-  $("[data-project=name]").trigger("keyup");
+  setTimeout(function() {
+    $("[data-project=name]").trigger("keyup");
+  }, 1);
 }
 function getProjectJSON() {
   projectJSON = {
@@ -437,7 +440,8 @@ function getProjectJSON() {
     "settings": [{
       "name": projectName.value,
       "size": projectSize[0].value,
-      "fps": $("[data-project=fps]")[0].value
+      "fps": $("[data-project=fps]")[0].value,
+      "notepad": $("[data-project=notepad]")[0].value
     }],
     "hubs" : []
   };

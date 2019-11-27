@@ -239,11 +239,14 @@ box-shadow: 0 0 0;
 .move {
   cursor: move;
 }
+.nomart {
+  margin-top: 0;
+}
 .nomarb {
   margin-bottom: 0;
 }
 .divfill {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
