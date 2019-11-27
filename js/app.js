@@ -85,25 +85,6 @@ function refresh() {
   })
 }
 
-// hide Hubs
-$("[data-action=hideHubs]").click(function() {
-  var elm = $("[data-action=hideHubs] > .material-icons");
-
-  if (elm.text() === "check_box") {
-    // show see through icon
-    elm.text("check_box_outline_blank");
-    
-    // hide hubs
-    $("[data-grab=hubs] > div").hide();
-  } else {
-    // reset icon
-    elm.text("check_box");
-    
-    // show hubs
-    $("[data-grab=hubs] > div").show();
-  }
-});
-
 // enable color picker
 $("[data-picker]").minicolors({
   format: "rgb",
@@ -149,6 +130,30 @@ $("[data-add=hub]").click(function(e) {
       $("[data-grab=hubs]").append(hubStr);
       draggableHub();
     }
+  }
+});
+
+// hide Hubs
+$("[data-action=hideHubs]").click(function() {
+  var elm = $("[data-action=hideHubs] > .material-icons");
+
+  if (elm.text() === "check_box") {
+    // show see through icon
+    elm.text("check_box_outline_blank");
+    
+    // hide hubs
+    $("[data-grab=hubs] > div").hide();
+  } else {
+    // If animation is running stop it
+    if ($("[data-play=animation] > .material-icons").text() === "stop") {
+      $("[data-play=animation]").click();
+    }
+    
+    // reset icon
+    elm.text("check_box");
+    
+    // show hubs
+    $("[data-grab=hubs] > div").show();
   }
 });
 
