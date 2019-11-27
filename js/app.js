@@ -405,6 +405,13 @@ function loadHubs() {
 
     // append hub
     $("[data-grab=hubs]").append(hubStr);
+
+    if (loadedJSON.MotionPathPlugin === "enabled") {
+      $("#toggleMotionPathPlugin").attr("checked", false).click();
+    } else {
+      $("#toggleMotionPathPlugin").attr("checked", true).click();
+    }
+    
     $(".vector").html(loadedJSON.svg);
     projectName.value = loadedJSON.settings[0].name;
     projectSize[0].value = loadedJSON.settings[0].size;
@@ -435,7 +442,14 @@ function loadHubs() {
   }, 1);
 }
 function getProjectJSON() {
+  if (toggleMotionPathPlugin.checked) {
+    pluginStatus = "enabled";
+  } else {
+    pluginStatus = "disabled";
+  }
+
   projectJSON = {
+    "MotionPathPlugin": pluginStatus,
     "svg": $(".vector").html(),
     "settings": [{
       "name": projectName.value,
@@ -703,6 +717,13 @@ function getCode() {
 
   // play animation
   htmlCode = $(".vector").html();
+  
+  // check if MotionPathPlugin is enabled
+  if (toggleMotionPathPlugin.checked) {
+    var placePlugin = "gsap.registerPlugin(MotionPathPlugin)\n\n";
+  } else {
+    var placePlugin = "";
+  }
 
   var hubs = document.querySelectorAll("[data-grab=hubs] > div");
   if (hubs[0].querySelector("h2").textContent != "TimelineMax") {
@@ -719,7 +740,7 @@ function getCode() {
       var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
       var codeStr = hubType + '(".vector '+ hubSelector +'", '+ hubSpeed +', { '+ hubKeys +' }, 0)\n';
     } else {
-      var codeStr = 'var tl = new TimelineMax({ '+ hubKeys +' })\n';
+      var codeStr = placePlugin + 'var tl = new TimelineMax({ '+ hubKeys +' })\n';
     }
     jsCode += codeStr;
   }
