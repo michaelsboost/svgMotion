@@ -153,6 +153,18 @@ $("[data-add=hub]").click(function(e) {
   }
 });
 
+function getAttributes(e) {
+$(e).each(function() {
+  $.each(this.attributes, function() {
+    // this.attributes is not a plain object, but an array
+    // of attribute nodes, which contain both the name and value
+    if(this.specified) {
+      console.log(this.name, this.value);
+    }
+  });
+});
+}
+
 // hide Hubs
 $("[data-action=hideHubs]").click(function() {
   var elm = $("[data-action=hideHubs] > .material-icons");
