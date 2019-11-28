@@ -209,6 +209,7 @@ $("[data-play=animation]").click(function() {
     if ($("[data-action=hideHubs] .material-icons").text() === "check_box") {
       $("[data-action=hideHubs]").click();
     }
+    $("[data-play=animation]").parent().children().not("[data-play=animation], [data-action=refresh]").attr("disabled", true);
     
     getCode();
     setTimeout(jsCode, 1);
@@ -313,6 +314,8 @@ $("[data-play=animation]").click(function() {
       processImage();
     }, 2);
   } else {
+    $("[data-play=animation]").parent().children().not("[data-play=animation], [data-action=refresh]").attr("disabled", false);
+    
     // stop animation
     // reset initial svg code
     $(".vector").html("").html(htmlCode);
