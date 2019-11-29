@@ -32,6 +32,7 @@ if (bowser.msie && bowser.version <= 6) {
   unsupportedBrowser();
 } else if(bowser.iphone || bowser.android) {
   // hello mobile
+  unsupportedBrowser();
 }
 
 // open demos
