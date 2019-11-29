@@ -239,13 +239,13 @@ box-shadow: 0 0 0;
 }
 
 /* horizontal scrollbar for smaller screens */
-.mdl-navigation {
+.mdl-layout__header-row .mdl-navigation {
   width: 100%;
   max-width: fit-content;
   white-space: nowrap;
   overflow-x: auto;
 }
-.mdl-navigation .mdl-button {
+.mdl-layout__header-row .mdl-navigation .mdl-button {
   white-space: nowrap;
 }
 
