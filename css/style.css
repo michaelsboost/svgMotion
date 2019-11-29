@@ -3,6 +3,31 @@
   font-family: Lato;
   src: url("../libraries/font-awesome/Lato-Light.ttf");
 }
+/*
+@font-face {
+  font-family: 'Roboto';
+  src: url('fonts/roboto/Roboto-Black.ttf');
+  src: url('fonts/roboto/Roboto-Bold.ttf');
+  src: url('fonts/roboto/Roboto-BoldCondensed.ttf');
+  src: url('fonts/roboto/Roboto-Condensed.ttf');
+  src: url('fonts/roboto/Roboto-Light.ttf');
+  src: url('fonts/roboto/Roboto-Medium.ttf');
+  src: url('fonts/roboto/Roboto-Regular.ttf');
+  src: url('fonts/roboto/Roboto-Thin.ttf');
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('fonts/roboto/Roboto-BlackItalic.ttf');
+  src: url('fonts/roboto/Roboto-BoldCondensedItalic.ttf');
+  src: url('fonts/roboto/Roboto-BoldItalic.ttf');
+  src: url('fonts/roboto/Roboto-CondensedItalic.ttf');
+  src: url('fonts/roboto/Roboto-Italic.ttf');
+  src: url('fonts/roboto/Roboto-LightItalic.ttf');
+  src: url('fonts/roboto/Roboto-MediumItalic.ttf');
+  src: url('fonts/roboto/Roboto-ThinItalic.ttf');
+  font-style: italic;
+}
+*/
 html, body {
 /*  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;*/
   background: #f7f7f7;
