@@ -41,16 +41,7 @@ $("[data-loadJSON]").on("click", function() {
       showCancelButton: true
     }).then((result) => {
       if (result.value) {
-        loadedJSON = JSONDemos[JSONDemo];
-        loadHubs();
-
-        $("[data-file=loaded]").fadeIn();
-        $(".vector-container > .table > .cell > h1").remove();
-
-        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-        $("[data-action=fadeOut]").fadeOut(400, function() {
-          $("[data-action=fadeOut]").remove();
-        });
+        location.reload(true);
       } else {
         return false;
       }
