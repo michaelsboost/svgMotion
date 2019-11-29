@@ -240,8 +240,7 @@ box-shadow: 0 0 0;
 
 /* horizontal scrollbar for smaller screens */
 .mdl-layout__header-row .mdl-navigation {
-  width: 100%;
-  max-width: fit-content;
+  max-width: 100%;
   white-space: nowrap;
   overflow-x: auto;
 }
