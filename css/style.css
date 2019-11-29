@@ -24,6 +24,12 @@ a, a:hover {
   vertical-align: middle;
 }
 
+/* class for selected element */
+[data-selected] {
+/*  outline: 4px dashed #34343e;*/
+  outline: 4px dotted #34343e;
+}
+
 /* import file icon color */
 .vector-container h1 {
   color: #9d9d9d;
@@ -51,6 +57,63 @@ a, a:hover {
 .vector-container svg {
   width:  100%;
   height: 100%;
+}
+
+/* selector window */
+.selectorwindow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background: #f7f7f7;
+  overflow: auto;
+}
+.selectorwindow h1 {
+  font-size: 3em;
+  text-align: left;
+  padding: 0 10px;
+  margin: 10px;
+}
+.selectorwindow h1 .mdl-button {
+  float: right;
+  transform: scale(2);
+  margin: 15px 6px;
+}
+.selectorwindow .btns {
+  margin-top: 1em;
+}
+.selectorwindow .btns .mdl-button {
+  transform: scale(3);
+  margin: 0 25px;
+}
+@media screen and (max-width: 630px) {
+  .selectorwindow h1 {
+    font-size: 2em;
+  }
+  .selectorwindow h1 .mdl-button {
+    margin: 5px 6px;
+  }
+} 
+@media screen and (max-width: 440px) {
+  .selectorwindow h1 {
+    font-size: 1em;
+  }
+  .selectorwindow h1 .mdl-button {
+    margin: -5px 0;
+    transform: scale(1);
+  }
+  .selectorwindow .btns .mdl-button {
+    transform: scale(2);
+    margin: 0 .5em;
+  }
+}
+@media screen and (max-width: 280px) {
+  .selectorwindow .btns .mdl-button {
+    transform: scale(2);
+    margin: 0 5px;
+  }
 }
 
 /* gif export preloader */
@@ -111,7 +174,8 @@ box-shadow: 0 0 0;
   background-color: transparent!important;
   box-shadow: 0 0 0 transparent!important;
 }
-.mdl-layout__header .material-icons {
+.mdl-layout__header .material-icons,
+.mdl-layout__header .fa {
   color: #9d9d9d!important;
 /*  color: #575757!important;*/
 }
@@ -238,6 +302,9 @@ box-shadow: 0 0 0;
 }
 .move {
   cursor: move;
+}
+.nomar {
+  margin: 0;
 }
 .nomart {
   margin-top: 0;

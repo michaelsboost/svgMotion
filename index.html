@@ -44,6 +44,10 @@
               <button id="menu-color-picker" class="mdl-button mdl-js-button mdl-button--icon">
                 <i class="material-icons">color_lens</i>
               </button>
+              &nbsp;
+              &nbsp;
+              <button class="mdl-button mdl-js-button mdl-button--icon" data-open="selector">
+                <i class="material-icons">mouse</i>
               </button>
               &nbsp;
               &nbsp;
@@ -229,6 +233,41 @@
           <textarea class="form__input" data-project="notepad" style="resize: vertical;" placeholder="Important notes about your project go here..."></textarea>
           
           <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="selectorwindow hide" data-selector>
+      <div class="grid">
+        <div class="grid__col--12">
+          <!-- editor navigation -->
+          <h1>Find/Make Your Selector:
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-close="selector">
+              <i class="material-icons">close</i>
+            </button>
+          </h1>
+          <hr style="margin: 0; padding: 0;">
+
+          <h2 class="headline-secondary--grouped nomar tc" data-getTag>tagName</h2>
+          
+          <div class="btns tc">
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="prev">
+              <i class="material-icons">keyboard_arrow_left</i>
+            </button>
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="parent">
+              <i class="material-icons">keyboard_arrow_up</i>
+            </button>
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="child">
+              <i class="material-icons">keyboard_arrow_down</i>
+            </button>
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="next">
+              <i class="material-icons">keyboard_arrow_right</i>
+            </button>
+          </div>
+          
+          <h2 class="headline-secondary--grouped" style="margin: 25px 0 0 0;">Class:</h2>
+          
+          <input type="text" class="form__input" data-set="class" style="background: #fff; border-radius: 0.4em; box-shadow: 0 0 0 1px #52bab3; margin-bottom: 0;" placeholder="Set/change selected element's class.">
         </div>
       </div>
     </div>

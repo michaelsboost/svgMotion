@@ -734,6 +734,136 @@ $("[data-close=projectSettings]").click(function() {
   $("[data-projectSettings]").fadeOut();
 });
 
+// open/close selector dialog
+$("[data-open=selector]").click(function() {
+  var elm = $("[data-play=animation] .material-icons");
+  if (elm.text() === "stop") {
+    $("[data-play=animation]").click();
+  }
+  elm = $("[data-action=hideHubs] .material-icons");
+  if (elm.text() === "check_box") {
+    $("[data-action=hideHubs]").click();
+  }
+  
+  $("[data-selector]").show().css({
+    "bottom": "50%"
+  });
+  $(".vector-container").css({
+    "top": "50%"
+  });
+  
+  $(".mdl-layout__container, .mdl-layout, .mdl-layout__content").hide();
+  if (!$("[data-selected]").is(":visible")) {
+    if ($("[data-set=class]").val()) {
+      $(".vector ." + $("[data-set=class]").val()).attr("data-selected", "");
+    } else {
+      $(".vector svg").find(":first").attr("data-selected", "");
+    }
+    selectionSurroundings();
+  }
+});
+$("[data-close=selector]").click(function() {
+  $("[data-selector]").hide().css({
+    "bottom": "0"
+  });
+  $(".mdl-layout__container, .mdl-layout, .mdl-layout__content").show();
+  $(".vector-container").css({
+    "top": 0
+  });
+  $(".vector [data-selected]").removeAttr("data-selected");
+});
+
+// function to see if selection has any surrounding elements
+function selectionSurroundings() {
+  // is first child
+  if ($("[data-selected]").is(":visible")) {
+    if (!$("[data-selected]").is(":first-child")) {
+      $("[data-find=prev]").prop("disabled", false);
+    } else {
+      $("[data-find=prev]").prop("disabled", true);
+    }
+
+    // is last child
+    if (!$("[data-selected]").is(":last-child")) {
+      $("[data-find=next]").prop("disabled", false);
+    } else {
+      $("[data-find=next]").prop("disabled", true);
+    }
+
+    // check parent
+    if ($("[data-selected]").parent().prop("tagName").toLowerCase() != "svg") {
+      $("[data-find=parent]").prop("disabled", false);
+    } else {
+      $("[data-find=parent]").prop("disabled", true);
+    }
+    
+    // check children
+    if ($("[data-selected]")[0].hasChildNodes()) {
+      $("[data-find=child]").prop("disabled", false);
+    } else {
+      $("[data-find=child]").prop("disabled", true);
+    }
+    
+    $("[data-getTag]").text($("[data-selected]").prop("tagName"));
+    $("[data-set=class]").val($("[data-selected]").attr("class"));
+  }
+};
+$("[data-find=prev]").click(function() {
+  $("[data-selected]").prev().addClass("svgMotion-selected");
+  $("[data-selected]").removeAttr("data-selected");
+  $(".svgMotion-selected").attr("data-selected", "").removeClass("svgMotion-selected");
+  
+  selectionSurroundings();
+});
+$("[data-find=next]").click(function() {
+  $("[data-selected]").next().addClass("svgMotion-selected");
+  $("[data-selected]").removeAttr("data-selected");
+  $(".svgMotion-selected").attr("data-selected", "").removeClass("svgMotion-selected");
+  
+  selectionSurroundings();
+});
+$("[data-find=parent]").click(function() {
+  $("[data-selected]").parent().addClass("svgMotion-selected");
+  $("[data-selected]").removeAttr("data-selected");
+  $(".svgMotion-selected").attr("data-selected", "").removeClass("svgMotion-selected");
+  
+  selectionSurroundings();
+});
+$("[data-find=child]").click(function() {
+  $("[data-selected]").children(":first").addClass("svgMotion-selected");
+  $("[data-selected]").removeAttr("data-selected");
+  $(".svgMotion-selected").attr("data-selected", "").removeClass("svgMotion-selected");
+  
+  selectionSurroundings();
+});
+
+// select vector object
+$(".vector svg").on("click", function(e) {
+  $("[data-selected]").removeAttr("data-selected");
+  $(e.target).attr("data-selected", "");
+  selectionSurroundings();
+  return false;
+});
+
+// set/change selected object's class
+$("[data-set=class]").on("keyup", function(e) {
+  if ($("[data-selected]").is(":visible")) {
+    this.value = this.value.replace(/ /g, "");
+    $("[data-selected]").attr("class", this.value);
+  } else {
+    alertify.error("Error: Selected object not found");
+  }
+});
+$("[data-set=class]").on("keydown", function(e) {
+  // classes cannot start with a number
+  if (e.which >= 48 && e.which <= 57) {
+    if (!this.value) {
+      alertify.error("Error: Classes cannot start with a number!");
+      e.preventDefault();
+    }
+  }
+});
+
 // export files
 function getCode() {
   // clear full code string
