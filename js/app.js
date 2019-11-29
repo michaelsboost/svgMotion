@@ -12,6 +12,28 @@ var projectSize = $("[data-project=size]");
 var projectFPS  = $("[data-project=fps]").val();
 var w, h, htmlCode = "", jsCode = "", projectJSON;
 
+// Detect browser support onload
+function unsupportedBrowser() {
+  alertify.log("You are using an unsupported browser!");
+  setTimeout(function() {
+    alertify.log('We recommend using <a href="https://www.google.com/chrome/" target="_blank">Google Chrome</a>');
+  }, 2000);
+}
+if (bowser.msie && bowser.version <= 6) {
+  // hello ie
+  unsupportedBrowser();
+} else if (bowser.firefox) {
+  // hello firefox
+  unsupportedBrowser();
+} else if (bowser.chrome) {
+  // hello chrome
+} else if (bowser.safari) {
+  // hello safari
+  unsupportedBrowser();
+} else if(bowser.iphone || bowser.android) {
+  // hello mobile
+}
+
 // open demos
 $("[data-loadJSON]").on("click", function() {
   if ($(".mdl-layout__obfuscator").is(":visible")) {
@@ -263,12 +285,29 @@ $("[data-play=animation]").click(function() {
                 if(!obj.error) {
                 var a = document.createElement("a");
                 a.href = obj.image;
-                var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-                if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-                  projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
-                }
-                a.download = projectname;
                 a.target = "_blank";
+                if (a.download === undefined) {
+                  // do stuff
+                } else {
+                  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+                  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+                    projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+                  }
+                  
+                  if (bowser.msie && bowser.version <= 6) {
+                    // hello ie
+                  } else if (bowser.firefox) {
+                    // hello firefox
+                    a.download = projectname + ".gif";
+                  } else if (bowser.chrome) {
+                    // hello chrome
+                    a.download = projectname + ".gif";
+                  } else if (bowser.safari) {
+                    // hello safari
+                  } else if(bowser.iphone || bowser.android) {
+                    // hello mobile
+                  }
+                }
                 a.click();
                 
                 $("[data-show=preloader]").remove();
