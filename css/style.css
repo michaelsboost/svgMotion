@@ -70,6 +70,15 @@ a, a:hover {
   background: #f7f7f7;
   overflow: auto;
 }
+.selectorwindow .attributeslist {
+  position: absolute;
+}
+.selectorwindow .attributeslist hr {
+  margin: 0;
+}
+.selectorwindow .attributeslist h2:last-child hr {
+  display: none;
+}
 .selectorwindow h1 {
   font-size: 3em;
   text-align: left;
@@ -88,31 +97,51 @@ a, a:hover {
   transform: scale(3);
   margin: 0 25px;
 }
-@media screen and (max-width: 630px) {
+@media screen and (max-width: 500px) {
   .selectorwindow h1 {
     font-size: 2em;
   }
   .selectorwindow h1 .mdl-button {
     margin: 5px 6px;
   }
-} 
-@media screen and (max-width: 440px) {
+}
+@media screen and (max-width: 400px) {
   .selectorwindow h1 {
-    font-size: 1em;
+    font-size: 2em;
   }
   .selectorwindow h1 .mdl-button {
-    margin: -5px 0;
-    transform: scale(1);
+    margin: 5px 0;
+    transform: scale(1.5);
   }
   .selectorwindow .btns .mdl-button {
     transform: scale(2);
     margin: 0 .5em;
   }
 }
-@media screen and (max-width: 280px) {
+@media screen and (max-width: 300px) {
+  .selectorwindow h1 {
+    font-size: 1.5em;
+  }
+  .selectorwindow h1 .mdl-button {
+    margin: 0;
+    transform: scale(1);
+  }
   .selectorwindow .btns .mdl-button {
     transform: scale(2);
     margin: 0 5px;
+  }
+}
+@media screen and (max-width: 250px) {
+  .selectorwindow h1 {
+    font-size: 1em;
+  }
+  .selectorwindow h1 .mdl-button {
+    margin: -6px 0;
+    transform: scale(1);
+  }
+  .selectorwindow .btns .mdl-button {
+    transform: scale(2);
+    margin: 0;
   }
 }
 
@@ -207,6 +236,17 @@ box-shadow: 0 0 0;
   transform: scale(0, 0);
   opacity: .3;
   transition: 0s;
+}
+
+/* horizontal scrollbar for smaller screens */
+.mdl-navigation {
+  width: 100%;
+  max-width: fit-content;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.mdl-navigation .mdl-button {
+  white-space: nowrap;
 }
 
 /* Header menu dropdown */

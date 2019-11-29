@@ -153,18 +153,6 @@ $("[data-add=hub]").click(function(e) {
   }
 });
 
-function getAttributes(e) {
-$(e).each(function() {
-  $.each(this.attributes, function() {
-    // this.attributes is not a plain object, but an array
-    // of attribute nodes, which contain both the name and value
-    if(this.specified) {
-      console.log(this.name, this.value);
-    }
-  });
-});
-}
-
 // hide Hubs
 $("[data-action=hideHubs]").click(function() {
   var elm = $("[data-action=hideHubs] > .material-icons");
@@ -806,6 +794,7 @@ function selectionSurroundings() {
     
     $("[data-getTag]").text($("[data-selected]").prop("tagName"));
     $("[data-set=class]").val($("[data-selected]").attr("class"));
+    getAttributes("[data-selected]");
   }
 };
 $("[data-find=prev]").click(function() {
@@ -836,6 +825,26 @@ $("[data-find=child]").click(function() {
   
   selectionSurroundings();
 });
+
+// get selected objects attributes
+function getAttributes(e) {
+  $("[data-attributes]").empty();
+  $(e).each(function() {
+    $.each(this.attributes, function() {
+      // this.attributes is not a plain object, but an array
+      // of attribute nodes, which contain both the name and value
+      if(this.specified) {
+        if (this.name === "data-selected") {
+          // don't do anything if this attribute is found, move to next
+        } else if (this.name === "class") {
+          // don't do anything if this attribute is found, move to next
+        } else {
+          $("[data-attributes]").append('<h2 class="headline-secondary--grouped nomar"><span>'+ this.name +':&nbsp;</span>\n<span>'+ this.value +'</span><hr></h2>');
+        }
+      }
+    });
+  });
+}
 
 // select vector object
 $(".vector svg").on("click", function(e) {
