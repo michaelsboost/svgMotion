@@ -284,38 +284,41 @@ $("[data-play=animation]").click(function() {
               numWorkers: 2,
               },function(obj) {
                 if(!obj.error) {
-                var a = document.createElement("a");
-                a.href = obj.image;
-                a.target = "_blank";
-                if (a.download === undefined) {
-                  // do stuff
-                } else {
-                  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-                  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-                    projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+                  var a = document.createElement("a");
+                  a.href = obj.image;
+                  a.target = "_blank";
+                  
+                  if (a.download === undefined) {
+                    // do stuff
+                  } else {
+                    var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+                    if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+                      projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+                    }
+
+                    if (bowser.msie && bowser.version <= 6) {
+                      // hello ie
+                    } else if (bowser.firefox) {
+                      // hello firefox
+                      a.download = projectname + ".gif";
+                    } else if (bowser.chrome) {
+                      // hello chrome
+                      a.download = projectname + ".gif";
+                    } else if (bowser.safari) {
+                      // hello safari
+                    } else if(bowser.iphone || bowser.android) {
+                      // hello mobile
+                    }
                   }
                   
-                  if (bowser.msie && bowser.version <= 6) {
-                    // hello ie
-                  } else if (bowser.firefox) {
-                    // hello firefox
-                    a.download = projectname + ".gif";
-                  } else if (bowser.chrome) {
-                    // hello chrome
-                    a.download = projectname + ".gif";
-                  } else if (bowser.safari) {
-                    // hello safari
-                  } else if(bowser.iphone || bowser.android) {
-                    // hello mobile
-                  }
+                  a.click();
+
+                  $("[data-show=preloader]").remove();
+                  $("#menu-hub-types").removeAttr("disabled");
+                  $(".vector").removeClass("hide");
                 }
-                a.click();
-                
-                $("[data-show=preloader]").remove();
-                $("#menu-hub-types").removeAttr("disabled");
-                $(".vector").removeClass("hide");
               }
-            });
+            );
           };
           
           // export image sequence
@@ -494,6 +497,14 @@ function loadHubs() {
   setTimeout(function() {
     $("[data-project=name]").trigger("keyup");
   }, 1);
+
+  // select vector object
+  $(".vector svg").on("click mouseup touchend", function(e) {
+    $("[data-selected]").removeAttr("data-selected");
+    $(e.target).attr("data-selected", "");
+    selectionSurroundings();
+    return false;
+  });
 }
 function getProjectJSON() {
   if (toggleMotionPathPlugin.checked) {
@@ -728,6 +739,14 @@ function imageLoaded() {
       $("[data-action=fadeOut]").remove();
     });
     $("[data-project=name]").trigger("keyup");
+    
+    // select vector object
+    $(".vector svg").on("click mouseup touchend", function(e) {
+      $("[data-selected]").removeAttr("data-selected");
+      $(e.target).attr("data-selected", "");
+      selectionSurroundings();
+      return false;
+    });
   } else {
     alertify.error("Error: No svg element detected!");
   }
@@ -887,14 +906,6 @@ function getAttributes(e) {
     });
   });
 }
-
-// select vector object
-$(".vector svg").on("click mouseup touchend", function(e) {
-  $("[data-selected]").removeAttr("data-selected");
-  $(e.target).attr("data-selected", "");
-  selectionSurroundings();
-  return false;
-});
 
 // set/change selected object's class
 $("[data-set=class]").on("keyup", function(e) {
