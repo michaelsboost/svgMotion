@@ -11,299 +11,92 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="favicon-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
-    <link rel="stylesheet" href="libraries/polyui/polyui.css" />
-    <link rel="stylesheet" href="libraries/mdl/material.min.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css" />
     <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css" />
-    <link rel="stylesheet" href="libraries/sweetalert2/sweetalert2.min.css" />
-    <link rel="stylesheet" href="libraries/jqueryminicolors/jquery.minicolors.css" />
-    <link rel="stylesheet" href="css/style.css" />
-    <!-- Material Design icon font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:500,400,300,100&amp;subset=latin,latin-ext'>
     <meta property="og:url"         content="https://michaelsboost.com/svgMotion" />
     <meta property="og:type"        content="website" />
     <meta property="og:title"       content="svgMotion" />
     <meta property="og:description" content="A vector animation tool" />
     <meta property="og:image"       content="https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/header.png" />
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: rgb(135,27,208);
+      }
+      svg {
+        width: 100%;
+      }
+      .top {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .btm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+    </style>
   </head>
   <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-          <div class="mdl-layout-spacer"></div>
-          
-          <!-- editor navigation -->
-          <nav class="mdl-navigation">
-            <span class="hide" data-file="loaded">
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="refresh" onClick="refresh()">
-                <i class="material-icons">fiber_new</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="hideHubs">
-                <i class="material-icons">check_box</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button id="menu-color-picker" class="mdl-button mdl-js-button mdl-button--icon">
-                <i class="material-icons">color_lens</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-open="selector">
-                <i class="material-icons">mouse</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button id="menu-hub-types" class="mdl-button mdl-js-button mdl-button--icon">
-                <i class="material-icons">add</i>
-              </button>
-              &nbsp;
-              &nbsp;
-              <button class="mdl-button mdl-js-button mdl-button--icon" data-play="animation">
-                <i class="material-icons">play_arrow</i>
-              </button>
-              &nbsp;
-              &nbsp;
-            </span>
-            <button id="menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
-              <i class="material-icons">more_vert</i>
-            </button>
-          </nav>
-          
-          <!-- color picker dropdown -->
-          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-color-picker" style="width: 214px; height: 200px; padding: 5px 7px;">
-            <input type="text" class="picker" data-picker value="rgba(0, 0, 0, 1)" data-opacity="1" style="color: #000; width: 207px;">
-          </ul>
-          
-          <!-- Hub types dropdown -->
-          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-hub-types">
-            <li class="mdl-menu__item" data-description="Constructor" data-link="https://greensock.com/docs/v2/TimelineMax" data-add="hub">
-              <span>
-                TimelineMax
-              </span>
-            </li>
-            <li class="mdl-menu__item">
-              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="toggleMotionPathPlugin" style="line-height: normal;">
-                <input type="checkbox" id="toggleMotionPathPlugin" class="mdl-checkbox__input">
-                <span class="pointer" style="margin-top: 3px;">MotionPathPlugin</span>
-              </label>
-            </li>
-            <li class="mdl-menu__item" disabled data-description="[static] Immediately sets properties of the target accordingly - essentially a zero-duration to() tween with a more intuitive name." data-link="https://greensock.com/docs/v2/TweenMax/static.set()" data-add="hub">
-              <span>
-                .set
-              </span>
-            </li>
-            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that tweens backwards - you define the BEGINNING values and the current values are used as the destination values which is great for doing things like animating objects onto the screen because you can set them up initially the way you want them to look at the end of the tween and then animate in from elsewhere." data-link="https://greensock.com/docs/v2/TweenMax/static.from()" data-add="hub">
-              <span>
-                .from
-              </span>
-            </li>
-            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that animates to the specified destination values (from the current values)." data-link="https://greensock.com/docs/v2/TweenMax/static.to()" data-add="hub">
-              <span>
-                .to
-              </span>
-            </li>
-          </ul>
-          
-          <!-- Top right button nav dropdown -->
-          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
-            <li class="mdl-menu__item hide" data-open="projectSettings" data-file="loaded">
-              <i class="material-icons">settings_applications</i>
-              <span>
-                Project Settings
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-call="openfile" data-file="loaded">
-              <i class="material-icons">add_a_photo</i>
-              <span>
-                Import File
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-export="json" data-file="loaded">
-              <i class="material-icons">save</i>
-              <span>
-                Export JSON
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-export="zip" data-file="loaded">
-              <i class="material-icons">save</i>
-              <span>
-                Export Zip
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-export="sequence" data-detect="animation">
-              <i class="material-icons">image</i>
-              <span>
-                Export Sequence
-              </span>
-            </li>
-            <li class="mdl-menu__item hide" data-export="gif" data-detect="animation">
-              <i class="material-icons">image</i>
-              <span>
-                Export Gif
-              </span>
-            </li>
-            <a href="https://michaelsboost.github.io/" target="_blank">
-              <li class="mdl-menu__item">
-                <i class="material-icons">flight</i>
-                <span>
-                  Developer's Website
-                </span>
-              </li>
-            </a>
-            <a href="https://github.com/michaelsboost/svgMotion" target="_blank">
-              <li class="mdl-menu__item">
-                <i class="material-icons">code</i>
-                <span>
-                  Project source code
-                </span>
-              </li>
-            </a>
-          </ul>
-        </div>
-      </header>
-      
-      <!--Menubar-->
-      <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Navigation</span>
-        <hr>
-        <nav class="mdl-navigation">
-          <a class="mdl-navigation__link ripple" href="https://greensock.com/docs/v2" target="_blank">
-            <i class="material-icons" role="presentation">library_books</i> &nbsp; GSAP Docs
+    <!-- waves -->
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMax meet" class="btm">
+      <rect x="0" y="0" width="1280" height="800" transform="matrix(1,0,0,1,0,0)" fill="rgb(135,27,208)" class="bg"></rect>
+      <g class="waves">
+        <g opacity="0.58">
+          <path d=" M 2065.833 900.635 L 1652.667 900.635 L 1652.667 900.635 L 1239.5 900.635 L 1239.5 900.635 L 826.333 900.635 L 826.333 900.635 L 413.167 900.635 L 413.167 900.635 L 413.167 900.635 L 0 900.635 L 0 666.466 L 0 666.466 C 87.657 666.466 105.578 726.281 206.583 726.281 C 307.588 726.281 325.51 666.466 413.167 666.466 L 413.167 666.466 L 413.167 666.466 L 413.167 666.466 L 413.167 666.466 C 500.824 666.466 518.745 726.281 619.75 726.281 C 720.755 726.281 738.676 666.466 826.333 666.466 L 826.333 666.466 L 826.333 666.466 C 913.99 666.466 931.912 726.281 1032.917 726.281 C 1133.922 726.281 1151.843 666.466 1239.5 666.466 L 1239.5 666.466 L 1239.5 666.466 L 1239.5 666.466 L 1239.5 666.466 C 1327.157 666.466 1345.078 726.281 1446.083 726.281 C 1547.088 726.281 1565.01 666.466 1652.667 666.466 L 1652.667 666.466 L 1652.667 666.466 C 1740.324 666.466 1758.245 726.281 1859.25 726.281 C 1960.255 726.281 1978.176 666.466 2065.833 666.466 L 2065.833 666.466 C 2153.49 666.466 2171.412 726.281 2272.417 726.281 C 2373.422 726.281 2391.343 666.466 2479 666.466 L 2479 666.466 L 2479 900.635 L 2065.833 900.635 L 2065.833 900.635 Z " fill="rgb(255,255,255)" class="wave2"></path>
+        </g>
+        <path d=" M 2634.662 1133.21 L 1739.324 1133.21 L 1739.324 1133.21 L 843.986 1133.21 L 843.986 1133.21 L -51.352 1133.21 L -51.352 1133.21 L -946.691 1133.21 L -946.691 1133.21 L -946.691 1133.21 L -1842.029 1133.21 L -1842.029 625.762 L -1842.029 625.762 C -1652.075 625.762 -1613.239 755.382 -1394.36 755.382 C -1175.48 755.382 -1136.644 625.762 -946.691 625.762 L -946.691 625.762 L -946.691 625.762 L -946.691 625.762 L -946.691 625.762 C -756.737 625.762 -717.901 755.382 -499.022 755.382 C -280.142 755.382 -241.306 625.762 -51.352 625.762 L -51.352 625.762 L -51.352 625.762 L -51.352 625.762 L -51.352 625.762 C 138.601 625.762 177.437 755.382 396.317 755.382 C 615.196 755.382 654.032 625.762 843.986 625.762 L 843.986 625.762 L 843.986 625.762 L 843.986 625.762 L 843.986 625.762 C 1033.939 625.762 1072.775 755.382 1291.655 755.382 C 1510.534 755.382 1549.37 625.762 1739.324 625.762 L 1739.324 625.762 L 1739.324 625.762 C 1929.278 625.762 1968.113 755.382 2186.993 755.382 C 2405.872 755.382 2444.708 625.762 2634.662 625.762 L 2634.662 625.762 C 2824.616 625.762 2863.451 755.382 3082.331 755.382 C 3301.21 755.382 3340.046 625.762 3530 625.762 L 3530 625.762 L 3530 1133.21 L 2634.662 1133.21 L 2634.662 1133.21 Z " fill="rgb(255,255,255)" class="wave1"></path>
+      </g>
+    </svg>
+    <!-- lines -->
+    <svg viewBox="0 0 1280 800" preserveAspectRatio="xMidYMin meet" class="top">
+      <g>
+        <g class="lines">
+          <line x1="228.815" y1="110" x2="228.815" y2="276.324" stroke-width="4" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/>
+          <line x1="365.815" y1="353.002" x2="365.815" y2="631.002" stroke-width="4" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/>
+          <line x1="127.815" y1="528.718" x2="127.815" y2="690" stroke-width="4" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/>
+          <line x1="790.815" y1="157.452" x2="790.815" y2="353.002" stroke-width="4" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/>
+          <line x1="938.815" y1="440.211" x2="938.815" y2="627" stroke-width="4" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/>
+          <line x1="1152.185" y1="110" x2="1152.185" y2="388" stroke-width="4" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/>
+        </g>
+      </g>
+    </svg>
+    <!-- rocket -->
+    <svg viewBox="0 0 132 294" preserveAspectRatio="xMidYMin meet" style="position: absolute; margin-top: 3%; height: 100%;">
+      <a href="app/">
+        <g class="rocket" transform="matrix(0.4,0,0,0.4,-190,-20.002)">
+          <path d=" M 619.6 530 C 617.8 534.2 616 538.4 616 543.2 C 616 558.2 640 578 640 578 C 640 578 664 558.2 664 543.2 C 664 538.4 662.8 533.594 660.4 530" fill="none" stroke-width="12" stroke="rgb(255,255,255)" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" class="fire" />
+          <path d="M643.708,285.284C641.534,283.574 638.472,283.574 636.298,285.284C634.486,286.706 592,320.624 592,367.4C592,390.014 598.918,451.118 603.052,487.628C604,496.004 604.774,502.844 605.314,507.77C606.502,513.698 611.5,518 617.2,518L662.8,518C668.506,518 673.504,513.698 674.746,507.38C677.836,483.92 688,394.424 688,367.4C688,320.624 645.514,286.706 643.708,285.284ZM640,386C630.059,386 622,377.941 622,368C622,358.059 630.059,350 640,350C649.941,350 658,358.059 658,368C658,377.941 649.941,386 640,386ZM593.548,510.122L593.446,509.612L593.392,509.09L591.382,491.186L591.13,488.978L588.79,468.212L575.41,484.142C574.499,485.221 574,486.588 574,488L574,512C574.004,513.952 574.957,515.781 576.555,516.902C578.153,518.024 580.196,518.299 582.034,517.64L594.436,513.176C594.1,512.174 593.758,511.178 593.548,510.122ZM704.596,484.136L691.444,468.476C689.963,481.98 688.363,495.47 686.644,508.946L686.596,509.324L686.524,509.696C686.284,510.902 685.918,512.042 685.54,513.17L697.966,517.64C699.803,518.311 701.853,518.037 703.45,516.908C705.049,515.785 706.001,513.954 706,512L706,488C706,486.59 705.502,485.222 704.596,484.136Z" style="fill:white;fill-rule:nonzero;"/>
+        </g>
+      </a>
+    </svg>
+    <!-- header -->
+    <svg viewBox="0 0 1280 230" preserveAspectRatio="xMidYMin meet" class="top">
+      <g>
+        <g class="header">
+          <g class="txt">
+            <path d=" M 385.853 172.952 L 385.853 172.952 L 385.853 172.952 Q 385.853 167.147 381.189 163.624 L 381.189 163.624 L 381.189 163.624 Q 376.526 160.102 367.133 158.113 L 367.133 158.113 L 367.133 158.113 Q 357.741 156.124 352.556 153.547 L 352.556 153.547 L 352.556 153.547 Q 347.37 150.971 344.859 147.253 L 344.859 147.253 L 344.859 147.253 Q 342.348 143.535 342.348 138.252 L 342.348 138.252 L 342.348 138.252 Q 342.348 129.903 349.327 124.457 L 349.327 124.457 L 349.327 124.457 Q 356.306 119.011 367.199 119.011 L 367.199 119.011 L 367.199 119.011 Q 379.004 119.011 386.146 124.848 L 386.146 124.848 L 386.146 124.848 Q 393.288 130.686 393.288 140.078 L 393.288 140.078 L 385.461 140.078 L 385.461 140.078 Q 385.461 133.882 380.276 129.773 L 380.276 129.773 L 380.276 129.773 Q 375.091 125.664 367.199 125.664 L 367.199 125.664 L 367.199 125.664 Q 359.502 125.664 354.839 129.088 L 354.839 129.088 L 354.839 129.088 Q 350.175 132.512 350.175 137.991 L 350.175 137.991 L 350.175 137.991 Q 350.175 143.274 354.056 146.177 L 354.056 146.177 L 354.056 146.177 Q 357.937 149.079 368.21 151.493 L 368.21 151.493 L 368.21 151.493 Q 378.482 153.906 383.603 156.645 L 383.603 156.645 L 383.603 156.645 Q 388.723 159.385 391.201 163.233 L 391.201 163.233 L 391.201 163.233 Q 393.68 167.081 393.68 172.56 L 393.68 172.56 L 393.68 172.56 Q 393.68 181.496 386.472 186.844 L 386.472 186.844 L 386.472 186.844 Q 379.265 192.193 367.655 192.193 L 367.655 192.193 L 367.655 192.193 Q 355.328 192.193 347.664 186.225 L 347.664 186.225 L 347.664 186.225 Q 340 180.257 340 171.125 L 340 171.125 L 347.827 171.125 L 347.827 171.125 Q 348.284 177.974 353.599 181.789 L 353.599 181.789 L 353.599 181.789 Q 358.915 185.605 367.655 185.605 L 367.655 185.605 L 367.655 185.605 Q 375.808 185.605 380.831 182.018 L 380.831 182.018 L 380.831 182.018 Q 385.853 178.43 385.853 172.952 Z  M 471.493 155.993 L 471.493 154.95 L 471.493 154.95 Q 471.493 138.383 478.83 128.697 L 478.83 128.697 L 478.83 128.697 Q 486.168 119.011 498.756 119.011 L 498.756 119.011 L 498.756 119.011 Q 513.171 119.011 520.672 130.49 L 520.672 130.49 L 521.063 120.315 L 528.368 120.315 L 528.368 189.453 L 528.368 189.453 Q 528.368 203.085 520.737 211.043 L 520.737 211.043 L 520.737 211.043 Q 513.106 219 500.061 219 L 500.061 219 L 500.061 219 Q 492.691 219 486.005 215.706 L 486.005 215.706 L 486.005 215.706 Q 479.319 212.412 475.471 206.933 L 475.471 206.933 L 479.841 202.237 L 479.841 202.237 Q 488.125 212.412 499.539 212.412 L 499.539 212.412 L 499.539 212.412 Q 509.323 212.412 514.802 206.64 L 514.802 206.64 L 514.802 206.64 Q 520.28 200.868 520.476 190.627 L 520.476 190.627 L 520.476 181.757 L 520.476 181.757 Q 512.975 192.193 498.626 192.193 L 498.626 192.193 L 498.626 192.193 Q 486.364 192.193 478.928 182.409 L 478.928 182.409 L 478.928 182.409 Q 471.493 172.625 471.493 155.993 L 471.493 155.993 Z  M 479.385 156.319 L 479.385 156.319 L 479.385 156.319 Q 479.385 169.821 484.798 177.615 L 484.798 177.615 L 484.798 177.615 Q 490.212 185.409 500.061 185.409 L 500.061 185.409 L 500.061 185.409 Q 514.475 185.409 520.476 172.495 L 520.476 172.495 L 520.476 139.687 L 520.476 139.687 Q 517.737 132.904 512.584 129.349 L 512.584 129.349 L 512.584 129.349 Q 507.431 125.794 500.191 125.794 L 500.191 125.794 L 500.191 125.794 Q 490.342 125.794 484.864 133.523 L 484.864 133.523 L 484.864 133.523 Q 479.385 141.252 479.385 156.319 Z  M 550.545 95.921 L 561.176 95.921 L 596.202 179.735 L 631.358 95.921 L 642.055 95.921 L 642.055 190.888 L 634.032 190.888 L 634.032 149.536 L 634.684 107.14 L 599.333 190.888 L 593.136 190.888 L 557.915 107.466 L 558.567 149.275 L 558.567 190.888 L 550.545 190.888 L 550.545 95.921 Z  M 659.991 156.124 L 659.991 154.558 L 659.991 154.558 Q 659.991 144.383 663.937 136.23 L 663.937 136.23 L 663.937 136.23 Q 667.883 128.077 675.091 123.544 L 675.091 123.544 L 675.091 123.544 Q 682.298 119.011 691.43 119.011 L 691.43 119.011 L 691.43 119.011 Q 705.518 119.011 714.258 128.892 L 714.258 128.892 L 714.258 128.892 Q 722.998 138.774 722.998 155.08 L 722.998 155.08 L 722.998 156.711 L 722.998 156.711 Q 722.998 166.951 719.052 175.137 L 719.052 175.137 L 719.052 175.137 Q 715.106 183.322 707.931 187.757 L 707.931 187.757 L 707.931 187.757 Q 700.757 192.193 691.56 192.193 L 691.56 192.193 L 691.56 192.193 Q 677.537 192.193 668.764 182.311 L 668.764 182.311 L 668.764 182.311 Q 659.991 172.43 659.991 156.124 L 659.991 156.124 Z  M 667.818 155.276 L 667.818 156.711 L 667.818 156.711 Q 667.818 169.364 674.373 177.485 L 674.373 177.485 L 674.373 177.485 Q 680.928 185.605 691.56 185.605 L 691.56 185.605 L 691.56 185.605 Q 702.126 185.605 708.681 177.485 L 708.681 177.485 L 708.681 177.485 Q 715.236 169.364 715.236 156.058 L 715.236 156.058 L 715.236 154.558 L 715.236 154.558 Q 715.236 146.47 712.236 139.752 L 712.236 139.752 L 712.236 139.752 Q 709.236 133.034 703.822 129.349 L 703.822 129.349 L 703.822 129.349 Q 698.409 125.664 691.43 125.664 L 691.43 125.664 L 691.43 125.664 Q 680.994 125.664 674.406 133.849 L 674.406 133.849 L 674.406 133.849 Q 667.818 142.035 667.818 155.276 L 667.818 155.276 Z  M 743.413 102.248 L 751.24 102.248 L 751.24 120.315 L 765.851 120.315 L 765.851 126.707 L 751.24 126.707 L 751.24 173.734 L 751.24 173.734 Q 751.24 179.604 753.36 182.474 L 753.36 182.474 L 753.36 182.474 Q 755.48 185.344 760.437 185.344 L 760.437 185.344 L 760.437 185.344 Q 762.394 185.344 766.764 184.692 L 766.764 184.692 L 767.09 191.084 L 767.09 191.084 Q 764.024 192.193 758.741 192.193 L 758.741 192.193 L 758.741 192.193 Q 750.719 192.193 747.066 187.529 L 747.066 187.529 L 747.066 187.529 Q 743.413 182.866 743.413 173.799 L 743.413 173.799 L 743.413 126.707 L 730.434 126.707 L 730.434 120.315 L 743.413 120.315 L 743.413 102.248 Z  M 790.766 120.315 L 790.766 190.888 L 782.939 190.888 L 782.939 120.315 L 790.766 120.315 Z  M 781.57 99.9 L 781.57 99.9 L 781.57 99.9 Q 781.57 97.682 783.005 96.15 L 783.005 96.15 L 783.005 96.15 Q 784.44 94.617 786.918 94.617 L 786.918 94.617 L 786.918 94.617 Q 789.397 94.617 790.864 96.15 L 790.864 96.15 L 790.864 96.15 Q 792.332 97.682 792.332 99.9 L 792.332 99.9 L 792.332 99.9 Q 792.332 102.118 790.864 103.618 L 790.864 103.618 L 790.864 103.618 Q 789.397 105.118 786.918 105.118 L 786.918 105.118 L 786.918 105.118 Q 784.44 105.118 783.005 103.618 L 783.005 103.618 L 783.005 103.618 Q 781.57 102.118 781.57 99.9 Z  M 807.66 156.124 L 807.66 154.558 L 807.66 154.558 Q 807.66 144.383 811.606 136.23 L 811.606 136.23 L 811.606 136.23 Q 815.552 128.077 822.759 123.544 L 822.759 123.544 L 822.759 123.544 Q 829.966 119.011 839.098 119.011 L 839.098 119.011 L 839.098 119.011 Q 853.186 119.011 861.926 128.892 L 861.926 128.892 L 861.926 128.892 Q 870.666 138.774 870.666 155.08 L 870.666 155.08 L 870.666 156.711 L 870.666 156.711 Q 870.666 166.951 866.72 175.137 L 866.72 175.137 L 866.72 175.137 Q 862.774 183.322 855.6 187.757 L 855.6 187.757 L 855.6 187.757 Q 848.425 192.193 839.228 192.193 L 839.228 192.193 L 839.228 192.193 Q 825.205 192.193 816.432 182.311 L 816.432 182.311 L 816.432 182.311 Q 807.66 172.43 807.66 156.124 L 807.66 156.124 Z  M 815.486 155.276 L 815.486 156.711 L 815.486 156.711 Q 815.486 169.364 822.042 177.485 L 822.042 177.485 L 822.042 177.485 Q 828.597 185.605 839.228 185.605 L 839.228 185.605 L 839.228 185.605 Q 849.795 185.605 856.35 177.485 L 856.35 177.485 L 856.35 177.485 Q 862.905 169.364 862.905 156.058 L 862.905 156.058 L 862.905 154.558 L 862.905 154.558 Q 862.905 146.47 859.904 139.752 L 859.904 139.752 L 859.904 139.752 Q 856.904 133.034 851.49 129.349 L 851.49 129.349 L 851.49 129.349 Q 846.077 125.664 839.098 125.664 L 839.098 125.664 L 839.098 125.664 Q 828.662 125.664 822.074 133.849 L 822.074 133.849 L 822.074 133.849 Q 815.486 142.035 815.486 155.276 L 815.486 155.276 Z  M 886.777 120.315 L 894.212 120.315 L 894.473 132.382 L 894.473 132.382 Q 898.452 125.859 904.387 122.435 L 904.387 122.435 L 904.387 122.435 Q 910.323 119.011 917.498 119.011 L 917.498 119.011 L 917.498 119.011 Q 928.847 119.011 934.391 125.403 L 934.391 125.403 L 934.391 125.403 Q 939.935 131.795 940 144.579 L 940 144.579 L 940 190.888 L 932.238 190.888 L 932.238 144.514 L 932.238 144.514 Q 932.173 135.056 928.227 130.425 L 928.227 130.425 L 928.227 130.425 Q 924.281 125.794 915.606 125.794 L 915.606 125.794 L 915.606 125.794 Q 908.366 125.794 902.789 130.327 L 902.789 130.327 L 902.789 130.327 Q 897.213 134.86 894.539 142.557 L 894.539 142.557 L 894.539 190.888 L 886.777 190.888 L 886.777 120.315 Z " fill="rgb(255,255,255)"></path>
+            <g class="swing">
+              <path d=" M 423.412 135.314 C 422.551 140.935 419.439 145.761 412.509 152.691 L 411.738 153.462 L 412.343 154.37 C 419.326 164.844 430.561 187.913 431.874 190.626 L 431.874 156.455 C 431.874 156.357 431.91 156.271 431.93 156.179 C 431.408 156.003 430.933 155.711 430.541 155.323 C 429.399 154.182 429.141 152.426 429.907 151.004 C 430.673 149.582 432.282 148.832 433.864 149.158 C 435.445 149.485 436.625 150.812 436.765 152.421 C 436.905 154.03 435.972 155.54 434.471 156.135 C 434.497 156.24 434.535 156.342 434.535 156.455 L 434.535 190.627 C 435.845 187.924 447.084 164.846 454.068 154.37 L 454.674 153.463 L 453.903 152.692 C 446.973 145.762 443.86 140.936 442.999 135.314 L 444.645 135.314 L 447.058 120.315 L 419.353 120.315 L 421.766 135.314 L 423.412 135.314 Z " fill="rgb(255,255,255)"></path>
+              <line x1="433" y1="135.25" x2="433" y2="-50" stroke-width="6" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"></line>
+            </g>
+          </g>
+          <a href="https://github.com/michaelsboost/svgMotion" target="_blank">
+            <rect x="1092" y="134.798" width="73.369" height="47.061" transform="matrix(1,0,0,1,0,0)" fill="rgba(255,255,255, 0)"/>
+            <path d=" M 1138.223 173.683 L 1155.097 156.808 L 1138.223 139.934 L 1143.358 134.798 L 1165.369 156.808 L 1143.358 178.819 L 1138.223 173.683 Z  M 1119.147 173.683 L 1102.272 156.808 L 1119.147 139.934 L 1114.011 134.798 L 1092 156.808 L 1114.011 178.819 L 1119.147 173.683 Z " fill="rgb(255,255,255)"></path>
           </a>
-          <a class="mdl-navigation__link ripple" href="https://greensock.com/ease-visualizer" target="_blank">
-            <i class="material-icons" role="presentation">timeline</i> &nbsp; Ease Visualizer
+          <a href="javascript:alertify.log('Tutorial coming soon...')">
+            <path d=" M 185.546 139.037 C 184.872 135.313 181.66 132.605 177.929 131.759 C 172.351 130.574 162.023 129.727 150.848 129.727 C 139.683 129.727 129.19 130.574 123.603 131.759 C 119.88 132.605 116.66 135.144 115.987 139.037 C 115.305 143.268 114.631 149.192 114.631 156.808 C 114.631 164.425 115.305 170.349 116.151 174.58 C 116.833 178.304 120.045 181.012 123.767 181.858 C 129.691 183.043 139.847 183.889 151.021 183.889 C 162.195 183.889 172.351 183.043 178.275 181.858 C 181.997 181.012 185.209 178.473 185.891 174.58 C 186.565 170.349 187.411 164.252 187.584 156.808 C 187.238 149.192 186.392 143.268 185.546 139.037 Z  M 141.712 168.656 L 141.712 144.961 L 162.361 156.808 L 141.712 168.656 Z " fill="rgb(255,255,255)"></path>
           </a>
-          <a class="mdl-navigation__link ripple" href="https://michaelsboost.github.io/donate/" target="_blank">
-            <i class="material-icons" role="presentation">favorite</i> &nbsp; Donate
-          </a>
-          <hr>
-          <a class="pointer mdl-navigation__link ripple" data-loadJSON="svgmotionbanner">
-            <i class="material-icons" role="presentation">looks</i> &nbsp; Banner
-          </a>
-          <a class="pointer mdl-navigation__link ripple" data-loadJSON="bouncereveal">
-            <i class="material-icons" role="presentation">face</i> &nbsp; Bounce Reveal
-          </a>
-          <a class="pointer mdl-navigation__link ripple" data-loadJSON="heartbeatmonitor">
-            <i class="material-icons" role="presentation">favorite</i> &nbsp; Heart Monitor
-          </a>
-          <a class="pointer mdl-navigation__link ripple" data-loadJSON="wormwalk">
-            <i class="material-icons" role="presentation">swap_horiz</i> &nbsp; Worm Walk
-          </a>
-           <a class="pointer mdl-navigation__link ripple" data-loadJSON="morphsvg">
-            <i class="material-icons" role="presentation">transfer_within_a_station</i> &nbsp; Morph SVG
-          </a>
-        </nav>
-      </div>
-      <main class="mdl-layout__content">
-        <div class="mdl-grid" data-grab="hubs"></div>
-      </main>
-    </div>
+        </g>
+      </g>
+    </svg>
     
-    <!-- svg/vector container -->
-    <div class="vector-container">
-      <div class="table">
-        <div class="cell">
-          <div class="vector" data-output="svg"></div>
-          <h1 class="ib">
-            <i class="pointer material-icons" data-call="openfile">add_a_photo</i>
-          </h1>
-        </div>
-      </div>
-    </div>
-    
-    <!-- project settings -->
-    <div class="divfill pointer projectsettingsbg hide" data-close="projectSettings"></div>
-    <div class="hide projectSettings" data-projectSettings>
-      <div class="grid">
-        <div class="grid__col--12">
-          <h2 class="headline-secondary--grouped nomarb">Project name</h2>
-          <input class="form__input" type="text" data-project="name" value="My Awesome Animation">
-
-          <div class="grid__col--6">
-            <h2 class="headline-secondary--grouped nomarb">Choose canvas size</h2>
-            <input class="form__input" type="text" data-project="size" value="800x600">
-          </div>
-
-          <div class="grid__col--6">
-            <h2 class="headline-secondary--grouped nomarb">Choose frames per second</h2>
-            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30">
-          </div>
-        </div>
-        
-        <div class="grid__col--12" style="border-top: 1px solid #e5e5e5;">
-          <h2 class="headline-secondary--grouped nomarb nomart">Notepad</h2>
-          <textarea class="form__input" data-project="notepad" style="resize: vertical;" placeholder="Important notes about your project go here..."></textarea>
-          
-          <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="selectorwindow hide" data-selector>
-      <div class="grid">
-        <div class="grid__col--12">
-          <!-- editor navigation -->
-          <h1>Selector Dialog:
-            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-close="selector">
-              <i class="material-icons">close</i>
-            </button>
-          </h1>
-          <hr style="margin: 0; padding: 0;">
-
-          <h2 class="headline-secondary--grouped nomar tc" data-getTag>tagName</h2>
-          
-          <div class="btns tc">
-            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="prev">
-              <i class="material-icons">keyboard_arrow_left</i>
-            </button>
-            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="parent">
-              <i class="material-icons">keyboard_arrow_up</i>
-            </button>
-            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="child">
-              <i class="material-icons">keyboard_arrow_down</i>
-            </button>
-            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="next">
-              <i class="material-icons">keyboard_arrow_right</i>
-            </button>
-          </div>
-          
-          <h2 class="headline-secondary--grouped" style="margin: 25px 0 0 0;">Class:</h2>
-          
-          <input type="text" class="form__input" data-set="class" style="background: #fff; border-radius: 0.4em; box-shadow: 0 0 0 1px #52bab3; margin-bottom: 0;" placeholder="Set/change selected element's class.">
-          
-          <div class="attributeslist" data-attributes></div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- load svg/json file -->
-    <div class="hide">
-      <input type="file" accept="image/svg+xml, application/json" data-input="openfile">
-    </div>
-    
-    <script src="libraries/mdl/material.min.js"></script>
     <script src="libraries/alertifyjs/alertify.min.js"></script>
-    <script src="libraries/sweetalert2/sweetalert2.min.js"></script>
-    <script src="libraries/jquery/jquery.js"></script>
-    <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
-    <script src="libraries/jqueryui/jqueryui.min.js"></script>
-    <script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"></script>
-    <script src="libraries/jqueryminicolors/jquery.minicolors.min.js"></script>
-    <script src="libraries/bowser/bowser.min.js"></script>
-    <script src="libraries/jszip/Blob.js"></script>
-    <script src="libraries/jszip/FileSaver.js"></script>
-    <script src="libraries/jszip/jszip.min.js"></script>
-    <script src="libraries/jszip/jszip-utils.js"></script>
-    <script src="libraries/gifshot/gifshot.min.js"></script>
     <script src="libraries/gsap/minified/gsap.min.js"></script>
-    <script src="libraries/gsap/minified/EasePack.min.js"></script>
-    <script src="libraries/gsap/minified/MotionPathPlugin.min.js"></script>
-    <script src="libraries/gsap/minified/TextPlugin.min.js"></script>
-    <script src="libraries/gsap/minified/CSSRulePlugin.min.js"></script>
-    <script src="js/demos.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/index.js"></script>
   </body>
 </html>
