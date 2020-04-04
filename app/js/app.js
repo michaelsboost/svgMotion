@@ -965,7 +965,7 @@ function getCode() {
   }
 }
 function saveCode(filename) {
-  JSZipUtils.getBinaryContent("zips/gsap-public.zip", function(err, data) {
+  JSZipUtils.getBinaryContent("../zips/gsap-public.zip", function(err, data) {
     if(err) {
       throw err // or handle err
     }
