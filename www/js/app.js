@@ -445,7 +445,7 @@ $("[data-play=animation]").click(function() {
                 if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
                   projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
                 }
-                savebase64AsImageFile(projectname,realData,dataType);
+                savebase64AsImageFile(projectname + '.gif',realData,dataType);
                 
 //                $("[data-show=preloader]").remove();
                 $("#menu-hub-types").removeAttr("disabled");
