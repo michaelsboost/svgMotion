@@ -1,29 +1,22 @@
-svgMotion
-===================
+# Thank you for using WebDGap!
 
-I love making vector animations but if you're on a mobile device currently there's no app out there that allows you to make tween based animations. Desktop users have [Blender](https://blender.org/), [Synfig Studio](https://www.synfig.org/), [Keyshape](https://www.keyshapeapp.com/), [After Effects](https://www.adobe.com/products/aftereffects.html). If you're on a Chromebook you have [Animatron Studio](https://www.animatron.com/studio/) and even [TweenUI](https://tweenui.com/animator/) but mobile users have been left in the dark far too long. That's why I decided to build [svgMotion](https://michaelsboost.github.io/svgMotion)!
-
-![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/screenshot.png)
-
-License
+Intro to your PhoneGap Build Export
 -------------
 
-MIT
+### File Structure
 
-Version
+**NOTICE:** This export is just a template. Structure it however you like for PhoneGap Build!
+
+ - www
+  - (your application source code)
+ - res/icon
+   - (your logo is located here for windows phone, ios, and android)
+ - logo.png
+ - config.xml
+
+**DON'T FORGET** to add `<script src="cordova.js"></script>` or `<script src="phonegap.js"></script>` into your `index.html` file  (which should be located in the `www` directory)
+
+Donate To The Project!
 -------------
 
-0.0.1
-
-Development
--------------
-
-Want to contribute? Great!
-
-You can submit a pull request or simply share the project :)
-
-Of course svgMotion is free and open source, so you can always fork the project and have fun :)
-
-[![ko-fi](https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0)](https://ko-fi.com/michaelsboost)
-
-If SVGAnimFrames was at all helpful for you. You can show your appreciation by [Donating via SquareCash](https://cash.me/$michaelsboost) and/or [PayPal](https://www.paypal.me/mikethedj4)
+If WebDGap was at all helpful for you. [Would you consider donating to the project?](https://www.paypal.com/us/cgi-bin/webscr?cmd=_flow&SESSION=JryIEtO_GiYnqlvRfV6BGnO6bAxR3JtIQif2j1z1eFYuoLkYf_XZOY6QbWe&dispatch=5885d80a13c0db1f8e263663d3faee8dcce3e160f5b9538489e17951d2c62172)

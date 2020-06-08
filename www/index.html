@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"  content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <link rel="stylesheet" href="libraries/polyui/polyui.css" />
+    <link rel="stylesheet" href="libraries/mdl/material.min.css" />
+    <link rel="stylesheet" href="css/fonts/materialicons/material-icons-mod.css" />
+    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.core.css" />
+    <link rel="stylesheet" href="libraries/alertifyjs/themes/alertify.default.css" />
+    <link rel="stylesheet" href="libraries/sweetalert2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="libraries/jqueryminicolors/jquery.minicolors.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <div class="mdl-layout-spacer"></div>
+          
+          <!-- editor navigation -->
+          <nav class="mdl-navigation">
+            <span class="hide" data-file="loaded">
+              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="refresh" onClick="refresh()">
+                <i class="material-icons">fiber_new</i>
+              </button>
+              &nbsp;
+              &nbsp;
+              <button class="mdl-button mdl-js-button mdl-button--icon" data-action="hideHubs">
+                <i class="material-icons">check_box</i>
+              </button>
+              &nbsp;
+              &nbsp;
+              <button id="menu-color-picker" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">color_lens</i>
+              </button>
+              &nbsp;
+              &nbsp;
+              <button class="mdl-button mdl-js-button mdl-button--icon" data-open="selector">
+                <i class="material-icons">mouse</i>
+              </button>
+              &nbsp;
+              &nbsp;
+              <button id="menu-hub-types" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">add</i>
+              </button>
+              &nbsp;
+              &nbsp;
+              <button class="mdl-button mdl-js-button mdl-button--icon" data-play="animation">
+                <i class="material-icons">play_arrow</i>
+              </button>
+              &nbsp;
+              &nbsp;
+            </span>
+            <button id="menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
+              <i class="material-icons">more_vert</i>
+            </button>
+          </nav>
+          
+          <!-- color picker dropdown -->
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu" for="menu-color-picker" style="width: 214px; height: 200px; padding: 5px 7px;">
+            <input type="text" class="picker" data-picker value="rgba(0, 0, 0, 1)" data-opacity="1" style="color: #000; width: 207px;">
+          </ul>
+          
+          <!-- Hub types dropdown -->
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-hub-types">
+            <li class="mdl-menu__item" data-description="Constructor" data-link="https://greensock.com/docs/v2/TimelineMax" data-add="hub">
+              <span>
+                TimelineMax
+              </span>
+            </li>
+            <li class="mdl-menu__item">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="toggleMotionPathPlugin" style="line-height: normal;">
+                <input type="checkbox" id="toggleMotionPathPlugin" class="mdl-checkbox__input">
+                <span class="pointer" style="margin-top: 3px;">MotionPathPlugin</span>
+              </label>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Immediately sets properties of the target accordingly - essentially a zero-duration to() tween with a more intuitive name." data-link="https://greensock.com/docs/v2/TweenMax/static.set()" data-add="hub">
+              <span>
+                .set
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that tweens backwards - you define the BEGINNING values and the current values are used as the destination values which is great for doing things like animating objects onto the screen because you can set them up initially the way you want them to look at the end of the tween and then animate in from elsewhere." data-link="https://greensock.com/docs/v2/TweenMax/static.from()" data-add="hub">
+              <span>
+                .from
+              </span>
+            </li>
+            <li class="mdl-menu__item" disabled data-description="[static] Static method for creating a TweenMax instance that animates to the specified destination values (from the current values)." data-link="https://greensock.com/docs/v2/TweenMax/static.to()" data-add="hub">
+              <span>
+                .to
+              </span>
+            </li>
+          </ul>
+          
+          <!-- Top right button nav dropdown -->
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="menu-lower-right">
+            <li class="mdl-menu__item hide" data-open="projectSettings" data-file="loaded">
+              <i class="material-icons">settings_applications</i>
+              <span>
+                Project Settings
+              </span>
+            </li>
+            <li class="mdl-menu__item hide" data-call="openfile" data-file="loaded">
+              <i class="material-icons">add_a_photo</i>
+              <span>
+                Import File
+              </span>
+            </li>
+            <li class="mdl-menu__item hide" data-export="json" data-file="loaded">
+              <i class="material-icons">save</i>
+              <span>
+                Export JSON
+              </span>
+            </li>
+            <li class="mdl-menu__item hide" data-export="zip" data-file="loaded">
+              <i class="material-icons">save</i>
+              <span>
+                Export Zip
+              </span>
+            </li>
+            <li class="mdl-menu__item hide" data-export="sequence" data-detect="animation">
+              <i class="material-icons">image</i>
+              <span>
+                Export Sequence
+              </span>
+            </li>
+            <li class="mdl-menu__item hide" data-export="gif" data-detect="animation">
+              <i class="material-icons">image</i>
+              <span>
+                Export Gif
+              </span>
+            </li>
+            <a href="javascript:window.open('https://michaelsboost.github.io/', '_system')">
+              <li class="mdl-menu__item">
+                <i class="material-icons">flight</i>
+                <span>
+                  Developer's Website
+                </span>
+              </li>
+            </a>
+            <a href="javascript:window.open('https://github.com/michaelsboost/svgMotion', '_system')">
+              <li class="mdl-menu__item">
+                <i class="material-icons">code</i>
+                <span>
+                  Project source code
+                </span>
+              </li>
+            </a>
+          </ul>
+        </div>
+      </header>
+      
+      <!--Menubar-->
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Navigation</span>
+        <hr>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link ripple" href="javascript:window.open('https://greensock.com/docs/v2', '_system')">
+            <i class="material-icons" role="presentation">library_books</i> &nbsp; GSAP Docs
+          </a>
+          <a class="mdl-navigation__link ripple" href="javascript:window.open('https://greensock.com/ease-visualizer', '_system')">
+            <i class="material-icons" role="presentation">timeline</i> &nbsp; Ease Visualizer
+          </a>
+          <a class="mdl-navigation__link ripple" href="javascript:window.open('https://michaelsboost.github.io/donate/', '_system')">
+            <i class="material-icons" role="presentation">favorite</i> &nbsp; Donate
+          </a>
+          <hr>
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="svgmotionbanner">
+            <i class="material-icons" role="presentation">looks</i> &nbsp; Banner
+          </a>
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="bouncereveal">
+            <i class="material-icons" role="presentation">face</i> &nbsp; Bounce Reveal
+          </a>
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="heartbeatmonitor">
+            <i class="material-icons" role="presentation">favorite</i> &nbsp; Heart Monitor
+          </a>
+          <a class="pointer mdl-navigation__link ripple" data-loadJSON="wormwalk">
+            <i class="material-icons" role="presentation">swap_horiz</i> &nbsp; Worm Walk
+          </a>
+           <a class="pointer mdl-navigation__link ripple" data-loadJSON="morphsvg">
+            <i class="material-icons" role="presentation">transfer_within_a_station</i> &nbsp; Morph SVG
+          </a>
+        </nav>
+      </div>
+      <main class="mdl-layout__content">
+        <div class="mdl-grid" data-grab="hubs"></div>
+      </main>
+    </div>
+    
+    <!-- svg/vector container -->
+    <div class="vector-container">
+      <div class="table">
+        <div class="cell">
+          <div class="vector" data-output="svg"></div>
+          <h1 class="ib">
+            <i class="pointer material-icons" data-call="openfile">add_a_photo</i>
+          </h1>
+        </div>
+      </div>
+    </div>
+    
+    <!-- project settings -->
+    <div class="divfill pointer projectsettingsbg hide" data-close="projectSettings"></div>
+    <div class="hide projectSettings" data-projectSettings>
+      <div class="grid">
+        <div class="grid__col--12">
+          <h2 class="headline-secondary--grouped nomarb">Project name</h2>
+          <input class="form__input" type="text" data-project="name" value="My Awesome Animation">
+
+          <div class="grid__col--6">
+            <h2 class="headline-secondary--grouped nomarb">Choose canvas size</h2>
+            <input class="form__input" type="text" data-project="size" value="800x600">
+          </div>
+
+          <div class="grid__col--6">
+            <h2 class="headline-secondary--grouped nomarb">Choose frames per second</h2>
+            <input class="form__input" type="number" data-project="fps" min="1" max="60" step="1" value="30">
+          </div>
+        </div>
+        
+        <div class="grid__col--12" style="border-top: 1px solid #e5e5e5;">
+          <h2 class="headline-secondary--grouped nomarb nomart">Notepad</h2>
+          <textarea class="form__input" data-project="notepad" style="resize: vertical;" placeholder="Important notes about your project go here..."></textarea>
+          
+          <button class="btn--default w100p" data-close="projectSettings">Close Dialog</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="selectorwindow hide" data-selector>
+      <div class="grid">
+        <div class="grid__col--12">
+          <!-- editor navigation -->
+          <h1>Selector Dialog:
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-close="selector">
+              <i class="material-icons">close</i>
+            </button>
+          </h1>
+          <hr style="margin: 0; padding: 0;">
+
+          <h2 class="headline-secondary--grouped nomar tc" data-getTag>tagName</h2>
+          
+          <div class="btns tc">
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="prev">
+              <i class="material-icons">keyboard_arrow_left</i>
+            </button>
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="parent">
+              <i class="material-icons">keyboard_arrow_up</i>
+            </button>
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="child">
+              <i class="material-icons">keyboard_arrow_down</i>
+            </button>
+            <button class="pointer mdl-button mdl-js-button mdl-button--icon" data-find="next">
+              <i class="material-icons">keyboard_arrow_right</i>
+            </button>
+          </div>
+          
+          <h2 class="headline-secondary--grouped" style="margin: 25px 0 0 0;">Class:</h2>
+          
+          <input type="text" class="form__input" data-set="class" style="background: #fff; border-radius: 0.4em; box-shadow: 0 0 0 1px #52bab3; margin-bottom: 0;" placeholder="Set/change selected element's class.">
+          
+          <div class="attributeslist" data-attributes></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- load svg/json file -->
+    <div class="hide">
+      <input type="file" accept="image/svg+xml, application/json" data-input="openfile">
+    </div>
+    
+    <script src="cordova.js"></script>
+    <script src="libraries/mdl/material.min.js"></script>
+    <script src="libraries/alertifyjs/alertify.min.js"></script>
+    <script src="libraries/sweetalert2/sweetalert2.min.js"></script>
+    <script src="libraries/jquery/jquery.js"></script>
+    <script src="libraries/jquery/jquery-migrate-1.2.1.min.js"></script>
+    <script src="libraries/jqueryui/jqueryui.min.js"></script>
+    <script src="libraries/jqueryui/jquery.ui.touch-punch.min.js"></script>
+    <script src="libraries/jqueryminicolors/jquery.minicolors.min.js"></script>
+    <script src="libraries/jszip/Blob.js"></script>
+    <script src="libraries/jszip/FileSaver.js"></script>
+    <script src="libraries/jszip/jszip.min.js"></script>
+    <script src="libraries/jszip/jszip-utils.js"></script>
+    <script src="libraries/gifshot/gifshot.min.js"></script>
+    <script src="libraries/gsap/minified/gsap.min.js"></script>
+    <script src="libraries/gsap/minified/EasePack.min.js"></script>
+    <script src="libraries/gsap/minified/MotionPathPlugin.min.js"></script>
+    <script src="libraries/gsap/minified/TextPlugin.min.js"></script>
+    <script src="libraries/gsap/minified/CSSRulePlugin.min.js"></script>
+    <script src="js/demos.js"></script>
+    <script src="js/phonegap-related.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
