@@ -419,17 +419,35 @@ $("[data-play=animation]").click(function() {
               numWorkers: 2,
               },function(obj) {
                 if(!obj.error) {
-                var a = document.createElement("a");
-                a.href = obj.image;
+//                var a = document.createElement("a");
+//                a.href = obj.image;
+//                var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
+//                if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+//                  projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
+//                }
+//                a.download = projectname;
+//                a.target = "_blank";
+//                a.click();
+                  
+                  
+                /** Process the type1 base64 string **/
+                // var myBase64 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                var myBase64 = obj.image;
+
+                // Split the base64 string in data and contentType
+                var block = myBase64.split(";");
+                // Get the content type
+                var dataType = block[0].split(":")[1]; // In this case "image/png"
+                // get the real base64 content of the file
+                var realData = block[1].split(",")[1]; // In this case "iVBORw0KGg...."
+
                 var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
                 if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
                   projectname = $("[data-project=name]")[0].value = "my-awesome-animation";
                 }
-                a.download = projectname;
-                a.target = "_blank";
-                a.click();
+                savebase64AsImageFile(projectname,realData,dataType);
                 
-                $("[data-show=preloader]").remove();
+//                $("[data-show=preloader]").remove();
                 $("#menu-hub-types").removeAttr("disabled");
                 $(".vector").removeClass("hide");
               }
