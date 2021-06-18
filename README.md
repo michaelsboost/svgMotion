@@ -8,7 +8,7 @@ I love making vector animations but if you're on a mobile device currently there
 Version
 -------------
 
-0.2
+0.3
 
 License
 -------------
