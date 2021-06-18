@@ -1,5 +1,5 @@
 /*
-  Version: 0.0.1
+  Version: 0.3
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
@@ -10,7 +10,7 @@
 var projectName = $("[data-project=name]")[0];
 var projectSize = $("[data-project=size]");
 var projectFPS  = $("[data-project=fps]").val();
-var w, h, htmlCode = "", jsCode = "", projectJSON;
+var w, h, htmlCode = "", jsCode = "", projectJSON, appVersion;
 
 // Detect browser support onload
 function unsupportedBrowser() {
@@ -151,12 +151,12 @@ $("[data-add=hub]").click(function(e) {
         $("[data-action=hideHubs]").click();
       }
       
-      var hubTitle, hubLink, hubDesc, hubSelector, hubSpeed, hubKeys;
+      var hubTitle, hubLink, hubDesc, hubSelector, hubTimeline, hubKeys;
       hubTitle = this.textContent.replace(/\n/g, "").replace(/ /g, "");
       hubLink = this.getAttribute("data-link");
       hubDesc = this.getAttribute("data-description");
       hubSelector = "svg > g";
-      hubSpeed = "1.5";
+      hubTimeline = "1.5";
       hubKeys = "";
       
       if (hubTitle === "TimelineMax") {
@@ -168,7 +168,7 @@ $("[data-add=hub]").click(function(e) {
         $(this).fadeOut(400);
         $("[data-add=hub]").removeAttr('disabled');
       } else {
-        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ hubSelector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ hubSpeed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
+        var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ hubTitle +'</h2>&nbsp;<a href="'+ hubLink +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ hubDesc +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ hubSelector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="timeline" min="0" value="'+ hubTimeline +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ hubKeys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
       }
       
       // append hub
@@ -457,7 +457,7 @@ function loadHubs() {
     } else if (loadedJSON.hubs[i].title === ".set") {
       var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ loadedJSON.hubs[i].title +'</h2>&nbsp;<a href="'+ loadedJSON.hubs[i].link +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ loadedJSON.hubs[i].description +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ loadedJSON.hubs[i].selector +'" data-get="selector"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ loadedJSON.hubs[i].keys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
     } else {
-      var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ loadedJSON.hubs[i].title +'</h2>&nbsp;<a href="'+ loadedJSON.hubs[i].link +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ loadedJSON.hubs[i].description +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ loadedJSON.hubs[i].selector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="speed" min="0" value="'+ loadedJSON.hubs[i].speed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ loadedJSON.hubs[i].keys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
+      var hubStr = '<div class="mdl-cell mdl-card mdl-shadow--2dp" data-action="draggable"><div class="mdl-card__title mdl-card--border move" data-action="move"><h2 class="mdl-card__title-text">'+ loadedJSON.hubs[i].title +'</h2>&nbsp;<a href="'+ loadedJSON.hubs[i].link +'" target="_blank"><i class="material-icons purple">open_in_new</i></a></div><div class="mdl-card__supporting-text mdl-card--border">'+ loadedJSON.hubs[i].description +'</div><div class="mdl-grid"><div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder=".selector" value="'+ loadedJSON.hubs[i].selector +'" data-get="selector"></div></div></div><div class="mdl-cell mdl-cell--2-col"><div class="mdl-card__actions"><div class="mdc-text-field"><input type="number" class="mdl-textfield__input number" placeholder="timeline" min="0" value="'+ loadedJSON.hubs[i].speed +'" data-get="speed"></div></div></div><hr></div><div class="keyplace" data-place="key">'+ loadedJSON.hubs[i].keys +'</div><div class="mdl-card__actions mdl-card--border"><div class="mdc-text-field"><input type="text" class="mdl-textfield__input" placeholder="x, y, fill, borderRadius..." onKeyDown="enterKey(event)"></div><div class="mdl-layout-spacer"></div><button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect" data-action="addKey" onClick="addKey(this)"><i class="material-icons">control_point</i></button></div><div class="mdl-card__menu"><button class="mdl-button mdl-button--icon" onClick="cloneHub(this)"><i class="material-icons">file_copy</i></button><button class="mdl-button mdl-button--icon" onClick="deleteHub(this)"><i class="material-icons">delete</i></button></div></div>';
     }
 
     // append hub
@@ -470,6 +470,15 @@ function loadHubs() {
     }
     
     $(".vector").html(loadedJSON.svg);
+    if (!loadedJSON.version) {
+      swal({
+        title: 'Warning!',
+        text: "This project is using a version of svgMotion that's no longer supported.",
+        type: 'warning',
+      })
+    } else {
+      appVersion = loadedJSON.version;
+    }
     projectName.value = loadedJSON.settings[0].name;
     projectSize[0].value = loadedJSON.settings[0].size;
     $("[data-project=fps]")[0].value = loadedJSON.settings[0].fps;
@@ -515,6 +524,7 @@ function getProjectJSON() {
 
   projectJSON = {
     "MotionPathPlugin": pluginStatus,
+    "version": 0.3,
     "svg": $(".vector").html(),
     "settings": [{
       "name": projectName.value,
@@ -956,8 +966,8 @@ function getCode() {
       var codeStr = hubType + '(".vector '+ hubSelector +'", { '+ hubKeys +' }, 0)\n';
     } else if (i > 0) {
       var hubSelector = hubs[i].querySelector("[data-get=selector]").value;
-      var hubSpeed = hubs[i].querySelector("[data-get=speed]").value;
-      var codeStr = hubType + '(".vector '+ hubSelector +'", '+ hubSpeed +', { '+ hubKeys +' }, 0)\n';
+      var hubTimeline = hubs[i].querySelector("[data-get=speed]").value;
+      var codeStr = hubType + '(".vector '+ hubSelector +'", { '+ hubKeys +' }, '+ hubTimeline +')\n';
     } else {
       var codeStr = placePlugin + 'var tl = new TimelineMax({ '+ hubKeys +' })\n';
     }
