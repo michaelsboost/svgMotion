@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Gravit.io -->
+
+<svg
+   style="isolation:isolate"
+   viewBox="0 0 256 256"
+   width="256pt"
+   height="256pt"
+   version="1.1"
+   id="svg1024"
+   sodipodi:docname="staggered.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1026"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="pt"
+     showgrid="false"
+     inkscape:zoom="1.4296875"
+     inkscape:cx="171.01639"
+     inkscape:cy="171.01639"
+     inkscape:window-width="1366"
+     inkscape:window-height="715"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1024" />
+  <defs
+     id="defs1014">
+    <clipPath
+       id="_clipPath_JNRn2tA9X4gov7IubtoWt6Bn1bjpgnkm">
+      <rect
+         width="256"
+         height="256"
+         id="rect1011" />
+    </clipPath>
+  </defs>
+  <path
+     d="m 34.5,65 v 0 C 53.541,65 69,80.459 69,99.5 v 109 C 69,227.541 53.541,243 34.5,243 v 0 C 15.459,243 0,227.541 0,208.5 V 99.5 C 0,80.459 15.459,65 34.5,65 Z"
+     style="fill:#b9b9b9;stroke:none;stroke-miterlimit:10;fill-opacity:1"
+     id="path1016" />
+  <path
+     d="m 221.5,65 v 0 c 19.041,0 34.5,15.459 34.5,34.5 v 109 c 0,19.041 -15.459,34.5 -34.5,34.5 v 0 C 202.459,243 187,227.541 187,208.5 V 99.5 C 187,80.459 202.459,65 221.5,65 Z"
+     style="fill:#b9b9b9;stroke:none;stroke-miterlimit:10;fill-opacity:1"
+     id="path1018" />
+  <path
+     d="m 128,8.83 v 0 c 19.041,0 34.5,15.459 34.5,34.5 v 109 c 0,19.041 -15.459,34.5 -34.5,34.5 v 0 c -19.041,0 -34.5,-15.459 -34.5,-34.5 v -109 c 0,-19.041 15.459,-34.5 34.5,-34.5 z"
+     style="fill:#b9b9b9;stroke:none;stroke-miterlimit:10;fill-opacity:1"
+     id="path1020" />
+</svg>

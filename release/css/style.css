@@ -1,0 +1,613 @@
+/*
+  Version: 0.4
+  svgMotion, copyright (c) by Michael Schwartz
+  Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
+  
+  This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
+*/
+
+/* resets */
+@font-face {
+  font-family: Lato;
+  src: url("../libraries/font-awesome/Lato-Light.ttf");
+}
+body {
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+.alertify-log {
+  text-shadow: 0 0 #000;
+}
+.alertify-log-success {
+/*  background: #1e7eeb;*/
+  background: #0ed277;
+}
+.alertify-log-error {
+  background: #ec4040;
+}
+button {
+  background: transparent;
+  border: 0;
+}
+html, body {
+  font-family: "Helvetica","Arial",sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+input[type=range] {
+  position: relative;
+  top: -4px;
+  width: calc(100vw - 210px);
+  margin-top: -3.1px;
+  background-color: transparent;
+  -webkit-appearance: none;
+}
+
+/* checkbox */
+input.checkbox {
+  position: relative;
+  margin-top: 10px;
+  -webkit-appearance: none;
+  outline: none;
+  width: 50px;
+  height: 30px;
+  border-radius: 50px;
+}
+input.checkbox:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+input.checkbox:checked:after {
+  left: 20px;
+}
+/* svg checkbox */
+svg.checkbox {
+  cursor: pointer;
+  overflow: visible;
+}
+svg.checkbox:not(.fr) {
+  position: relative;
+  top: 5px;
+}
+svg.checkbox path {
+  transform-origin: center;
+  transform: scale(1.5) translate(2px, -3px);
+  stroke: transparent!important;
+}
+
+/* Hide Arrows From Input Number */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide Arrows From Input Number */
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Project Settings */
+.settings {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1008;
+  overflow: auto;
+}
+.settings h2 {
+  line-height: 48px;
+}
+.settingsbg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+}
+.projectSettings {
+  width: 100%;
+  height: calc(100vh - 150px);
+}
+.projectSettings > div {
+  border-radius: 1em;
+  padding: 1em 2em;
+}
+.settings .minicolors-panel {
+  margin-top: -16px;
+}
+.settings .minicolors-input {
+  display: inline-block;
+  width: calc(100vw - 85vw);
+}
+.settings select {
+  display: block;
+  padding: 15px;
+  width: 100%;
+  outline: 0;
+  border: 0;
+}
+.settings .minicolors-input[data-selectioncolor] {
+  display: block;
+  padding: 25px 50px;
+  width: 100%;
+  outline: 0;
+  border: 0;
+}
+.settings .minicolors-input[data-selectioncolor] + span.minicolors-swatch {
+  top: 9px;
+  left: 9px;
+  width: 30px;
+  height: 30px;
+}
+.selectioncolor .minicolors-theme-default.minicolors {
+  width: 100%;
+  display: block;
+}
+
+/* SWAL */
+.swal2-icon {
+  font-size: initial!important;
+}
+.swal2-icon.swal2-warning,
+.swal2-icon.swal2-question {
+  font-size: inherit!important;
+  line-height: initial!important;
+}
+.swal2-icon.swal2-warning > .swal2-icon-text,
+.swal2-icon.swal2-question > .swal2-icon-text {
+  margin: auto;
+}
+.swal2-popup #swal2-content {
+  margin-top: 12px;
+}
+
+/* header */
+.header {
+  text-align: center;
+  white-space: nowrap;
+  overflow: auto;
+}
+.header a {
+  padding: 0 calc(5vw);
+}
+.header a .fa {
+  font-size: 20px;
+}
+.header a h1 {
+  display: inline;
+}
+.header .mainh > a svg,
+.header .libraryh > a svg,
+.header .keysh {
+  white-space: nowrap;
+}
+.header .keysh {
+  text-align: left;
+}
+.header .keysh > a svg {
+  transform: scale(1.5);
+}
+.header input[type=range] {
+  position: relative;
+  top: -7px;
+  width: calc(100% - 580px);
+  margin: 0;
+}
+.header .libraryh a,
+.header .keysh a {
+  padding: 0 calc(4vw);
+}
+.header .settime {
+  background: transparent;
+  border: 0;
+  font-size: 2em;
+  font-weight: bold!important;
+  font-family: "Helvetica","Arial",sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0!important;
+  padding: 0!important;
+  width: 50px;
+}
+.header {
+  user-select: none;
+  margin: 0;
+  padding: 15px 15px 8px 15px;
+}
+.header img,
+.header svg,
+[data-key=delete] svg {
+  height: 20px;
+}
+
+/* canvas */
+.canvas {
+  display: block;
+  position: absolute;
+  top: 49px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 0;
+}
+.canvas > svg {
+  width: 100%!important;
+  height: 100%!important;
+  border: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+/* layers */
+.dialog {
+  position: absolute;
+  top: 49px;
+  right: 0;
+  left: 50%;
+  bottom: 0;
+  overflow: auto;
+}
+.dialog ul:not(.minicolors-swatches) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 50px;
+}
+.librarydialog ul:not(.minicolors-swatches) {
+  overflow: auto;
+}
+.dialog.librarydialog ul li {
+  padding: 10px;
+}
+.dialog ul li.selector {
+  color: #1e7eeb;
+}
+.dialog ul li svg {
+  width: 20px;
+  height: 20px;
+}
+.dialog.props button {
+  cursor: pointer;
+  display: inline-block;
+  margin: 0;
+  padding: 10px;
+  font-size: 2em;
+}
+.dialog.props {
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+}
+ul.dialog.props {
+  bottom: 0;
+  padding-bottom: 0.5em;
+}
+.dialog ul li.footer svg {
+  width: 40px;
+  height: 30px;
+}
+.dialog.props.animpanel {
+  border: 0;
+}
+
+/* layer inputs */
+.numinhead {
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.numinhead.color {
+  height: 26px;
+}
+.numinhead[type=number] {
+  width: 50px;
+}
+.numinhead[type=text] {
+  width: 150px;
+}
+
+/* attributes */
+/* color picker */
+.props ul:not(.minicolors-swatches) {
+  background: transparent;
+}
+
+/* animation type dialog */
+.animationtype {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-content: center;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.animationtype header {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  text-align: center;
+}
+.animationtype header .wrap {
+  display: flex;
+  height: calc(50vh);
+}
+.animationtype header,
+.animationtype header svg {
+  position: relative;
+  box-sizing: border-box;
+}
+.closeanimationtype {
+  position: absolute;
+  right: 0;
+  margin: 5px 10px;
+  font-size: 3em;
+}
+.animationtype .content {
+  width: 50%;
+  height: 100%;
+  position: relative;
+  box-sizing: border-box;
+  overflow: auto;
+}
+.animationtype .definition {
+  padding: 10px;
+}
+.animationtype .footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* timeline */
+.playback {
+  width: calc(100% - 34vw);
+  text-align: right;
+}
+.dialog.animpanel {
+  user-select: none;
+  left: 0;
+  top: auto;
+  height: 55px;
+  bottom: 55px;
+}
+.dialog.animpanel ul li:not(.minicolors-swatch) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 0;
+  white-space: nowrap;
+}
+.dialog.animpanel ul li a {
+  padding: 0 calc(5vw);
+}
+.dialog.animpanel ul li svg {
+  transform: scale(1.5);
+  transform-origin: center;
+}
+.dialog.props.animpanel {
+  user-select: auto;
+  border-left: 0;
+}
+
+.dialog.animtimeline {
+  user-select: none;
+  left: 0;
+  top: auto;
+  height: 55px;
+}
+.dialog.animtimeline ul li:not(.minicolors-swatch) {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.dialog.animtimeline ul li:not(.minicolors-swatch) {
+  padding: 10px 10px;
+  white-space: nowrap;
+}
+.dialog.animtimeline .dialog.props li:not(.minicolors-swatch) {
+  padding: 17px 10px;
+}
+.dialog.animtimeline .dialog.props li:not(.tl, .minicolors-swatch) {
+  text-align: center;
+}
+.dialog.props {
+  border: 0;
+}
+.center {
+  position: fixed;
+  bottom: 0;
+  left: calc(50% - 2px);
+  width: 1px;
+  height: 55px;
+}
+.center span {
+  position: absolute;
+  left: 5px;
+  bottom: 0;
+  font-size: 10px;
+}
+.key {
+  position: relative;
+  background: none!important;
+  overflow: visible!important;
+  margin-bottom: 25px;
+  z-index: 1;
+}
+.footer {
+/*  width: calc(100vw + 100px);*/
+  width: 100%;
+}
+.timeline {
+  width: calc(100vw - 10px);
+  height: 32px;
+}
+.addkey, .delkey {
+  position: fixed;
+  bottom: 0;
+  padding: 10px 5px;
+}
+.addkey {
+  left: 0;
+}
+.delkey {
+  right: 0;
+}
+.keyframe {
+  position: absolute;
+  top: 0;
+}
+
+/* vertical center */
+.table {
+  display: table;
+  position: absolute;
+  top: 49px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.cell {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* gif export preloader */
+.preloader svg {
+  width: 100%;
+}
+.preloader tspan {
+  stroke: #666;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 5s linear alternate infinite;
+}
+@keyframes draw {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* misc */
+.defaultcur {
+  cursor: default;
+}
+.block {
+  display: block;
+}
+.ib {
+  display: inline-block;
+}
+.hide {
+  display: none;
+}
+.hidden {
+  visibility: hidden;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.pr {
+  position: absolute;
+  right: 0;
+}
+.tl {
+  text-align: left;
+}
+.tc {
+  text-align: center;
+}
+.tr {
+  text-align: right;
+}
+.pointer {
+  cursor: pointer;
+}
+.w100p {
+  width: 100%;
+}
+.w50p {
+  width: 50%;
+}
+.w25p {
+  width: 25%;
+}
+.r50p {
+  right: 50%;
+}
+.t50p {
+  top: 50%;
+}
+.b50p {
+  bottom: 50%;
+}
+.nomar {
+  margin: 0;
+}
+.nomart {
+  margin-top: 0;
+}
+.nomarb {
+  margin-bottom: 0;
+}
+.bdrn {
+  border-radius: 0;
+}
+.dialogbtn {
+  position: fixed;
+  left: 50%;
+  right: 0;
+  bottom: 0;
+}
+.scale1h {
+  transform: scale(1.5);
+}
+.scale2 {
+  transform: scale(2);
+}
+.red {
+  color: #e93657;
+}
+.stack1 {
+  position: relative;
+  z-index: 1;
+}
+.bgnone {
+  background: transparent!important;
+}
