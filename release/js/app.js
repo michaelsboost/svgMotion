@@ -443,309 +443,22 @@ function svgLoaded() {
         });
       }
     });
+    
+    origCanvas = $('.canvas').html();
+  } else {
+    alertify.error("Error: No svg element detected!");
+  }
+}
+svgLoaded();
 
-    // selectors for svg animation
-    $('[data-select]').on('click', function() {
-      $val = $(this).data('select');
+// selectors for svg animation
+$('[data-select]').on('click', function() {
+  $val = $(this).data('select');
 
-      if ($val === 'all') {
-        if (!$('[data-selected]').is(':visible')) {
-          $('[data-display=selector] li').trigger('click');
-          
-          // remember selector(s) via string
-          $str = "";
-
-          // render selector(s) in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          });
-          return false;
-        }
-        
-        // select all the same tags inside the same parent
-        $('[data-selected]').each(function() {
-          var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
-          $(this).removeAttr("data-selected").parent().find(tagNombre).attr("data-selected", "");
-        });
-        
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      } else 
-        if ($val === 'none') {
-        $('[data-display=selector] li').removeClass('selector');
-
-        // clear canvas selector(s)
-        if ($('[data-selected]').is(':visible')) {
-          $("[data-selected]").removeAttr("data-selected");
-        }
-        return false;
-      } else 
-        if ($val === 'parent') {
-        if ($('.canvas svg > [data-selected]').is(':visible')) {
-          alertify.error('Error: Cannot select higher than the svg itself.');
-          return false;
-        }
-        
-        if (!$('[data-selected]').is(':visible')) {
-          $('[data-display=selector] li').trigger('click');
-          
-          // remember selector(s) via string
-          $str = "";
-
-          // render selector(s) in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          });
-          return false;
-        }
-          
-        $('[data-display=selector] li').removeClass('selector');
-        
-        // select all the same tags inside the same parent
-        $('[data-selected]').each(function() {
-          $(this).removeAttr("data-selected").parent().attr("data-selected", "");
-        });
-        
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-        return false;
-      } else 
-        if ($val === 'next') {
-        if (!$('[data-selected]').is(':visible')) {
-          $('[data-display=selector] li').trigger('click');
-          
-          // remember selector(s) via string
-          $str = "";
-
-          // render selector(s) in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          });
-          return false;
-        }
-          
-        $('[data-display=selector] li').removeClass('selector');
-        
-        // select all the same tags inside the same parent
-        $('[data-selected]').each(function() {
-          $(this).removeAttr("data-selected").next().attr("data-selected", "");
-        });
-        
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-        return false;
-      } else 
-        if ($val === 'prev') {
-        if (!$('[data-selected]').is(':visible')) {
-          $('[data-display=selector] li').trigger('click');
-          
-          // remember selector(s) via string
-          $str = "";
-
-          // render selector(s) in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          });
-          return false;
-        }
-          
-        $('[data-display=selector] li').removeClass('selector');
-        
-        // select all the same tags inside the same parent
-        $('[data-selected]').each(function() {
-          $(this).removeAttr("data-selected").prev().attr("data-selected", "");
-        });
-        
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-        return false;
-      } else 
-        if ($val === 'even') {
-        if (!$('[data-selected]').is(':visible')) {
-          $('[data-display=selector] li:even').trigger('click');
-          
-          // remember selector(s) via string
-          $str = "";
-
-          // render selector(s) in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          });
-          return false;
-        }
-          
-        $('[data-display=selector] li').removeClass('selector');
-          
-        // select all the same tags inside the same parent
-        $('[data-selected]').each(function() {
-          var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
-          $(this).removeAttr("data-selected").parent().find(tagNombre + ":even").attr("data-selected", "");
-        });
-        
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      } else 
-        if ($val === 'odd') {
-        if (!$('[data-selected]').is(':visible')) {
-          $('[data-display=selector] li:odd').trigger('click');
-          
-          // remember selector(s) via string
-          $str = "";
-
-          // render selector(s) in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          });
-          return false;
-        }
-          
-        $('[data-display=selector] li').removeClass('selector');
-          
-        // select all the same tags inside the same parent
-        $('[data-selected]').each(function() {
-          var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
-          $(this).removeAttr("data-selected").parent().find(tagNombre + ":odd").attr("data-selected", "");
-        });
-        
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      } else 
-        if ($val === 'custom') {
-        swal({
-          title: 'Custom selector',
-          input: 'text',
-          showCancelButton: true
-        }).then((result) => {
-          if (result.value) {
-            // remove currect selection(s)
-            $('[data-display=selector] li').removeClass('selector');
-
-            // clear canvas selector(s)
-            if ($('[data-selected]').is(':visible')) {
-              $("[data-selected]").removeAttr("data-selected");
-            }
-
-            // user's custom selector
-            $elm = result.value.split(',').join(', .canvas svg > ');
-            
-            // activate selection in canvas
-            $(".canvas svg > " + $elm).each(function() {
-              $str = $(this).getPath().split(remStr).join('');
-              $(this).attr("data-selected", "");
-            });
-            
-            // activate selection in libary from canvas
-            $(".canvas svg [data-selected]").each(function() {
-              $str = $(this).getPath().split(remStr).join('');
-              $('[data-selectorlist]').each(function() {
-                if ($(this).find('span').html() === $str) {
-                  $(this).addClass('selector');
-                }
-              });
-            });
-            
-            return false;
-          }
-        });
-      } else {
-        alertify.error('Selection error');
-      }
-
-      // clear canvas selector(s)
-      if ($('[data-selected]').is(':visible')) {
-        $("[data-selected]").removeAttr("data-selected");
-      }
-
+  if ($val === 'all') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
       // remember selector(s) via string
       $str = "";
 
@@ -758,14 +471,303 @@ function svgLoaded() {
         }
         $($str).attr("data-selected", "");
       });
+      return false;
+    }
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
+      $(this).removeAttr("data-selected").parent().find(tagNombre).attr("data-selected", "");
     });
     
-    origCanvas = $('.canvas').html();
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+  } else 
+    if ($val === 'none') {
+    $('[data-display=selector] li').removeClass('selector');
+
+    // clear canvas selector(s)
+    if ($('[data-selected]').is(':visible')) {
+      $("[data-selected]").removeAttr("data-selected");
+    }
+    return false;
+  } else 
+    if ($val === 'parent') {
+    if ($('.canvas svg > [data-selected]').is(':visible')) {
+      alertify.error('Error: Cannot select higher than the svg itself.');
+      return false;
+    }
+    
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      $(this).removeAttr("data-selected").parent().attr("data-selected", "");
+      return false;
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+          return false;
+        }
+      });
+    });
+    return false;
+  } else 
+    if ($val === 'next') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      $(this).removeAttr("data-selected").next().attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+    return false;
+  } else 
+    if ($val === 'prev') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      $(this).removeAttr("data-selected").prev().attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+    return false;
+  } else 
+    if ($val === 'even') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li:even').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+      
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
+      $(this).removeAttr("data-selected").parent().find(tagNombre + ":even").attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+  } else 
+    if ($val === 'odd') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li:odd').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+      
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
+      $(this).removeAttr("data-selected").parent().find(tagNombre + ":odd").attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+  } else 
+    if ($val === 'custom') {
+    swal({
+      title: 'Custom selector',
+      input: 'text',
+      showCancelButton: true
+    }).then((result) => {
+      if (result.value) {
+        // remove currect selection(s)
+        $('[data-display=selector] li').removeClass('selector');
+
+        // clear canvas selector(s)
+        if ($('[data-selected]').is(':visible')) {
+          $("[data-selected]").removeAttr("data-selected");
+        }
+
+        // user's custom selector
+        $elm = result.value.split(',').join(', .canvas svg > ');
+        
+        // activate selection in canvas
+        $(".canvas svg > " + $elm).each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $(this).attr("data-selected", "");
+        });
+        
+        // activate selection in libary from canvas
+        $(".canvas svg [data-selected]").each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $('[data-selectorlist]').each(function() {
+            if ($(this).find('span').html() === $str) {
+              $(this).addClass('selector');
+            }
+          });
+        });
+        
+        return false;
+      }
+    });
   } else {
-    alertify.error("Error: No svg element detected!");
+    alertify.error('Selection error');
   }
-}
-svgLoaded();
+
+  // clear canvas selector(s)
+  if ($('[data-selected]').is(':visible')) {
+    $("[data-selected]").removeAttr("data-selected");
+  }
+
+  // remember selector(s) via string
+  $str = "";
+
+  // render selector(s) in canvas
+  $('[data-selectorlist].selector').each(function() {
+    if ($str === "") {
+      $str = ".canvas svg > " + $(this).find('span').text();
+    } else {
+      $str += ", .canvas svg > " + $(this).find('span').text();
+    }
+    $($str).attr("data-selected", "");
+  });
+});
 
 // load svg file on drop
 document.addEventListener("dragover", function(e) {
@@ -1026,6 +1028,14 @@ $('[data-confirm=stagger]').click(function() {
     $('[data-prop=amount]').removeClass('hide');
     $('[data-animate=amount]').val('');
   }
+
+  // if an animation property is already visible lets hide it
+  if ($('[data-show].active').is(':visible')) {
+    if (!$('.keyframe.active').is(':visible')) {
+      $('[data-show].active').removeClass('active');
+      $('[data-display=props], [data-display=props] li').addClass('hide');
+    }
+  }
 });
 $('[data-confirm=to]').click(function() {
   openAnimation();
@@ -1055,6 +1065,14 @@ $('[data-confirm=to]').click(function() {
     $('a[data-show=amount]').addClass('hide');
     $('[data-prop=amount]').addClass('hide');
     $('[data-animate=amount]').val('');
+  }
+
+  // if an animation property is already visible lets hide it
+  if ($('[data-show].active').is(':visible')) {
+    if (!$('.keyframe.active').is(':visible')) {
+      $('[data-show].active').removeClass('active');
+      $('[data-display=props], [data-display=props] li').addClass('hide');
+    }
   }
 });
 
@@ -1606,6 +1624,28 @@ $('[data-y]').click(function() {
     $(this).parent().find('[data-val]').text('0');
   }
 });
+$('[data-scalex]').click(function() {
+  $str = 'scalex';
+  if ($(this).attr('data-' + $str) === 'false') {
+    $(this).attr('data-' + $str, 'true');
+    $('[data-animate='+ $str +']').removeAttr('disabled');
+  } else {
+    $(this).attr('data-' + $str, 'false');
+    $('[data-animate='+ $str +']').val('1').attr('disabled', 'true');
+    $(this).parent().find('[data-val]').text('1');
+  }
+});
+$('[data-scaley]').click(function() {
+  $str = 'scaley';
+  if ($(this).attr('data-' + $str) === 'false') {
+    $(this).attr('data-' + $str, 'true');
+    $('[data-animate='+ $str +']').removeAttr('disabled');
+  } else {
+    $(this).attr('data-' + $str, 'false');
+    $('[data-animate='+ $str +']').val('1').attr('disabled', 'true');
+    $(this).parent().find('[data-val]').text('1');
+  }
+});
 $('[data-scale]').click(function() {
   $str = 'scale';
   if ($(this).attr('data-' + $str) === 'false') {
@@ -1909,6 +1949,8 @@ $('[data-animate]').on('change keyup', function() {
   var $array = [
     (!$('[data-animate=x]').is(':disabled') ? 'x: ' + $('[data-animate=x]').val() : ''),
     (!$('[data-animate=y]').is(':disabled') ? 'y: ' + $('[data-animate=y]').val() : ''),
+    (!$('[data-animate=scalex]').is(':disabled') ? 'scaleX: ' + $('[data-animate=scalex]').val() : ''),
+    (!$('[data-animate=scaley]').is(':disabled') ? 'scaleY: ' + $('[data-animate=scaley]').val() : ''),
     (!$('[data-animate=scale]').is(':disabled') ? 'scale: ' + $('[data-animate=scale]').val() : ''),
     (!$('[data-animate=rotation]').is(':disabled') ? 'rotation: ' + $('[data-animate=rotation]').val() : ''),
     (!$('[data-animate=transformOrigin]').is(':disabled') ? 'transformOrigin: \'' + $('[data-animate=transformOrigin]').val() + '\'' : ''),
@@ -1943,6 +1985,8 @@ $('[data-animate]').on('change keyup', function() {
     var $jsArr = [
       (!$('[data-animate=x]').is(':disabled') ? "$('[data-x=false]').trigger('click'); $('[data-animate=x]').attr('min', "+$('[data-animate=x]').attr('min')+"); $('[data-animate=x]').attr('max', "+$('[data-animate=x]').attr('max')+"); $('[data-animate=x]').val("+$('[data-animate=x]').val()+").trigger('change');\n" : ''),
       (!$('[data-animate=y]').is(':disabled') ? "$('[data-y=false]').trigger('click'); $('[data-animate=y]').attr('min', "+$('[data-animate=y]').attr('min')+"); $('[data-animate=y]').attr('max', "+$('[data-animate=y]').attr('max')+"); $('[data-animate=y]').val("+$('[data-animate=y]').val()+").trigger('change');\n" : ''),
+      (!$('[data-animate=scalex]').is(':disabled') ? "$('[data-scalex=false]').trigger('click'); $('[data-animate=scalex]').val("+$('[data-animate=scalex]').val()+").trigger('change');\n" : ''),
+      (!$('[data-animate=scaley]').is(':disabled') ? "$('[data-scaley=false]').trigger('click'); $('[data-animate=scaley]').val("+$('[data-animate=scaley]').val()+").trigger('change');\n" : ''),
       (!$('[data-animate=scale]').is(':disabled') ? "$('[data-scale=false]').trigger('click'); $('[data-animate=scale]').val("+$('[data-animate=scale]').val()+").trigger('change');\n" : ''),
       (!$('[data-animate=rotation]').is(':disabled') ? "$('[data-rotation=false]').trigger('click'); $('[data-animate=rotation]').attr('min', "+$('[data-animate=rotation]').attr('min')+"); $('[data-animate=rotation]').attr('max', "+$('[data-animate=rotation]').attr('max')+"); $('[data-animate=rotation]').val("+$('[data-animate=rotation]').val()+").trigger('change');\n" : ''),
       (!$('[data-animate=transformOrigin]').is(':disabled') ? "$('[data-transformOrigin=false]').trigger('click'); $('[data-animate=transformOrigin]').val('"+$('[data-animate=transformOrigin]').val()+"').trigger('change');\n" : ''),
@@ -1992,10 +2036,10 @@ $('[data-animate=strokeWidth], [data-animate=borderRadius], [data-animate=durati
 
   $(this).nextAll('[data-val]').text(this.value);
 });
-$('[data-animate=scale], [data-animate=opacity]').change(function() {
+$('[data-animate=scalex], [data-animate=scaley], [data-animate=scale], [data-animate=opacity]').change(function() {
   $(this).nextAll('[data-val]').text(this.value);
 });
-$('[data-x], [data-y], [data-scale], [data-rotation], [data-transformOrigin], [data-opacity], [data-fill], [data-stroke], [data-strokeWidth], [data-borderRadius], [data-ease], [data-duration], [data-delay], [data-repeat], [data-yoyo], [data-amount], [data-drawPath]').click(function() {
+$('[data-x], [data-y], [data-scalex], [data-scaley], [data-scale], [data-rotation], [data-transformOrigin], [data-opacity], [data-fill], [data-stroke], [data-strokeWidth], [data-borderRadius], [data-ease], [data-duration], [data-delay], [data-repeat], [data-yoyo], [data-amount], [data-drawPath]').click(function() {
   if ($(this).attr('data-drawpath')) {
     // selector(s) name for code
     if ($('li[data-selectorlist].selector').length === 1) {

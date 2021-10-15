@@ -75,6 +75,8 @@ svg.checkbox rect {
 }
 svg.checkbox[data-x=true] path,
 svg.checkbox[data-y=true] path,
+svg.checkbox[data-scalex=true] path,
+svg.checkbox[data-scaley=true] path,
 svg.checkbox[data-scale=true] path,
 svg.checkbox[data-rotation=true] path,
 svg.checkbox[data-transformOrigin=true] path,
@@ -96,6 +98,8 @@ svg.checkbox[data-motionpath=true] path {
 
 svg.checkbox[data-x=false] path,
 svg.checkbox[data-y=false] path,
+svg.checkbox[data-scalex=false] path,
+svg.checkbox[data-scaley=false] path,
 svg.checkbox[data-scale=false] path,
 svg.checkbox[data-rotation=false] path,
 svg.checkbox[data-transformOrigin=false] path,
