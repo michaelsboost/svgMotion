@@ -1,7 +1,7 @@
 svgMotion
 ===================
 
-I love making vector animations but finding an app to make vector animations on a phone simply didn't exist. Desktop users have [Blender](https://blender.org/), [Synfig Studio](https://www.synfig.org/), [Keyshape](https://www.keyshapeapp.com/), [After Effects](https://www.adobe.com/products/aftereffects.html). If you're on a Chromebook you have [Animatron Studio](https://www.animatron.com/studio/) and even [TweenUI](https://tweenui.com/animator/) but mobile users have been left in the dark far too long. That's why I decided to build [svgMotion](https://michaelsboost.github.io/svgMotion)!
+I love making vector animations but finding an app to make vector animations on a phone simply didn't exist. Desktop users have [Blender](https://blender.org/), [Synfig Studio](https://www.synfig.org/), [Keyshape](https://www.keyshapeapp.com/), [After Effects](https://www.adobe.com/products/aftereffects.html). If you're on a Chromebook you have [Animatron Studio](https://www.animatron.com/studio/), [TweenUI](https://tweenui.com/animator/), [Wick Editor](https://www.wickeditor.com/), and even [Expressive Animator](https://www.expressivesuite.com/) but mobile users have been left in the dark far too long. That's why I decided to build [svgMotion](https://michaelsboost.github.io/svgMotion)!
 
 ![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/screenshot.png)
 
