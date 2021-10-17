@@ -907,8 +907,8 @@ $('[data-trigger]').on('click', function() {
 // open/close animation type dialog
 $('[data-close=animationtype]').click(function() {
   $(this).parent().addClass('hidden');
-  tl.restart();
-  tl.pause();
+  anim.restart();
+  anim.pause();
 });
 $('[data-open=animationtype]').click(function() {
   if ($('li[data-selectorlist].selector').length === 0) {
@@ -926,10 +926,11 @@ $('[data-open=animationtype]').click(function() {
 //      } else {
 ////        $('[data-open=editpath]').addClass('hide');
 //      }
+
     } else {
       $('[data-dialog=animationtype]').removeClass('hidden');
 //      $('[data-open=editpath]').addClass('hide');
-      tl.play();
+      anim.play();
     }
   }
 });
@@ -1104,6 +1105,11 @@ $('[data-open=keys]').click(function() {
 });
 // back to library
 $('[data-backto=library]').click(function() {
+  // is animation playing?
+  if ($('[data-playit=stop]').is(':visible')) {
+    $('[data-playit=stop]').trigger('click');
+  }
+
   $('.dialog').not('.animationtype').addClass('hide');
   $('.dialog.librarydialog').removeClass('hide');
   $('.libraryh').removeClass('hide');
@@ -1164,6 +1170,11 @@ $('[data-backto=library]').click(function() {
 });
 // close keys entirely
 $('[data-close=keys]').click(function() {
+  // is animation playing?
+  if ($('[data-playit=stop]').is(':visible')) {
+    $('[data-playit=stop]').trigger('click');
+  }
+  
   $('.dialog').not('.animationtype').addClass('hide');
   $('.canvas').removeClass('r50p');
   $('.mainh').removeClass('hide');
@@ -2053,10 +2064,8 @@ $('[data-x], [data-y], [data-scalex], [data-scaley], [data-scale], [data-rotatio
 });
 
 // initate animation type animations
-var tl = new TimelineMax({
-  repeat: -1
-});
-tl.to("[data-animationtype=stagger] g", {
+var anim = gsap.timeline({repeat:-1});
+anim.to("[data-animationtype=stagger] g", {
   duration: 1,
   scale: 0.1,
   transformOrigin: "50% 50%",
@@ -2065,27 +2074,27 @@ tl.to("[data-animationtype=stagger] g", {
     amount: 1.5
   }
 }, 0);
-tl.to("[data-animationtype=stagger] g", {
+anim.to("[data-animationtype=stagger] g", {
   duration: 1,
   scale: 1,
   stagger: {
     amount: 1.5
   }
 }, 2.5);
-tl.to("[data-animationtype=to] g", {
+anim.to("[data-animationtype=to] g", {
   duration: 1,
   scale: 0.1,
   transformOrigin: "50% 50%",
   ease: "none"
 }, 0);
-tl.to("[data-animationtype=to] g", {
+anim.to("[data-animationtype=to] g", {
   duration: 1,
   scale: 1,
   transformOrigin: "50% 50%",
   ease: "none"
 }, 2);
-tl.restart();
-tl.pause();
+anim.restart();
+anim.pause();
 
 // alert user for coming soon
 $('[data-comingsoon]').click(function() {
