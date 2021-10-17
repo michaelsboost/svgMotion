@@ -1587,7 +1587,7 @@ $('[data-play=lastframe]').click(function() {
 });
 
 // show/hide key values
-$('[data-show').on('click', function() {
+$('[data-show]').on('click', function() {
   // user can only edit if there's an active keyframe
   if ($('.keyframe.active').is(':visible')) {
     $this = $(this).attr('data-show');
@@ -1595,11 +1595,11 @@ $('[data-show').on('click', function() {
 
     // first detect if active is visible
     if ($('[data-props='+ $this +']').is(':visible')) {
-      $('[data-show').removeClass('active');
+      $('[data-show]').removeClass('active');
       $('[data-display=props], [data-props]').addClass('hide');
       $('.playback').removeClass('hide');
     } else {
-      $('[data-show').removeClass('active');
+      $('[data-show]').removeClass('active');
       $(this).addClass('active');
       $('[data-props]').addClass('hide');
       $('[data-display=props]').removeClass('hide');
