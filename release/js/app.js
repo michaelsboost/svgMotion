@@ -1116,6 +1116,7 @@ $('[data-backto=library]').click(function() {
   $('.keysh').addClass('hide');
   $('[data-open=animationtype]').removeClass('hide');
   $('[data-open=animationtype]').text('animate');
+  $('.canvas svg').html(origSVG);
   $('.canvas').removeClass('hide').addClass('r50p').css('bottom', '0');
   $('.keyframe.active').removeClass('active');
   $('[data-selected]').removeAttr('style');
@@ -1180,6 +1181,7 @@ $('[data-close=keys]').click(function() {
   $('.mainh').removeClass('hide');
   $('[data-open=animationtype]').removeClass('hide');
   $('.librarydialog, .libraryh, .keysh').addClass('hide');
+  $('.canvas svg').html(origSVG);
   $('.canvas').removeClass('hide').css('bottom', '0');
   $('.keyframe.active').removeClass('active');
   
