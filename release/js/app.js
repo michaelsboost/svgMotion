@@ -6,11 +6,10 @@
   This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
 */
 
-var $arr, $array, $str, $elm, $this, $sel, $val, $valz, $code, $start, $num, origCanvas,
+var $arr, $array, $str, $elm, $this, $sel, $val, $valz, $code, $start, $num, origCanvas, origSVG,
     $version    = 0.4,
     codeStr     = "",
     remStr      = "html > body > div:nth-child(3) > svg > ",
-    origSVG     = $('.canvas svg').html(),
     projectJSON = "";
 
 // initiate new project
@@ -447,6 +446,7 @@ function svgLoaded() {
     });
     
     origCanvas = $('.canvas').html();
+    origSVG = $('.canvas svg').html();
   } else {
     alertify.error("Error: No svg element detected!");
   }
