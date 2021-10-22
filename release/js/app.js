@@ -2082,9 +2082,38 @@ $('[data-animate]').on('change keyup', function() {
     return el != '';
   });
   
+  var $arrayNoDur = [
+    (!$('[data-animate=x]').is(':disabled') ? 'x: ' + $('[data-animate=x]').val() : ''),
+    (!$('[data-animate=y]').is(':disabled') ? 'y: ' + $('[data-animate=y]').val() : ''),
+    (!$('[data-animate=scalex]').is(':disabled') ? 'scaleX: ' + $('[data-animate=scalex]').val() : ''),
+    (!$('[data-animate=scaley]').is(':disabled') ? 'scaleY: ' + $('[data-animate=scaley]').val() : ''),
+    (!$('[data-animate=scale]').is(':disabled') ? 'scale: ' + $('[data-animate=scale]').val() : ''),
+    (!$('[data-animate=rotation]').is(':disabled') ? 'rotation: ' + $('[data-animate=rotation]').val() : ''),
+    (!$('[data-animate=transformOrigin]').is(':disabled') ? 'transformOrigin: \'' + $('[data-animate=transformOrigin]').val() + '\'' : ''),
+    (!$('[data-animate=opacity]').is(':disabled') ? 'opacity: ' + $('[data-animate=opacity]').val() : ''),
+    (!$('[data-animate=fill]').is(':disabled') ? 'fill: \'' + $('[data-animate=fill]').val() + '\'' : ''),
+    (!$('[data-animate=stroke]').is(':disabled') ? 'stroke: \'' + $('[data-animate=stroke]').val() + '\'' : ''),
+    (!$('[data-animate=strokeWidth]').is(':disabled') ? 'strokeWidth: ' + $('[data-animate=strokeWidth]').val() : ''),
+    (!$('[data-animate=borderRadius]').is(':disabled') ? 'borderRadius: ' + $('[data-animate=borderRadius]').val() : ''),
+    (!$('[data-animate=ease]').is(':disabled') ? 'ease: \'' + $('[data-animate=ease]').val() + $('[data-animate=easetype]').val() + '\'' : ''),
+    (!$('[data-animate=amount]').is(':disabled') ? 'stagger: { amount: '+ $('[data-animate=amount]').val() +' }' : ''),
+    (!$('[data-animate=delay]').is(':disabled') ? 'delay: ' + $('[data-animate=delay]').val() : ''),
+    (!$('[data-animate=repeat]').is(':disabled') ? 'repeat: ' + $('[data-animate=repeat]').val() : ''),
+    (!$('[data-animate=yoyo]').is(':disabled') ? 'yoyo: ' + $('[data-animate=yoyo]').val() : ''),
+    (!$('[data-animate=drawPath]').is(':disabled') ? 'duration: 0, strokeDasharray: document.querySelector(\''+ $sel +'\').getTotalLength() + "," + document.querySelector(\''+ $sel +'\').getTotalLength(), strokeDashoffset: document.querySelector(\''+ $sel +'\').getTotalLength()' : ''),
+    (!$('[data-animate=motionPath]').is(':disabled') ? 'motionPath: {path: "'+ $('[data-animate=motionPath]').val() +'"}' : '')
+  ];
+  $arrayNoDur = $arrayNoDur.filter(function(el) {
+    return el != '';
+  });
+  
   // detect if it's 1 selector or an array of selectors
   if ($('li[data-selectorlist].selector').length === 1) {
-    codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')' + (!$('[data-animate=drawPath]').is(':disabled') ? '.to(\''+ $sel +'\', {strokeDashoffset: 0, duration: '+ $('[data-animate=drawPath]').val() +'}, ' + $('.defaultcur').text() +')' : '');
+    if (!$('[data-animate=drawPath]').is(':disabled')) {
+      codeStr = '.to(\''+ $sel +'\', { '+ $arrayNoDur +' }, 0.0)' + (!$('[data-animate=drawPath]').is(':disabled') ? '.to(\''+ $sel +'\', {strokeDashoffset: 0, duration: '+ $('[data-animate=duration]').val() +'}, ' + $('.defaultcur').text() +')' : '');
+    } else {
+      codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
+    }
   } else {
     codeStr = '.to(\''+ $arr.join().replace(/,/g, ', ') +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
   }
