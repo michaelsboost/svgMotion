@@ -6,7 +6,7 @@
   This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
 */
 
-var $arr, $array, $str, $elm, $this, $sel, $val, $valz, $code, $start, $num, origCanvas, origSVG,
+var $arr, $array, $str, $elm, $this, $sel, $val, $valz, $code, $start, $num, origCanvas,
     $version    = 0.4,
     codeStr     = "",
     remStr      = "html > body > div:nth-child(3) > svg > ",
@@ -46,7 +46,7 @@ $('[data-project=new]').on("click", function() {
 function getProjectJSON() {
   projectJSON = {
     "version": 0.4,
-    "svg": $(".canvas").html(),
+    "svg": origCanvas,
     "keys": $("[data-keys]").html(),
     "groups": $("[data-groups] ul").html(),
     "settings": [{
@@ -446,7 +446,6 @@ function svgLoaded() {
     });
     
     origCanvas = $('.canvas').html();
-    origSVG = $('.canvas svg').html();
   } else {
     alertify.error("Error: No svg element detected!");
   }
@@ -1118,7 +1117,7 @@ $('[data-backto=library]').click(function() {
   $('.keysh').addClass('hide');
   $('[data-open=animationtype]').removeClass('hide');
   $('[data-open=animationtype]').text('animate');
-  $('.canvas svg').html(origSVG);
+  $('.canvas').empty().append(origCanvas);
   $('.canvas').removeClass('hide').addClass('r50p').css('bottom', '0');
   $('.keyframe.active').removeClass('active');
   $('[data-selected]').removeAttr('style');
@@ -1183,7 +1182,7 @@ $('[data-close=keys]').click(function() {
   $('.mainh').removeClass('hide');
   $('[data-open=animationtype]').removeClass('hide');
   $('.librarydialog, .libraryh, .keysh').addClass('hide');
-  $('.canvas svg').html(origSVG);
+  $('.canvas').empty().append(origCanvas);
   $('.canvas').removeClass('hide').css('bottom', '0');
   $('.keyframe.active').removeClass('active');
   
