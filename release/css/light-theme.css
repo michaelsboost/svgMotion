@@ -297,6 +297,9 @@ select, select option {
 .closeanimationtype i {
   color: #fff;
 }
+.projectSettings a {
+  color: #999da1;
+}
 
 /* borders */
 .header {

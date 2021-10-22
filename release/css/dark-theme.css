@@ -293,6 +293,9 @@ select, select option {
 .dialog.animpanel line, .dialog.animpanel path {
   stroke: #b9b9b9;
 }
+.projectSettings a {
+  color: #999da1;
+}
 
 /* borders */
 .header {

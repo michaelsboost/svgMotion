@@ -49,6 +49,7 @@ function getProjectJSON() {
     "version": 0.4,
     "svg": $(".canvas").html(),
     "keys": $("[data-keys]").html(),
+    "groups": $("[data-groups] ul").html(),
     "settings": [{
       "theme": $('[data-theme]').attr('data-theme'),
       "name": $('[data-project=name]').val(),
@@ -125,6 +126,7 @@ function loadJSON() {
   $(".canvas, [data-keys], [data-display=selector]").html('');
   $(".canvas").html(loadedJSON.svg);
   $("[data-keys]").html(loadedJSON.keys);
+  $("[data-groups] ul").html(loadedJSON.groups);
     
   if (!loadedJSON.version) {
     swal({
@@ -1308,6 +1310,38 @@ footer.addEventListener('touchend', function(e) {
   footer.removeEventListener("touchmove", getPos);
 }, false);
 
+// animation groups
+$('[data-open=groups]').click(function() {
+  $('[data-groups]').removeClass('hide');
+});
+TweenMax.set("[data-projectGroups]", {xPercent:-50, left:"50%", yPercent:-50, top:"50%", position: "absolute"});
+$("[data-toggle=projectGroups]").click(function() {
+  $("[data-groups]").fadeToggle();
+});
+
+// group triggered
+function triggerGroup(e) {
+  var $sel = $(e).parent().find('div').text();
+  
+  // if keyframe is active deactivate it
+  if ($('.keyframe.active').is(':visible')) {
+    $('.keyframe.active').trigger('click')
+  }
+  
+  $('[data-toggle=projectGroups]').eq(0).trigger('click');
+  $('[data-backto=library]').trigger('click');
+  $('[data-select=none]').trigger('click');
+  
+  $('[data-selectorlist] span').filter(function() {
+    if ($(this).text() === $sel) {
+      $(this).parent().trigger('click');
+      $('[data-open=animationtype]').trigger('click');
+    } else {
+      return false;
+    }
+  });
+}
+
 // timeline playback
 function getCode() {
   // javascript
@@ -1899,6 +1933,7 @@ function toggleKey(e) {
   
       // clear inputs when class is not active
       $('[data-x=true], [data-y=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
+      $('[data-change=keylocation]').addClass('hide');
     } else {
       $('.keyframe.active').removeClass('active');
   
@@ -1908,6 +1943,7 @@ function toggleKey(e) {
       $(e).addClass('active');
       setTimeout($(e).find('[data-js]').val(), 1);
 //      $('[data-open=editpath]').removeClass('hide');
+      $('[data-change=keylocation]').removeClass('hide');
     }
   } else {
     // clear inputs when class is not active
@@ -1916,6 +1952,7 @@ function toggleKey(e) {
     $(e).addClass('active');
     setTimeout($(e).find('[data-js]').val(), 1);
 //    $('[data-open=editpath]').removeClass('hide');
+    $('[data-change=keylocation]').removeClass('hide');
   }
 }
 $('[data-key=add]').click(function() {
@@ -1929,18 +1966,78 @@ $('[data-key=add]').click(function() {
   if (!$val) {
     $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: -19px;"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
   } else {
-    $('.keyframe.active').removeClass('active');
-    $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: calc('+ parseFloat($('[data-keys]').css('margin-left')).toString().substr(1) +'px - 19px);"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
+    if ($('.defaultcur').text() === '0.0') {
+      $('.keyframe.active').removeClass('active');
+      $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: -19px;"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
+    } else {
+      $('.keyframe.active').removeClass('active');
+      $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: calc('+ parseFloat($('[data-keys]').css('margin-left')).toString().substr(1) +'px - 19px);"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
+    }
+    
+    // append key to groups (only if this selector doesn't exist)
+    $('[data-groups] ul').filter(function() {
+      if ($(this).find('div').text() != $sel) {
+        $('[data-groups] ul').append('<li><span contenteditable>'+ $sel +'</span><div class="hide">'+ $sel +'</div><a class="fr" onclick="triggerGroup(this)"><i class="fa fa-external-link-square-alt"></i></a></li>');
+      }
+    });
   }
 //  $('[data-open=editpath]').removeClass('hide');
 });
 $('[data-key=delete]').click(function() {
   if ($('.keyframe.active').is(':visible')) {
+    
+    // detect if last keyframe for group. If so delete the last group before we delete the last keyframe
+    $('.keyframe span').filter(function() {
+      if ($(this).text() === $sel) {
+        // only 1 of these selectors is visible
+        if ($(this).length >= 1) {
+          $('[data-groups] div').filter(function() {
+            if ($(this).text() === $sel) {
+              // group removed
+              $(this).parent().remove();
+            }
+          });
+        }
+      }
+    });
+    
     $('.keyframe.active').remove();
+    $('[data-change=keylocation]').addClass('hide');
 //    $('[data-open=editpath]').addClass('hide');
     updatePreview();
   } else {
     alertify.error('Error: Cannot Delete! No keyframe selected!');
+    return false;
+  }
+});
+
+// update keyframe location
+$('[data-change=keylocation]').click(function() {
+  if ($('.keyframe.active').is(':visible')) {
+    swal({
+      title: 'Change Keyframe Location',
+      input: 'number',
+      showCancelButton: true
+    }).then((result) => {
+      if (result.value) {
+        if (parseFloat(result.value) === 0) {
+          $('[data-keys]').css('margin-left', 0);
+          $('.keyframe.active .key').css('margin-left', '-19px');
+          $('.keyframe.active').attr('data-timeline', result.value.toString().split('.').join('_'));
+          $('.defaultcur').text('0.0')
+        } else {
+          $('[data-keys]').css('margin-left', '-' + parseFloat(parseFloat(result.value) * 100 + 19).toFixed(0) + 'px');
+          $('.keyframe.active .key').css('margin-left', 'calc('+ parseFloat('-' + parseFloat(parseFloat(result.value) * 100 + 19).toFixed(0)).toString().substr(1) +'px - 19px)');
+          $('.keyframe.active').attr('data-timeline', result.value.toString().split('.').join('_'));
+          $('.defaultcur').text(parseFloat(result.value).toFixed(1))
+        }
+        $('[data-animate]').trigger('change');
+      } else {
+        alertify.error('Operation Cancelled: No value set!');
+      }
+    });
+  } else {
+    alertify.error('Error: No keyframe selected!');
   }
 });
 

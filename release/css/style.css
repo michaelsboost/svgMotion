@@ -388,7 +388,7 @@ ul.dialog.props {
 
 /* timeline */
 .playback {
-  width: calc(100% - 34vw);
+  width: calc(100% - 40vw);
   text-align: right;
 }
 .dialog.animpanel {
@@ -576,6 +576,9 @@ ul.dialog.props {
 }
 .b50p {
   bottom: 50%;
+}
+.nopad {
+  padding: 0;
 }
 .nomar {
   margin: 0;

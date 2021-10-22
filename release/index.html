@@ -185,6 +185,14 @@
           <i class="fa fa-key"></i>
         </a>
         
+        <a class="hide" title="Groups" data-toggle="projectGroups">
+          <i class="fa fa-object-group"></i>
+        </a>
+        
+        <a class="hide" title="Change keyframe location" data-change="keylocation">
+          <i class="fa fa-clock"></i>
+        </a>
+        
 <!--
         <a title="Edit path" data-open="editpath" class="hide">
           <i class="fa fa-pen-nib"></i>
@@ -838,6 +846,27 @@
     <!-- load svg/json file -->
     <div class="hide">
       <input type="file" accept="image/svg+xml, application/json" id="openfile" onchange="loadfile(this)">
+    </div>
+    
+    <!-- project groups -->
+    <div class="settings hide" data-groups>
+      <div class="settingsbg" data-toggle="projectGroups"></div>
+      <div class="projectSettings" data-projectGroups style="height: auto;">
+        <div class="grid">
+          <div class="grid__col--12">
+            <h2 class="headline-secondary--grouped nomarb">
+              Groups:
+            </h2>
+            <ul class="nopad" style="list-style: none;"></ul>
+          </div>
+
+          <div class="grid__col--12 settingsborder">
+            <h2 class="headline-secondary--grouped nomarb nomart" style="line-height: 20px;">&nbsp;</h2>
+
+            <button class="btn--default w100p" data-toggle="projectGroups">Close Dialog</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="libraries/alertifyjs/alertify.js"></script>
