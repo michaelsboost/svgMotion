@@ -95,7 +95,7 @@ function saveCode(filename) {
     $('[data-function]').each(function() {
       $code += this.value + '\n';
     });
-    $code = '/*\n  This animation was created using svgMotion v'+ $version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar tl = new TimelineMax({\n  repeat: -1\n})\n\n' + $code.split('.to(\'').join('.to(\'.svgmotion > svg > ') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0);'
+    $code = '/*\n  This animation was created using svgMotion v'+ $version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar tl = new TimelineMax({\n  repeat: -1\n})\n\n' + $code.split('.canvas').join('.svgmotion') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0);'
 
     zip.file("js/animation.js", $code);
     var content = zip.generate({type:"blob"});
@@ -997,7 +997,7 @@ function updatePreview() {
   $('[data-function]').each(function() {
     $code += this.value + '\n';
   });
-  $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code.split('.to(\'').join('.to(\'.canvas > svg > ') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.pause('+ $('.defaultcur').text() +').timeScale(1);';
+  $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.pause('+ $('.defaultcur').text() +').timeScale(1);';
   
   $(".canvas").empty().append( origCanvas + '<script>\n      '+ $code +'\n    </script>');
 }
@@ -1348,7 +1348,7 @@ function getCode() {
   $('[data-function]').each(function() {
     $code += this.value + '\n';
   });
-  $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code.split('.to(\'').join('.to(\'.canvas > svg > ') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);';
+  $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);';
   
   $(".canvas").empty().append(origCanvas + '<script>\n      '+ $code +'\n    </script>');
 }
@@ -1571,7 +1571,7 @@ $('[data-playit]').click(function() {
     $('[data-function]').each(function() {
       $code += this.value + '\n';
     });
-    $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code.split('.to(\'').join('.to(\'.canvas > svg > ') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);'
+    $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);'
   
     $(".canvas").empty().append( origCanvas + '<script>\n      '+ $code +'\n    </script>');
 
@@ -1590,7 +1590,7 @@ $('[data-playit]').click(function() {
     $('[data-function]').each(function() {
       $code += this.value + '\n';
     });
-    $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code.split('.to(\'').join('.to(\'.canvas > svg > ') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.pause(0).timeScale(1);'
+    $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.pause(0).timeScale(1);'
   
     $(".canvas").empty().append( origCanvas + '<script>\n      '+ $code +'\n    </script>');
 
@@ -2051,7 +2051,9 @@ $('[data-animate]').on('change keyup', function() {
     $('li[data-selectorlist].selector span').each(function() {
       $arr.push(this.textContent);
     });
-    $sel = $arr.join().replace(/,/g, ', ');
+    $sel = $arr.join().replace(/,/g, ', .canvas > svg > ');
+    $sel = '.canvas > svg > ' + $sel;
+    $sel.split(',').join(', .canvas > svg > ');
   }
   
   // grab inputs for animation
@@ -2114,7 +2116,7 @@ $('[data-animate]').on('change keyup', function() {
       codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
     }
   } else {
-    codeStr = '.to(\''+ $arr.join().replace(/,/g, ', ') +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
+    codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
   }
   
   if ($('.keyframe.active').is(':visible')) {
