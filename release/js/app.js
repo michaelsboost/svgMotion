@@ -968,7 +968,9 @@ function openAnimation() {
     $('li[data-selectorlist].selector span').each(function() {
       $arr.push(this.textContent);
     });
-    $sel = $arr.join().replace(/,/g, ', ');
+    $sel = $arr.join().replace(/,/g, ', .canvas > svg > ');
+    $sel = '.canvas > svg > ' + $sel;
+    $sel.split(',').join(', .canvas > svg > ');
   }
 
   if (!$('.keyframe > span:contains('+ $sel +')').is(':visible')) {
@@ -1063,7 +1065,9 @@ $('[data-confirm=to]').click(function() {
     $('li[data-selectorlist].selector span').each(function() {
       $arr.push(this.textContent);
     });
-    $sel = $arr.join().replace(/,/g, ', ');
+    $sel = $arr.split(', .canvas > svg > ');
+    $sel.split('.canvas > svg > ');
+    
     $('a[data-show=amount]').addClass('hide');
     $('[data-prop=amount]').addClass('hide');
     $('[data-animate=amount]').val('');
@@ -1168,6 +1172,19 @@ $('[data-backto=library]').click(function() {
     }
 
     return false;
+  });
+
+  // remember selector(s) via string
+  $str = "";
+
+  // render selector(s) in canvas
+  $('[data-selectorlist].selector').each(function() {
+    if ($str === "") {
+      $str = ".canvas svg > " + $(this).find('span').text();
+    } else {
+      $str += ", .canvas svg > " + $(this).find('span').text();
+    }
+    $($str).attr("data-selected", "");
   });
 });
 // close keys entirely
