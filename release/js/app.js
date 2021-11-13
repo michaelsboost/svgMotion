@@ -1952,13 +1952,13 @@ function toggleKey(e) {
       $(e).removeClass('active');
   
       // clear inputs when class is not active
-      $('[data-x=true], [data-y=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
+      $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
       $('[data-change=keylocation]').addClass('hide');
     } else {
       $('.keyframe.active').removeClass('active');
   
       // clear inputs when class is not active
-      $('[data-x=true], [data-y=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
+      $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
       
       $(e).addClass('active');
       setTimeout($(e).find('[data-js]').val(), 1);
@@ -1967,7 +1967,7 @@ function toggleKey(e) {
     }
   } else {
     // clear inputs when class is not active
-    $('[data-x=true], [data-y=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
+    $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
     
     $(e).addClass('active');
     setTimeout($(e).find('[data-js]').val(), 1);
@@ -1981,7 +1981,7 @@ $('[data-key=add]').click(function() {
   $('.keyframe.active').removeClass('active');
   
   // clear inputs when class is not active
-  $('[data-x=true], [data-y=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
+  $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
   
   if (!$val) {
     $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: -19px;"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
