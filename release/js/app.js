@@ -962,6 +962,7 @@ function openAnimation() {
   // only show keyframes for the selected library
   if ($('li[data-selectorlist].selector').length === 1) {
     $sel = $('li[data-selectorlist].selector span').text();
+    $sel = '.canvas > svg > ' + $sel;
   } else {
     $arr = [];
 
@@ -1013,6 +1014,7 @@ $('[data-confirm=stagger]').click(function() {
   $str = 'drawPath';
   if ($('li[data-selectorlist].selector').length === 1) {
     $sel = $('li[data-selectorlist].selector span').text();
+    $sel = '.canvas > svg > ' + $sel;
     $('a[data-show=amount]').addClass('hide');
     $('[data-prop=amount]').addClass('hide');
     $('[data-animate=amount]').val('');
@@ -1051,6 +1053,7 @@ $('[data-confirm=to]').click(function() {
   $str = 'drawPath';
   if ($('li[data-selectorlist].selector').length === 1) {
     $sel = $('li[data-selectorlist].selector span').text();
+    $sel = '.canvas > svg > ' + $sel;
     $('a[data-show=amount]').addClass('hide');
     $('[data-prop=amount]').addClass('hide');
     $('[data-animate=amount]').val('');
@@ -1094,6 +1097,7 @@ $('[data-open=keys]').click(function() {
   // only show keys for the active selector
   if ($('li[data-selectorlist].selector').length === 1) {
     $sel = $('li[data-selectorlist].selector span').text();
+    $sel = '.canvas > svg > ' + $sel;
   } else {
     $arr = [];
 
@@ -2062,6 +2066,7 @@ $('[data-animate]').on('change keyup', function() {
   // selector(s) name for code
   if ($('li[data-selectorlist].selector').length === 1) {
     $sel = $('li[data-selectorlist].selector span').text();
+    $sel = '.canvas > svg > ' + $sel;
   } else {
     $arr = [];
 
@@ -2201,6 +2206,7 @@ $('[data-x], [data-y], [data-scalex], [data-scaley], [data-scale], [data-rotatio
     // selector(s) name for code
     if ($('li[data-selectorlist].selector').length === 1) {
       $sel = $('li[data-selectorlist].selector span').text();
+      $sel = '.canvas > svg > ' + $sel;
     } else {
       return false;
     }
