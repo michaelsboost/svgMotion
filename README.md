@@ -10,6 +10,14 @@ Version
 
 0.4
 
+To Do:
+-------------
+ * Tool to Edit Paths (Bezier Curves), Polygons, Lines and Polylines
+ * Integrate the ability to render frame by frame animation
+ * Incorporate controllers to handle character rigging for tweens and frame by frame animation
+ * Integrate filters for user to animate (blur, hue, brightness, contrast, saturate, grayscale, sepia, invert) (adds to element via css: `filter: hue-rotate(119deg) grayscale(30%);`)
+ * Show group/class list for what's already animated to jump to it (fast way instead of re-selecting those objects again)
+
 License
 -------------
 
@@ -44,10 +52,10 @@ Of course svgMotion is free and open source, so you can always fork the project 
 
 If svgMotion was at all helpful for you. You can show your appreciation a few ways...
 
-1) Check out my Graphic Design Course: https://michaelsboost.com/graphicdesign
-2) Registering on my store as a customer: https://michaelsboost.com/store
-3) Buying me a coffee! http://ko-fi.com/michaelsboost
-4) Purchasing one of my t-shirts: https://michaelsboost.com/gear
-5) Purchasing any of my art: https://deviantart.com/michaelsboost/prints
-6) Donating via PayPal: https://michaelsboost.com/donate
-7) Donating via SquareCash: https://cash.me/$michaelsboost
+1) Check out my Graphic Design Course: https://michaelsboost.com/graphicdesign  
+2) Registering on my store as a customer: https://michaelsboost.com/store  
+3) Buying me a coffee! http://ko-fi.com/michaelsboost  
+4) Purchasing one of my t-shirts: https://michaelsboost.com/gear  
+5) Purchasing any of my art: https://deviantart.com/michaelsboost/prints  
+6) Donating via PayPal: https://michaelsboost.com/donate  
+7) Donating via SquareCash: https://cash.me/$michaelsboost  
