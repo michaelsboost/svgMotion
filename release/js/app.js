@@ -2133,12 +2133,12 @@ $('[data-animate]').on('change keyup', function() {
   // detect if it's 1 selector or an array of selectors
   if ($('li[data-selectorlist].selector').length === 1) {
     if (!$('[data-animate=drawPath]').is(':disabled')) {
-      codeStr = '.to(\''+ $sel +'\', { '+ $arrayNoDur +' }, 0.0)' + (!$('[data-animate=drawPath]').is(':disabled') ? '.to(\''+ $sel +'\', {strokeDashoffset: 0, duration: '+ $('[data-animate=duration]').val() +'}, ' + $('.defaultcur').text() +')' : '');
+      codeStr = '.to(\''+ $sel +'\', { '+ $arrayNoDur +' }, 0.0)' + (!$('[data-animate=drawPath]').is(':disabled') ? '.to(\''+ $sel +'\', {strokeDashoffset: 0, duration: '+ $('[data-animate=duration]').val() +'}, ' + $('.keyframe.active').attr('data-timeline').toString().split('_').join('.') +')' : '');
     } else {
-      codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
+      codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.keyframe.active').attr('data-timeline').toString().split('_').join('.') +')';
     }
   } else {
-    codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
+    codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.keyframe.active').attr('data-timeline').toString().split('_').join('.') +')';
   }
   
   if ($('.keyframe.active').is(':visible')) {
