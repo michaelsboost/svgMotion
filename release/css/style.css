@@ -1,5 +1,5 @@
 /*
-  Version: 0.4
+  Version: 0.401
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
@@ -388,7 +388,7 @@ ul.dialog.props {
 
 /* timeline */
 .playback {
-  width: calc(100% - 40vw);
+  width: calc(100% - 41vw);
   text-align: right;
 }
 .dialog.animpanel {

@@ -1,5 +1,5 @@
 /*
-  Version: 0.4
+  Version: 0.401
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
@@ -7,10 +7,13 @@
 */
 
 var $arr, $array, $str, $elm, $this, $sel, $val, $valz, $code, $start, $num, origCanvas,
-    $version    = 0.4,
+    $version    = '0.401',
     codeStr     = "",
     remStr      = "html > body > div:nth-child(3) > svg > ",
-    projectJSON = "";
+    projectJSON = "",
+    saveAsPNG = function(value) {
+      saveSvgAsPng(document.querySelector(".canvas svg"), value + ".png");
+    };
 
 // initiate new project
 function newProject() {
@@ -102,6 +105,21 @@ function saveCode(filename) {
     saveAs(content, filename + ".zip");
   });
 }
+function exportSVGFrame() {
+  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-");
+  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-project=name]")[0].value = "svgMotion-animation-frame-" + $('.defaultcur').text().toString().split('.').join('_');
+  }
+  blob = new Blob([ '<!-- Generator: svgMotion - https://michaelsboost.com/svgMotion/ -->\n' + $(".canvas").html() ], {type: "text/html"});
+  saveAs(blob, projectname + ".svg");
+}
+function exportPNGFrame() {
+  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-");
+  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-project=name]")[0].value = "svgMotion-animation-frame-" + $('.defaultcur').text().toString().split('.').join('_');
+  }
+  saveSvgAsPng(document.querySelector(".canvas svg"), projectname + ".png");
+}
 $('[data-export=zip]').click(function() {
   var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-");
   if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
@@ -117,6 +135,15 @@ $('[data-export=json]').click(function() {
   }
   var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
   saveAs(blob, projectname + ".json");
+});
+$('[data-export=svgframe]').on('click', function() {
+  $(".canvas script").remove();
+  exportSVGFrame();
+  updatePreview();
+});
+$('[data-export=pngframe]').on('click', function() {
+  exportPNGFrame();
+  updatePreview();
 });
 
 // load svg file functions
@@ -134,10 +161,17 @@ function loadJSON() {
       type: 'warning',
     })
   } else {
-    if (loadedJSON.version < 0.3) {
+    if (parseFloat(loadedJSON.version) <= 0.3) {
       swal({
         title: 'Warning!',
         text: "This project is using a version of svgMotion that's no longer supported.",
+        type: 'warning',
+      })
+    } else 
+    if (parseFloat($version) > parseFloat(loadedJSON.version)) {
+      swal({
+        title: 'Warning!',
+        text: "This project is using an older version of svgMotion. Some features may not work!",
         type: 'warning',
       })
     }
@@ -2398,7 +2432,7 @@ function initDemo() {
   $('[data-duration=false]').trigger('click');
   $('[data-animate=duration]').val('1.9').trigger('change');
   $('[data-show=duration]').trigger('click');
-  $('[data-close=keys]').trigger('click');
+//  $('[data-close=keys]').trigger('click');
 }
 function editPathDemo() {
   $('[data-project=name]').val('svgMotion Demo').trigger('change');

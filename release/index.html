@@ -1,5 +1,5 @@
 <!--
-  Version: 0.4
+  Version: 0.401
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
@@ -189,6 +189,14 @@
           <i class="fa fa-object-group"></i>
         </a>
         
+        <a title="Export frame as PNG" data-export="pngframe">
+          <i class="fa fa-file-image"></i>
+        </a>
+        
+        <a title="Export frame as SVG" data-export="svgframe">
+          <i class="fa fa-file-download"></i>
+        </a>
+        
         <a class="hide" title="Change keyframe location" data-change="keylocation">
           <i class="fa fa-clock"></i>
         </a>
@@ -224,7 +232,7 @@
     </div>
 
     <!-- canvas -->
-    <div class="canvas">
+    <div class="canvas"><!--?xml version="1.0" encoding="UTF-8" standalone="no"?-->
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 1280 800">
         <defs>
           <clipPath id="_clipPath_53WGSbDr1S5LRlP32sv9z0hrISaPwP23">
@@ -879,6 +887,7 @@
     <script src="libraries/jszip/FileSaver.js"></script>
     <script src="libraries/jszip/jszip.min.js"></script>
     <script src="libraries/jszip/jszip-utils.js"></script>
+    <script src="libraries/saveSvgAsPng/saveSvgAsPng.js"></script>
     <script src="libraries/gifshot/gifshot.min.js"></script>
     <script src="libraries/gsap/minified/gsap.min.js"></script>
     <script src="libraries/tinycolor/tinycolor.js"></script>
