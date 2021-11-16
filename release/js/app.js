@@ -1619,7 +1619,9 @@ $('[data-play=nextframe]').click(function() {
 });
 $('[data-playit]').click(function() {
   if ($(this).attr('data-playit') === 'play') {
-    $('[data-selected]').css('outline', 'none')
+    $('[data-export=pngframe]').addClass('hide');
+    $('[data-export=svgframe]').addClass('hide');
+    $('[data-selected]').css('outline', 'none');
 
     // javascript
     $code = '';
@@ -1638,6 +1640,8 @@ $('[data-playit]').click(function() {
 //    $('.dialog.animpanel, .dialog.animtimeline').addClass('hide');
     $('[data-play=firstframe], [data-play=nextframe], [data-play=prevframe], [data-play=lastframe]').addClass('hide');
   } else {
+    $('[data-export=pngframe]').removeClass('hide');
+    $('[data-export=svgframe]').removeClass('hide');
     $('[data-selected]').removeAttr('data-selected');
 
     // javascript
