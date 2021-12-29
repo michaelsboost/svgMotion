@@ -1,0 +1,553 @@
+/*
+  Version: 1.000-alpha
+  svgMotion, copyright (c) by Michael Schwartz
+  Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
+  
+  This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
+*/
+
+/* resets */
+@font-face {
+  font-family: Lato;
+  src: url("Lato-Light.ttf");
+}
+body {
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+a {
+  cursor: pointer;
+  text-decoration: none;
+}
+.alertify-log {
+  font-size: 14px;
+  text-shadow: 0 0 #000;
+}
+.alertify-log-success {
+/*  background: #1e7eeb;*/
+  background: #0ed277;
+}
+.alertify-log-error {
+  background: #ec4040;
+}
+.alertify-log h1, 
+.alertify-log h5 {
+  font-weight: 100;
+}
+.swal2-show h1, .swal2-show h5 {
+  margin: 20px;
+  font-weight: 100;
+}
+button {
+  background: transparent;
+  border: 0;
+}
+html, body {
+  font-family: "Helvetica","Arial",sans-serif;
+/*  font-size: 14px;*/
+/*  font-size: 2vw;*/
+  font-size: 18.45px;
+  font-weight: 400;
+  line-height: 20px;
+}
+input[type=range] {
+  position: relative;
+  top: -4px;
+  width: calc(100vw - 300px);
+  margin-top: -3.1px;
+  background-color: transparent;
+  -webkit-appearance: none;
+}
+
+/* Hide Arrows From Input Number */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide Arrows From Input Number */
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000;
+}
+::-webkit-scrollbar-track {
+  background: #242424;
+  border: 0 none #fff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #404040;
+}
+::-webkit-scrollbar-track:active {
+  background: #1b1b1b;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+/* firefox*/
+body, 
+select, select option {
+  scrollbar-width: thin;
+  scrollbar-color: #1e7eeb #2a2e39;
+}
+
+/* input range slider */
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: #282c36;
+  border: 0;
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -0.75em;
+  width: 1.5em;
+  height: 1.5em;
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #35353a;
+}
+input[type=range]::-moz-range-track {
+  background-color: #282c36;
+  width: 100%;
+  height: 1px;
+  cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  margin-top: -0.75em;
+  width: 1.5em;
+  height: 1.5em;
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 100%;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 0 0;
+  color: transparent;
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+}
+input[type=range]::-ms-fill-lower {
+  background: #351d22;
+  border: 0;
+}
+input[type=range]::-ms-fill-upper {
+  background: #351d22;
+  border: 0;
+}
+input[type=range]::-ms-thumb {
+  width: 1.5em;
+  height: 1.5em;
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 0;
+  /*Needed to keep the Edge thumb centred*/
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #351d22;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #351d22;
+}
+/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+how to remove the virtical space around the range input in IE*/
+@supports (-ms-ime-align:auto) {
+  /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+  input[type=range] {
+    margin: 0;
+    /*Edge starts the margin from the thumb, not the track as other browsers do*/
+  }
+}
+
+/* input[type=number] styles */
+input.numinhead {
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+input.numinhead[type=number] {
+  width: 75px;
+  font-size: 4vh;
+  text-align: center;
+}
+input.numinhead[type=text] {
+  width: 150px;
+}
+
+/* SWAL */
+.swal2-icon {
+  font-size: initial!important;
+}
+.swal2-icon.swal2-warning,
+.swal2-icon.swal2-question {
+  font-size: inherit!important;
+  line-height: initial!important;
+}
+.swal2-icon.swal2-warning > .swal2-icon-text,
+.swal2-icon.swal2-question > .swal2-icon-text {
+  margin: auto;
+}
+.swal2-popup #swal2-content {
+  margin-top: 12px;
+}
+
+/* top and bottom menu */
+.topmenu, .bottommenu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30px;
+  white-space: nowrap;
+  padding: 10px 0;
+  z-index: 1;
+  user-select: none;
+  overflow: auto;
+}
+
+/* top menu */
+.topmenu > div:not(:first) {
+  display: none;
+}
+.topmenu > div, .toolsmenu {
+  display: flex;
+  justify-content: space-between;
+  height: 0;
+}
+.topmenu {
+  top: 0;
+}
+.topmenu img {
+  cursor: pointer;
+  padding: 0 15px;
+  fill: currentcolor;
+  height: 25px;
+}
+.topmenu .txt {
+  position: relative;
+  top: -3px;
+}
+svg.checkbox {
+  position: relative;
+  top: 4px;
+  margin: -3px 15px;
+  height: 25px;
+  cursor: pointer;
+  overflow: visible;
+}
+svg.checkbox path {
+  transform-origin: center;
+  transform: scale(1.5) translate(2px, -3px);
+  stroke: transparent;
+}
+
+/* color picker/palette */
+.pcr-button {
+  display: none;
+}
+.pcr-app {
+  display: none;
+  margin: 0;
+  width: 0;
+  height: 0;
+}
+.pcr-app.visible {
+  display: flex;
+  margin: -12px -12px;
+/*
+  width: calc(100vw - 100px);
+  height: calc(100% - 22px);
+*/
+  width: calc(100vw - 142px);
+  height: calc(100% - 5px);
+}
+.pcr-last-color {
+  display: none;
+}
+.pcr-app[data-theme='classic'] .pcr-selection .pcr-color-preview .pcr-current-color {
+  height: 100%;
+}
+.pcr-app[data-theme='classic'] .pcr-selection .pcr-color-palette {
+  height: auto;
+}
+
+/* canvas and dialogs */
+.dialog {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+.dialog:not([data-canvasbg]) {
+  padding: 1em;
+  font-size: 14px;
+}
+.dialog[data-canvasbg] {
+  padding: 0;
+  background: transparent;
+}
+[data-canvas] {
+  line-height: 0;
+}
+[data-canvas] svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* dialog */
+.dialog:not(.colorpicker) h2 {
+  font-weight: 100;
+}
+.dialog:not(.colorpicker) input, 
+.dialog:not(.colorpicker) textarea {
+  display: block;
+  margin: 0;
+  padding: 10px;
+  resize: none;
+  border-radius: 0;
+  outline: 0;
+  font-size: x-large;
+  border: 0;
+  background: transparent;
+}
+.dimensions {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.inputs {
+  display: flex;
+  justify-content: space-between;
+}
+.inputs input {
+  width: calc(50vw - 66px);
+  padding: 0;
+  text-align: center;
+}
+.input {
+  width: calc(100vw - 50px);
+}
+.dialog:not(.colorpicker) button {
+  width: 100%;
+  padding: 15px 30px;
+  border: 0;
+  border-radius: 0.4em;
+  text-transform: uppercase;
+  font-size: 0.875em;
+/*  font-weight: bold;*/
+  transition: opacity 0.3s;
+  display: block;
+  margin: 1.42857em 0;
+}
+.dialog:not(.colorpicker) textarea {
+  width: calc(100vw - 50px);
+  height: calc(100% - 251px);
+  min-height: 100px;
+  padding: 10px;
+}
+.canvas {
+  background: #fff;
+/*
+  width: 512px;
+  height: 512px;
+*/
+}
+.dialog:not(.colorpicker) .hscroll {
+  white-space: nowrap;
+  overflow: auto;
+  width: 100%;
+}
+.dialog:not(.colorpicker) .hscroll button {
+  display: inline-block;
+  width: auto;
+}
+.assets div {
+  width: 200px;
+  text-align: center;
+}
+.assets div img {
+/*  width: 64px;*/
+  width: 60px;
+}
+.assets div > a > img:first-child() {
+  text-align: left;
+}
+.assets div > a > img:last-child() {
+  float: right;
+}
+.assets div h1 {
+  text-align: center;
+}
+
+/* misc */
+.topmenu .pointer,
+.dialog.assets .pointer {
+  cursor: pointer;
+}
+.dialog.assets .ib {
+  display: inline-block;
+}
+
+/* colors */
+body {
+  font-family: Lato;
+  background-color: #131722;
+  background-image: linear-gradient(45deg, #1a1f2c 25%, transparent 25%), linear-gradient(-45deg, #1a1f2c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1f2c 75%), linear-gradient(-45deg, transparent 75%, #1a1f2c 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* active tool color  = #1e7eeb */
+/* active frame color = #e4eb1e */
+
+/* header colors */
+/*
+.topmenu {
+  border-bottom: 1px solid #1e7eeb;
+}
+.bottommenu {
+  border-top: 1px solid #1e7eeb;
+}
+.lefticons {
+  border-right: 1px solid #1e7eeb;
+}
+.righticons {
+  border-left: 1px solid #1e7eeb;
+}
+*/
+[data-canvasbg], .dialog {
+  border: 1px solid #1e7eeb;
+}
+
+/* white text color */
+.topmenu,
+[data-play], [data-playit],
+.topmenu a,
+.topmenu button,
+.dialog:not(.colorpicker),
+.dialog:not(.colorpicker) input,
+.dialog:not(.colorpicker) textarea,
+.dialog:not(.colorpicker) button,
+input.numinhead,
+.toolsmenu select,
+.toolsmenu select option {
+  color: #fff;
+}
+
+/* filter for original blue image */
+.active img {
+  filter: brightness(1)!important;
+}
+
+/* dark background */
+.topmenu,
+[data-play], [data-playit] {
+  background: #131722;
+}
+
+/* black background */
+.dialog {
+  background: #191e2a;
+}
+input.numinhead,
+.toolsmenu select,
+.toolsmenu select option {
+  background: #000;
+}
+
+/* filter for white */
+[data-call=settings] img,
+.logo {
+  fill: currentcolor;
+  filter: brightness(10);
+}
+[data-midbtns] img {
+  fill: currentcolor;
+  filter: brightness(10);
+}
+
+/* blue color */
+.dialog:not(.colorpicker) input, 
+.dialog:not(.colorpicker) textarea {
+  border: 1px solid #1e7eeb;
+/*
+  border: 0;
+  border-bottom: 1px solid #1e7eeb;
+*/
+}
+.dialog:not(.colorpicker) button {
+  background-color: #1e7eeb;
+}
+.dialog:not(.colorpicker) button.green {
+  background-color: #19bfa4;
+}
+.mainmenu button.active {
+  color: #1e7eeb;
+}
+[data-canvas] {
+  border: 1px solid #1e7eeb;
+}
+[data-toolsoption=colorpicker] button.active {
+  color: #1e7eeb;
+}
+[data-zoom=true] img {
+  fill: currentcolor;
+  filter: brightness(1);
+}
+
+/* misc colors */
+.spacer {
+  color: transparent!important;
+}
+.topmenu [data-donate] {
+  color: #e85b46;
+}
+.topmenu [data-render],
+.topmenu [data-export] {
+  color: #2be71f;
+}
+[disabled] {
+  opacity: 0.2;
+}

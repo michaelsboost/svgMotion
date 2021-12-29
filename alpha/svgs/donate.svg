@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/">
+  <g transform="matrix(2.1 0 0 2.1 -302 -230)">
+    <g transform="rotate(45 294 225.115)">
+      <rect height="141" width="124.00001" x="231.99999" y="185" fill="#e85b46"/>
+      <circle cx="294" cy="187" r="62.76942" fill="#e85b46"/>
+    </g>
+    <g transform="rotate(-45 237.721 225.721)">
+      <rect height="141" width="124.00001" x="175.72065" y="185.60572" fill="#e85b46"/>
+      <circle cx="237.72066" cy="187.60572" r="62.76942" fill="#e85b46"/>
+    </g>
+  </g>
+</svg>

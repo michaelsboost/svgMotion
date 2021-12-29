@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <!-- Generator: Gravit.io -->
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 512 512" width="512pt" height="512pt">
+    <clipPath id="_clipPath_ueWVKKIbIOYki30TSWLzcOdZcVJA9Ltu">
+      <rect x="2.188" y="0" width="507.624" height="512" transform="matrix(1,0,0,1,0,0)" fill="rgb(30,126,235)" />
+    </clipPath>
+    <g clip-path="url(#_clipPath_ueWVKKIbIOYki30TSWLzcOdZcVJA9Ltu)">
+      <g>
+        <path d=" M 425.997 379.984 C 388.774 420.761 335.199 446.359 275.692 446.359 C 163.379 446.359 72.205 355.185 72.205 242.872 C 72.205 183.562 97.635 130.144 138.176 92.936" fill="rgb(30,126,235)" />
+        <rect x="72.205" y="236.308" width="210.051" height="210.051" transform="matrix(1,0,0,1,0,0)" fill="rgb(30,126,235)" />
+      </g>
+      <clipPath id="_clipPath_g2HpgC87xz8kdNo8247olaF1SgpB70Cm">
+        <path d=" M 312.889 -83.145 L 597.333 205.675 L 444.171 358.838 L 155.35 74.393 L 312.889 -83.145 Z " fill="rgb(30,126,235)" />
+      </clipPath>
+      <g clip-path="url(#_clipPath_g2HpgC87xz8kdNo8247olaF1SgpB70Cm)">
+        <g>
+          <line x1="203.487" y1="166.291" x2="326.017" y2="48.137" stroke-width="91.897" stroke="rgb(30,126,235)" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="3" />
+          <line x1="339.145" y1="306.325" x2="461.675" y2="188.171" stroke-width="91.897" stroke="rgb(30,126,235)" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="3" />
+        </g>
+      </g>
+      <line x1="50.325" y1="463.863" x2="172.855" y2="345.709" stroke-width="91.897" stroke="rgb(30,126,235)" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="3" />
+    </g>
+  </svg>

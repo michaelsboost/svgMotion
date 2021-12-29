@@ -1,23 +1,16 @@
 svgMotion
 ===================
 
-I love making vector animations but finding an app to make vector animations on a phone simply didn't exist. Desktop users have [Animate CC](https://www.adobe.com/products/animate.html), [After Effects](https://www.adobe.com/products/aftereffects.html), [Toon Boom](https://www.toonboom.com/), [Rive](https://rive.app/), [Blender](https://blender.org/), [Synfig Studio](https://www.synfig.org/), [Haiku Animator](https://www.haikuanimator.com/), [Keyshape](https://www.keyshapeapp.com/), [Glaxnimate](https://glaxnimate.mattbas.org/), [Enve](https://maurycyliebner.github.io/index) etc: If you're on a Chromebook you have [Animatron Studio](https://www.animatron.com/studio/), [TweenUI](https://tweenui.com/animator/), [Wick Editor](https://www.wickeditor.com/), [Expressive Animator](https://www.expressivesuite.com/), and even [aniGen](http://anigen.org/) but mobile users have been left in the dark far too long. That's why I decided to build [svgMotion](https://michaelsboost.github.io/svgMotion)!
+This version is constantly updating and changing. Note that your project files may unexpectedly not work as this is an alpha development page not a beta or release candidate. 
 
-![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/screenshot.png)
+You can view the live development page at - https://svgmotion.michaelsboost.repl.co/alpha/
+
+![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/preview.png)
 
 Version
 -------------
 
-0.401
-
-To Do:
--------------
- * Tool to Edit Paths (Bezier Curves), Polygons, Lines and Polylines  
- * Integrate the ability to render frame by frame animation  
- * Incorporate controllers to handle character rigging for tweens and frame by frame animation  
- * Integrate filters for user to animate (blur, hue, brightness, contrast, saturate, grayscale, sepia, invert) (adds to element via css: `filter: hue-rotate(119deg) grayscale(30%);`)  
- * Show group/class list for what's already animated to jump to it (fast way instead of re-selecting those objects again)  
- * Add help link  
+1.000-alpha
 
 License
 -------------
