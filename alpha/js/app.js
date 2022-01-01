@@ -8,8 +8,12 @@
 
 // variables
 var version = '1.000',
-    $str, cssStr, jsStr, storeAsset,
-    loadedJSON = {}, projectJSON, thisTool;
+    remStr  = "html > body > div:nth-child(2) > div > svg > ",
+    $this, $str, $code, cssStr, jsStr, origSVG, thisTool, 
+    loadedJSON = {}, projectJSON = "",
+    saveAsPNG = function(value) {
+      saveSvgAsPng(document.querySelector(".canvas svg"), value + ".png");
+    };
 
 // alertify log
 $('[data-log]').on('click', function() {
@@ -21,8 +25,11 @@ $('[data-log]').on('click', function() {
 $('[data-info]').click(function() {
 //  alertify.log('<div style="font-size: 14px; text-align: center;"><img src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5></div>');
   
+//  swal({
+//    html: '<img class="logo" src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+//  });
   swal({
-    html: '<img class="logo" src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+    html: '<svg class="logo" style="isolation:isolate; width: 50%;" viewBox="0 0 512 512"><path d=" M 166.149 0.009 C 158.748 52.853 130.195 97.698 65.349 162.544 L 58.243 169.65 L 63.815 178.012 C 128.149 274.497 231.636 486.999 243.734 511.991 L 243.734 197.216 C 243.734 196.314 244.063 195.517 244.245 194.677 C 239.436 193.057 235.061 190.359 231.454 186.791 C 220.928 176.276 218.552 160.099 225.611 147.002 C 232.669 133.905 247.487 126.994 262.058 130.004 C 276.628 133.014 287.495 145.232 288.785 160.054 C 290.075 174.876 281.482 188.787 267.651 194.269 C 267.894 195.24 268.24 196.176 268.24 197.216 L 268.249 512 C 280.312 487.095 383.842 274.514 448.177 178.012 L 453.757 169.659 L 446.651 162.553 C 381.805 97.707 353.243 52.853 345.851 0 L 166.149 0.009 Z " /></svg><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
   });
 //  $('.swal2-show').css('background', '#000');
   $('.swal2-show').css('font-size', '14px');
@@ -81,6 +88,176 @@ $('[data-confirm="newproject"]').click(function() {
   })
 });
 
+function svgLoaded() {
+  // clear canvas
+  $('[data-display=selector]').html('');
+  
+  // locate SVG
+  var $Canvas = document.querySelector(".canvas > svg");
+  if ($Canvas) {
+    // canvas interactive selection
+    $('.canvas svg *').on('click', function() {
+      // is library visible? if so proceed
+      if ($('.libraryh').is(':visible')) {
+        // is selected already visible? If so remove to select active one
+        if ($('[data-selected]').is(':visible')) {
+          $("[data-selected]").removeAttr("data-selected");
+          $(this).attr('data-selected', '');
+
+          // display selection in library
+          $('[data-display=selector] li').removeClass('selector');
+
+          // remember selector(s) via string
+          $str = "";
+
+          // activate selection in libary from canvas
+          $(".canvas svg [data-selected]").each(function() {
+            $str = $(this).getPath().split(remStr).join('');
+            $('[data-selectorlist]').each(function() {
+              if ($(this).find('span').text() === $str) {
+                $(this).addClass('selector');
+              }
+            });
+          });
+        } else {
+          $(this).attr('data-selected', '');
+
+          // display selection in library
+          $('[data-display=selector] li').removeClass('selector');
+
+          // remember selector(s) via string
+          $str = "";
+
+          // activate selection in libary from canvas
+          $(".canvas svg [data-selected]").each(function() {
+            $str = $(this).getPath().split(remStr).join('');
+            $('[data-selectorlist]').each(function() {
+              if ($(this).find('span').text() === $str) {
+                $(this).addClass('selector');
+              }
+            });
+          });
+        }
+      }
+      return false;
+    });
+
+    // remove width/height attributes if detected
+    if ($Canvas.getAttribute("width") || $Canvas.getAttribute("height")) {
+      w = $Canvas.getAttribute("width");
+      w = parseFloat(w);
+      h = $Canvas.getAttribute("height");
+      h = parseFloat(h);
+      $("[data-project=width]").val(w);
+      $("[data-project=height]").val(h).trigger('change');
+      $Canvas.removeAttribute("width");
+      $Canvas.removeAttribute("height");
+      alertify.log("Width/Height attributes removed for fullscreen display.");
+    }
+    
+    $(".canvas > svg *").removeAttr("vector-effect");
+//    $(".canvas > svg").attr("preserveAspectRatio", "xMidYMin");
+
+    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+    $("[data-action=fadeOut]").fadeOut(400, function() {
+      $("[data-action=fadeOut]").remove();
+    });
+    $("[data-projectname]").trigger("keyup");
+    
+    // list all elements as list
+    var fullSVGlength = $(".canvas svg *").length;
+    $(".canvas svg *").each(function(i) {
+//      $val = $(this).getPath();
+      $val = $(this).getPath().split(remStr).join('');
+
+      // append layers
+      $elm = '<li data-selectorlist="' + $val + '"><span>' + $val + '</span></li>';
+      $('[data-display=selector]').append($elm);
+
+      // trigger selected element on layer click
+      if (i === parseInt(fullSVGlength - 1)) {
+        $("[data-selectorlist]").on('click', function() {
+          $val = $(this).data('selectorlist');
+
+          // single or an array? user selects
+          $(this).toggleClass('selector');
+          $str = "";
+
+          // clear canvas selector(s)
+          if ($('[data-selected]').is(':visible')) {
+            $("[data-selected]").removeAttr("data-selected");
+          }
+
+          // render selectors in canvas
+          $('[data-selectorlist].selector').each(function() {
+            if ($str === "") {
+              $str = ".canvas svg > " + $(this).find('span').text();
+            } else {
+              $str += ", .canvas svg > " + $(this).find('span').text();
+            }
+            $($str).attr("data-selected", "");
+          });
+          return false;
+        });
+      }
+    });
+    
+    origSVG = $('.canvas').html();
+  } else {
+    alertify.error("Error: No svg element detected!");
+  }
+}
+svgLoaded();
+
+// canvas interactive selection
+function canvasClickSelect() {
+  $('.canvas svg *').on('click', function() {
+    // is library visible? if so proceed
+    if ($('.libraryh').is(':visible') && $('[data-zoom=false]').is(':visible')) {
+      // is selected already visible? If so remove to select active one
+      if ($('[data-selected]').is(':visible')) {
+        $("[data-selected]").removeAttr("data-selected");
+        $(this).attr('data-selected', '');
+
+        // display selection in library
+        $('[data-display=selector] li').removeClass('selector');
+
+        // remember selector(s) via string
+        $str = "";
+
+        // activate selection in libary from canvas
+        $(".canvas svg [data-selected]").each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $('[data-selectorlist]').each(function() {
+            if ($(this).find('span').text() === $str) {
+              $(this).addClass('selector');
+            }
+          });
+        });
+      } else {
+        $(this).attr('data-selected', '');
+
+        // display selection in library
+        $('[data-display=selector] li').removeClass('selector');
+
+        // remember selector(s) via string
+        $str = "";
+
+        // activate selection in libary from canvas
+        $(".canvas svg [data-selected]").each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $('[data-selectorlist]').each(function() {
+            if ($(this).find('span').text() === $str) {
+              $(this).addClass('selector');
+            }
+          });
+        });
+      }
+    }
+    return false;
+  });
+}
+
 // size presets
 $('[data-size]').on('click', function() {
   str = $(this).attr('data-size');
@@ -104,6 +281,11 @@ $('[data-project=width], [data-project=height]').on('change', function() {
 });
 
 // init panzoom
+//var prevArea = document.querySelector('.canvas');
+//var inst = panzoom(prevArea, {
+//  bounds: true,
+//  boundsPadding: 0.1
+//});
 var drawArea = document.querySelector('[data-canvas]');
 var instance = panzoom(drawArea, {
   bounds: true,
@@ -152,29 +334,26 @@ $('[data-call]').on('click', function(val) {
 $('[data-play]').on('click', function() {
   if ($(this).attr('data-play') === 'true') {
     $(this).attr('data-play', false)
-           .find('img')
-           .attr('src', 'svgs/play.svg');
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
     $('[data-render]').hide();
     stopAnim();
   } else {
     $(this).attr('data-play', true)
-           .find('img')
-           .attr('src', 'svgs/stop.svg');
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><g transform="matrix(1.61682,0,0,1.61682,-157.907,-157.907)"><g><path d="M352.877,276.034L174.818,408.882C160.033,419.81 148.034,413.81 148.034,395.383L148.034,116.617C148.034,98.19 160.033,92.19 174.818,103.118L352.877,235.966C367.662,246.893 367.662,264.892 352.877,276.034Z"/></g></g></svg>');
     $('[data-render]').show();
     runAnim();
   }
 });
 $('[data-zoom]').on('click', function() {
   if ($(this).attr('data-zoom') === 'true') {
-    $(this).attr('data-zoom', false)
-           .find('img')
-           .attr('src', 'svgs/zoom-no.svg');
+    $('[data-zoom]').attr('data-zoom', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#fff"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#fff"></line><g transform="matrix(1 0 0 1 4 0)"><g transform="matrix(1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g><g transform="matrix(-1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g></g></svg>');
     $('[data-resetzoompos]').hide();
     instance.pause();
+    canvasClickSelect();
   } else {
-    $(this).attr('data-zoom', true)
-           .find('img')
-           .attr('src', 'svgs/zoom.svg');
+    $('[data-zoom]').attr('data-zoom', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#1e7eeb"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#1e7eeb"></line></svg>');
     $('[data-resetzoompos]').show();
     instance.resume();
   }
@@ -185,6 +364,378 @@ $('[data-resetzoompos]').click(function() {
                     .css('transform', '');
   instance.restore();
 });
+
+// layers
+$('[data-open=layers]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-library]').show();
+  $('[data-canvasbg]').css('right', '50%');
+  $('[data-canvasbg]').css('border-right', '0');
+});
+$('[data-close=layers]').on('click', function() {
+  $('[data-open=layers].active').removeClass('active');
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-dialog=layers]').hide();
+  $('[data-mainmenu]').show();
+  $('[data-canvasbg]').css('right', '');
+  $('[data-canvasbg]').css('border', '');
+});
+
+// selectors for layers
+$('[data-select]').on('click', function() {
+  $val = $(this).data('select');
+
+  if ($val === 'all') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
+      $(this).removeAttr("data-selected").parent().find(tagNombre).attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+  } else 
+    if ($val === 'none') {
+    $('[data-display=selector] li').removeClass('selector');
+
+    // clear canvas selector(s)
+    if ($('[data-selected]').is(':visible')) {
+      $("[data-selected]").removeAttr("data-selected");
+    }
+    return false;
+  } else 
+    if ($val === 'parent') {
+    if ($('.canvas svg > [data-selected]').is(':visible')) {
+      alertify.error('Error: Cannot select higher than the svg itself.');
+      return false;
+    }
+    
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      $(this).removeAttr("data-selected").parent().attr("data-selected", "");
+      return false;
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+          return false;
+        }
+      });
+    });
+    return false;
+  } else 
+    if ($val === 'next') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      $(this).removeAttr("data-selected").next().attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+    return false;
+  } else 
+    if ($val === 'prev') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+    
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      $(this).removeAttr("data-selected").prev().attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+    return false;
+  } else 
+    if ($val === 'even') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li:even').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+      
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
+      $(this).removeAttr("data-selected").parent().find(tagNombre + ":even").attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+  } else 
+    if ($val === 'odd') {
+    if (!$('[data-selected]').is(':visible')) {
+      $('[data-display=selector] li:odd').trigger('click');
+      
+      // remember selector(s) via string
+      $str = "";
+
+      // render selector(s) in canvas
+      $('[data-selectorlist].selector').each(function() {
+        if ($str === "") {
+          $str = ".canvas svg > " + $(this).find('span').text();
+        } else {
+          $str += ", .canvas svg > " + $(this).find('span').text();
+        }
+        $($str).attr("data-selected", "");
+      });
+      return false;
+    }
+      
+    $('[data-display=selector] li').removeClass('selector');
+      
+    // select all the same tags inside the same parent
+    $('[data-selected]').each(function() {
+      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
+      $(this).removeAttr("data-selected").parent().find(tagNombre + ":odd").attr("data-selected", "");
+    });
+    
+    // remember selector(s) via string
+    $str = "";
+
+    // activate selection in libary from canvas
+    $(".canvas svg [data-selected]").each(function() {
+      $str = $(this).getPath().split(remStr).join('');
+      $('[data-selectorlist]').each(function() {
+        if ($(this).find('span').text() === $str) {
+          $(this).addClass('selector');
+        }
+      });
+    });
+  } else 
+    if ($val === 'custom') {
+    swal({
+      title: 'Custom selector',
+      input: 'text',
+      showCancelButton: true
+    }).then((result) => {
+      if (result.value) {
+        // remove currect selection(s)
+        $('[data-display=selector] li').removeClass('selector');
+
+        // clear canvas selector(s)
+        if ($('[data-selected]').is(':visible')) {
+          $("[data-selected]").removeAttr("data-selected");
+        }
+
+        // user's custom selector
+        $elm = result.value.split(',').join(', .canvas svg > ');
+        
+        // activate selection in canvas
+        $(".canvas svg > " + $elm).each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $(this).attr("data-selected", "");
+        });
+        
+        // activate selection in libary from canvas
+        $(".canvas svg [data-selected]").each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $('[data-selectorlist]').each(function() {
+            if ($(this).find('span').html() === $str) {
+              $(this).addClass('selector');
+            }
+          });
+        });
+        
+        return false;
+      }
+    });
+  } else {
+    alertify.error('Selection error');
+  }
+
+  // clear canvas selector(s)
+  if ($('[data-selected]').is(':visible')) {
+    $("[data-selected]").removeAttr("data-selected");
+  }
+
+  // remember selector(s) via string
+  $str = "";
+
+  // render selector(s) in canvas
+  $('[data-selectorlist].selector').each(function() {
+    if ($str === "") {
+      $str = ".canvas svg > " + $(this).find('span').text();
+    } else {
+      $str += ", .canvas svg > " + $(this).find('span').text();
+    }
+    $($str).attr("data-selected", "");
+  });
+});
+
+// filters
+$('[data-open=filters]').on('click', function() {
+  if ($('[data-call].active').is(':visible')) {
+    $('[data-call].active').trigger('click');
+  }
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-filtericons]').show();
+});
+$('[data-filter]').on('click', function() {
+  $this = $(this).attr('data-filter');
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-toolsoption]').hide();
+  $('[data-filters]').show();
+  $('[data-toolsoption='+ $this +']').show();
+});
+$('[data-close=filters]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-mainmenu]').show();
+});
+$('[data-close=filter]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-filtericons]').show();
+});
+$('[data-clear=filters]').on('click', function() {
+  $('.canvas svg').css('filter', '');
+  $('[data-canvas] svg').css('filter', '');
+  $('[data-close=filters]').trigger('click');
+});
+
+// apply filters
+function applyFilters() {
+  $('[data-canvas] svg, .canvas svg').css('filter', 'blur('+ blurfilter.value +'px) hue-rotate('+ huefilter.value +'deg) brightness('+ brightnessfilter.value +')  contrast('+ contrastfilter.value +') saturate('+ saturatefilter.value +') grayscale('+ grayscalefilter.value +'%) sepia('+ sepiafilter.value +'%) invert('+ invertfilter.value +'%)');
+}
+$('.filterval').change(function() {
+  applyFilters();
+});
+applyFilters();
 
 // set animation class name
 $('[data-change=name]').on('click', function() {
@@ -207,28 +758,6 @@ $('[data-change=name]').on('click', function() {
       );
     }
   });
-});
-
-// move asset forward and/or backward
-$('[data-sendbackward]').on('click', function() {
-  if ($(this).parent().is(':first-child')) {
-    alertify.error('Error: Asset is already first!');
-  } else {
-    storeAsset = $(this).parent().html();
-    $(this).parent().prev().parent().prepend('<div class="asset ib">'+ storeAsset +'</div>');
-    $(this).parent().remove();
-    stopAnim();
-  }
-});
-$('[data-sendforward]').on('click', function() {
-  if ($(this).parent().is(':last-child')) {
-    alertify.error('Error: Asset is already last!');
-  } else {
-    storeAsset = $(this).parent().html();
-    $(this).parent().next().parent().append('<div class="asset ib">'+ storeAsset +'</div>');
-    $(this).parent().remove();
-    stopAnim();
-  }
 });
 
 // call asset as a frame by frame animation or a tween animation
@@ -268,29 +797,14 @@ function runAnim() {
   $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
   $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
   
-  // clear the canvas
-  $('[data-canvas]').empty();
+  // clear and reset the canvas
+  $('[data-canvas]').empty().html(origSVG);
   
-  // now apply the vector assets to the canvas
-  $('[data-dialog=assets] [data-asset]').each(function() {
-    assetStr = $(this).html();
-
-    $('[data-canvas]').append(assetStr);
-  });
+  // get the code
+  getCode();
   
-  // apply the css (if any)
-  $('textarea.css').each(function() {
-    cssStr = $(this).val();
-
-    $('[data-canvas]').append('<'+'st'+'yle'+'>'+ cssStr +'<'+'/'+'st'+'yle'+'>');
-  });
+  // run the code
   
-  // apply the javascript
-  $('textarea.js').each(function() {
-    jsStr = $(this).val() + '\n';
-
-    $('[data-canvas]').append('<'+'scr'+'ipt'+'>'+ jsStr +'<'+'/'+'scr'+'ipt'+'>');
-  });
   
   // hide settings
   $('[data-call=settings] img').css({
@@ -300,22 +814,178 @@ function runAnim() {
   });
 }
 function stopAnim() {
-  // clear the canvas
-  $('[data-canvas]').empty();
-  
-  // now apply the vector assets to the canvas
-  $('[data-dialog=assets] [data-asset]').each(function() {
-    assetStr = $(this).html();
-
-    $('[data-canvas]').append(assetStr);
-  });
-  
-  // reset the css
-  $('#stylesheet').empty();
+  // clear and reset the canvas
+  $('[data-canvas]').empty().html(origSVG);
   
   // show settings
   $('[data-call=settings] img').removeAttr('style');
 }
+function getCode() {
+  // clear the variables
+  cssStr = '';
+  jsStr = '';
+  
+  // clear and reset the canvas
+  $('[data-canvas]').empty();
+  
+  // apply the css (if any)
+  $('textarea.css').each(function() {
+    cssStr += $(this).val() + '\n';
+  });
+  
+  // apply the javascript
+  $('textarea.js').each(function() {
+    jsStr += $(this).val() + '\n';
+  });
+
+  $code = 'var tl = new TimelineMax({repeat:-1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);\n';
+  
+  $('[data-canvas]').append(origSVG + '<style>'+ cssStr +'<'+'/'+'style'+'>\n\n<script>'+ $code +'</script>');
+}
+function render() {
+  alertify.log("coming soon...");
+  return false;
+  
+  if (!$("[data-canvas]").html()) {
+    alertify.error("Abort Operation: No svg detected!");
+    return false;
+  }
+  $('[data-play]').attr('data-play', false)
+         .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
+  stopAnim();
+
+  if ($('[data-render]').text() === 'RENDER') {
+    $('[data-midbtns]').hide();
+    $('[data-export]').show();
+    $('[data-render]').text('STOP').css('color', '#e71fd8');
+    
+    getCode();
+    setTimeout(function() {
+      var fps = $("[data-fps]").val();
+      var duration = tl.duration();
+//      var duration = tl.totoalDuration();
+//      var duration = tl.totalDuration();
+      var frames   = Math.ceil(duration / 1 * fps);
+      var current  = 0;
+
+      // canvas
+      var svg    = document.querySelector("[data-canvas] svg");
+      var canvas = document.createElement("canvas");
+      var ctx    = canvas.getContext("2d");
+
+      canvas.width  = $("[data-project=width]").val();
+      canvas.height = $("[data-project=height]").val();
+      var jsonStr = [];
+
+      function processImage() {
+        tl.progress(current++ / frames);
+
+        var xml  = new XMLSerializer().serializeToString(svg);
+        var blob = window.btoa(xml);
+        var img  = new Image();
+        img.src  = "data:image/svg+xml;base64," + blob;
+
+        img.crossOrigin = "Anonymous";
+        img.onload = function() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(this, 0, 0);
+          var imgType = canvas.toDataURL("image/png");
+          var image = new Image();
+          image.src = imgType;
+          jsonStr.push(imgType);
+          
+          // export gif animation
+          document.querySelector("[data-export=gif]").onclick = function() {
+            $("body").append('<div class="table preloaderbg" data-show="preloader"><div class="cell"><div class="preloader"><svg class="w100p" viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div></div></div>');
+
+            gifshot.createGIF({
+              images: jsonStr,
+              gifWidth: canvas.width,
+              gifHeight: canvas.height,
+              interval: fps / 1000, // seconds
+              progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
+              completeCallback: function() { console.log('completed!!!'); },
+              numWorkers: 2,
+              },function(obj) {
+                if(!obj.error) {
+                  var a = document.createElement("a");
+                  a.href = obj.image;
+                  a.target = "_blank";
+                  
+                  if (a.download === undefined) {
+                    // do stuff
+                  } else {
+                    var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
+                    if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+                      projectname = $("[data-projectname]")[0].value = "my-svgmotion-animation";
+                    }
+
+                    if (bowser.msie && bowser.version <= 6) {
+                      // hello ie
+                    } else if (bowser.firefox) {
+                      // hello firefox
+                      a.download = projectname + ".gif";
+                    } else if (bowser.chrome) {
+                      // hello chrome
+                      a.download = projectname + ".gif";
+                    } else if (bowser.safari) {
+                      // hello safari
+                    } else if(bowser.iphone || bowser.android) {
+                      // hello mobile
+                    }
+                  }
+                  
+                  a.click();
+
+                  $("[data-show=preloader]").remove();
+                }
+              }
+            );
+          };
+          
+          // export image sequence
+          document.querySelector("[data-export=images]").onclick = function() {
+            var zip = new JSZip();
+
+            for (var i = 0; i < jsonStr.length; i++) {
+              zip.file("frame-"+[i]+".png", jsonStr[i].split('base64,')[1],{base64: true});
+            }
+
+            var content = zip.generate({type:"blob"});
+            var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
+            if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+              projectname = $("[data-projectname]")[0].value = "my-svgmotion-animation";
+            }
+            saveAs(content, projectname + "-sequence.zip");
+          };
+        };
+
+        if (current <= frames) {
+          processImage();
+        } else {
+          tl.play(0).timeScale(1.0);
+        }
+      }
+      processImage();
+    }, 2);
+  } else {
+    // reset icons
+    $('[data-export]').hide();
+    $('[data-midbtns]').show();
+
+    // stop animation
+    // reset initial svg code
+    $('[data-play]').attr('data-play', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
+    stopAnim();
+    
+    // reset icon
+    $('[data-render]').text('RENDER').attr('style', '');
+  }
+}
+$('[data-render]').click(function() {
+  render();
+});
 $('[data-play]').trigger('click');
 
 // export files
@@ -352,112 +1022,6 @@ function exportJSON() {
   }
   var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
   saveAs(blob, projectname + ".json");
-}
-function exportZIP() {
-  if (!$('[data-frames] svg')) {
-    alertify.error('Error: No frames detected thus no .gif to export!');
-    return false;
-  }
-   else if ($('[data-frames] svg').length === 1) {
-    alertify.error('Error: Only 1 frame detected thus no .gif to export!');
-    return false;
-  } else {
-    imagesPNG = [];
-    imagesSVG = [];
-    $('[data-frames] svg').each(function(i) {
-      // first begin with the array for the svg files
-      
-      // 2. Serialize element into plain SVG
-      var serializedSVG = new XMLSerializer().serializeToString($('[data-frames] svg')[i]);
-
-      var base64Data = window.btoa(serializedSVG);
-      // The generated string will be something like: 
-      // PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdm.........
-
-      var imgSVGSrc = "data:image/svg+xml;base64," + base64Data;
-      
-      // first push the svg to the svg images array
-      imagesSVG.push(imgSVGSrc);
-      
-      // create dummy canvas element to convert our svg to a png
-      var c = document.createElement('canvas');
-      var ctx = c.getContext("2d");
-      c.width  = $('[data-new=width]').val()
-      c.height = $('[data-new=height]').val()
-
-      var img = new Image();
-      img.src = imgSVGSrc;
-      img.onload = function() {
-        ctx.drawImage(img, 0, 0);
-        
-        // next push the png to the png images array
-        imagesPNG.push(c.toDataURL('image/png'));
-      }
-      c.remove();
-    });
-    
-    setTimeout(function() {
-      var zip = new JSZip();
-
-      // png images
-      for (var i = 0; i < imagesPNG.length; i++) {
-        zip.folder('pngs').file("frame-"+[i]+".png", imagesPNG[i].split('base64,')[1],{base64: true});
-      }
-      // svg images
-      for (var i = 0; i < imagesSVG.length; i++) {
-        zip.folder('svgs').file("frame-"+[i]+".svg", imagesSVG[i].split('base64,')[1],{base64: true});
-      }
-
-      var content = zip.generate({type:"blob"});
-      var projectname = $("[data-projectname]")[0].textContent.toLowerCase().replace(/ /g, "-")
-      if (!$("[data-projectname]")[0].textContent.toLowerCase().replace(/ /g, "-")) {
-        projectname = $("[data-projectname]")[0].textContent = "my-awesome-animation";
-      }
-      saveAs(content, projectname + "_svgMotion.zip");
-    }, 300);
-  }
-}
-function exportGIF() {
-  if (!$('[data-frames] svg')) {
-    alertify.error('Error: No frames detected thus no .gif to export!');
-    return false;
-  }
-   else if ($('[data-frames] svg').length === 1) {
-    alertify.error('Error: Only 1 frame detected thus no .gif to export!');
-    return false;
-  } else {
-    var images = [];
-    $('[data-frames] svg').each(function(i) {
-      // 2. Serialize element into plain SVG
-      var serializedSVG = new XMLSerializer().serializeToString($('[data-frames] svg')[i]);
-
-      var base64Data = window.btoa(serializedSVG);
-      // The generated string will be something like: 
-      // PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdm.........
-
-      var imgSVGSrc = "data:image/svg+xml;base64," + base64Data;
-      images.push(imgSVGSrc);
-    });
-
-    gifshot.createGIF({
-      images: images,
-      gifWidth: canvas.width,
-      gifHeight: canvas.height,
-      interval: $('[data-framerate]').val() / 1000, // seconds
-      progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
-      completeCallback: function() { console.log('completed!!!'); },
-      numWorkers: 2,
-    },function(obj) {
-      if(!obj.error) {
-        var image = obj.image;
-        var link = document.createElement("a");
-        link.href = image;
-        projectname = $("[data-projectname]")[0].textContent.toLowerCase().replace(/ /g, "-");
-        link.download = projectname + '.gif';
-        link.click();
-      }
-    });
-  }
 }
 
 // hide tools options onload

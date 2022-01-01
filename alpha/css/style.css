@@ -13,6 +13,9 @@
 }
 body {
   font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18.45px;
+  font-weight: 400;
+  line-height: 20px;
 }
 a {
   cursor: pointer;
@@ -40,14 +43,6 @@ a {
 button {
   background: transparent;
   border: 0;
-}
-html, body {
-  font-family: "Helvetica","Arial",sans-serif;
-/*  font-size: 14px;*/
-/*  font-size: 2vw;*/
-  font-size: 18.45px;
-  font-weight: 400;
-  line-height: 20px;
 }
 input[type=range] {
   position: relative;
@@ -253,7 +248,8 @@ input.numinhead[type=text] {
 .topmenu {
   top: 0;
 }
-.topmenu img {
+.topmenu img,
+.topmenu svg {
   cursor: pointer;
   padding: 0 15px;
   fill: currentcolor;
@@ -262,6 +258,9 @@ input.numinhead[type=text] {
 .topmenu .txt {
   position: relative;
   top: -3px;
+}
+.topmenu .pointer {
+  cursor: pointer;
 }
 svg.checkbox {
   position: relative;
@@ -275,6 +274,20 @@ svg.checkbox path {
   transform-origin: center;
   transform: scale(1.5) translate(2px, -3px);
   stroke: transparent;
+}
+.librarylinks a {
+  position: relative;
+  top: 3px;
+  padding: 0 calc(3vw);
+}
+[data-midbtns] a {
+  position: relative;
+  top: 2px;
+  padding: 0 7px;
+}
+[data-menubuttons] {
+  position: relative;
+  top: -1px;
 }
 
 /* color picker/palette */
@@ -327,10 +340,9 @@ svg.checkbox path {
 [data-canvas] {
   line-height: 0;
 }
-[data-canvas] svg {
-  position: absolute;
-  top: 0;
-  left: 0;
+[data-canvas] svg,
+[data-dialog=layers] .origsvg svg,
+[data-dialog=render] svg {
   width: 100%;
   height: 100%;
 }
@@ -403,36 +415,73 @@ svg.checkbox path {
   display: inline-block;
   width: auto;
 }
-.assets div {
-  width: 200px;
-  text-align: center;
+[data-dialog=layers].layers.right {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 0;
+  bottom: 0;
 }
-.assets div img {
-/*  width: 64px;*/
-  width: 60px;
+[data-dialog=layers].layers ul {
+  font-family: "Helvetica","Arial",sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  
+  list-style: none;
+  margin: 0 0 60px 0;
+  padding: 0;
 }
-.assets div > a > img:first-child() {
-  text-align: left;
+.dialogbtn {
+  position: fixed;
+  left: 50%;
+  width: 50%!important;
+  right: 0;
+  bottom: 0;
+  border-radius: 0!important;
+  margin: 0!important;
 }
-.assets div > a > img:last-child() {
-  float: right;
+[data-dialog=layers].layers ul li {
+  cursor: pointer;
+  padding: 10px;
 }
-.assets div h1 {
+
+/* vertical center */
+.table {
+  display: table;
+  position: absolute;
+  top: 49px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.cell {
+  display: table-cell;
+  vertical-align: middle;
   text-align: center;
 }
 
-/* misc */
-.topmenu .pointer,
-.dialog.assets .pointer {
-  cursor: pointer;
+/* gif export preloader */
+.preloader svg {
+  width: 100%;
 }
-.dialog.assets .ib {
-  display: inline-block;
+.preloader tspan {
+  stroke: #666;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 5s linear alternate infinite;
+}
+@keyframes draw {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* colors */
 body {
-  font-family: Lato;
   background-color: #131722;
   background-image: linear-gradient(45deg, #1a1f2c 25%, transparent 25%), linear-gradient(-45deg, #1a1f2c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1f2c 75%), linear-gradient(-45deg, transparent 75%, #1a1f2c 75%);
   background-size: 20px 20px;
@@ -475,6 +524,9 @@ input.numinhead,
 .toolsmenu select option {
   color: #fff;
 }
+.preloader tspan {
+  stroke: #fff;
+}
 
 /* filter for original blue image */
 .active img {
@@ -483,8 +535,9 @@ input.numinhead,
 
 /* dark background */
 .topmenu,
-[data-play], [data-playit] {
-  background: #131722;
+[data-play], [data-playit],
+.preloaderbg {
+  background: #030a1e;
 }
 
 /* black background */
@@ -523,6 +576,7 @@ input.numinhead,
 .dialog:not(.colorpicker) button.green {
   background-color: #19bfa4;
 }
+.mainmenu a.active,
 .mainmenu button.active {
   color: #1e7eeb;
 }
@@ -535,6 +589,9 @@ input.numinhead,
 [data-zoom=true] img {
   fill: currentcolor;
   filter: brightness(1);
+}
+.dialog ul li.selector {
+  color: #1e7eeb;
 }
 
 /* misc colors */

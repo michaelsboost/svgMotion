@@ -1,7 +1,7 @@
 svgMotion
 ===================
 
-This version is constantly updating and changing. Note that your project files may unexpectedly not work as this is an alpha development page not a beta or release candidate. 
+This version is constantly updating and changing. Note that your project files may unexpectedly not work as this is an alpha development page NOT a beta or release candidate. 
 
 You can view the live development page at - https://svgmotion.michaelsboost.repl.co/alpha/
 
