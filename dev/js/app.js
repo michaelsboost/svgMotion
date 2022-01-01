@@ -1,5 +1,5 @@
 /*
-  Version: 1.000-alpha
+  Version: 1.000-dev
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
@@ -23,13 +23,13 @@ $('[data-log]').on('click', function() {
 
 // svgMotion info
 $('[data-info]').click(function() {
-//  alertify.log('<div style="font-size: 14px; text-align: center;"><img src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5></div>');
+//  alertify.log('<div style="font-size: 14px; text-align: center;"><img src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5></div>');
   
 //  swal({
-//    html: '<img class="logo" src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+//    html: '<img class="logo" src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
 //  });
   swal({
-    html: '<svg class="logo" style="isolation:isolate; width: 50%;" viewBox="0 0 512 512"><path d=" M 166.149 0.009 C 158.748 52.853 130.195 97.698 65.349 162.544 L 58.243 169.65 L 63.815 178.012 C 128.149 274.497 231.636 486.999 243.734 511.991 L 243.734 197.216 C 243.734 196.314 244.063 195.517 244.245 194.677 C 239.436 193.057 235.061 190.359 231.454 186.791 C 220.928 176.276 218.552 160.099 225.611 147.002 C 232.669 133.905 247.487 126.994 262.058 130.004 C 276.628 133.014 287.495 145.232 288.785 160.054 C 290.075 174.876 281.482 188.787 267.651 194.269 C 267.894 195.24 268.24 196.176 268.24 197.216 L 268.249 512 C 280.312 487.095 383.842 274.514 448.177 178.012 L 453.757 169.659 L 446.651 162.553 C 381.805 97.707 353.243 52.853 345.851 0 L 166.149 0.009 Z " /></svg><br><h1>svgMotion</h1><h5>Version 1.000-alpha</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+    html: '<svg class="logo" style="isolation:isolate; width: 50%;" viewBox="0 0 512 512"><path d=" M 166.149 0.009 C 158.748 52.853 130.195 97.698 65.349 162.544 L 58.243 169.65 L 63.815 178.012 C 128.149 274.497 231.636 486.999 243.734 511.991 L 243.734 197.216 C 243.734 196.314 244.063 195.517 244.245 194.677 C 239.436 193.057 235.061 190.359 231.454 186.791 C 220.928 176.276 218.552 160.099 225.611 147.002 C 232.669 133.905 247.487 126.994 262.058 130.004 C 276.628 133.014 287.495 145.232 288.785 160.054 C 290.075 174.876 281.482 188.787 267.651 194.269 C 267.894 195.24 268.24 196.176 268.24 197.216 L 268.249 512 C 280.312 487.095 383.842 274.514 448.177 178.012 L 453.757 169.659 L 446.651 162.553 C 381.805 97.707 353.243 52.853 345.851 0 L 166.149 0.009 Z " /></svg><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
   });
 //  $('.swal2-show').css('background', '#000');
   $('.swal2-show').css('font-size', '14px');
@@ -88,6 +88,73 @@ $('[data-confirm="newproject"]').click(function() {
   })
 });
 
+function loadfile(input) {
+  var reader = new FileReader();
+  var path = input.value;
+  reader.onload = function(e) {
+    if (path.toLowerCase().substring(path.length - 4) === ".svg") {
+      // is animation playing? If so stop
+      if ($('[data-play]').attr('data-play') === 'stop') {
+        // trigger stop
+        $('[data-play=stop]').trigger('click');
+      }
+      
+      if ($("[data-keys]").is(':visible')) {
+        var keys = document.querySelector("[data-keys]");
+        if (keys.innerHTML) {
+          swal({
+            title: 'Keyframes Detected!',
+            text: "Would you like to clear these?",
+            type: 'question',
+            showCancelButton: true
+          }).then((result) => {
+            if (result.value) {
+              $('[data-keys]').html('');
+            }
+          })
+        }
+      }
+
+      document.querySelector(".canvas").innerHTML = e.target.result;
+      svgLoaded();
+    } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
+      alertify.log('project files coming soon...');
+//      if ($('[data-keys]').html()) {
+//        swal({
+//          title: 'Keys Detected!',
+//          text: "Would you like to clear these?",
+//          type: 'question',
+//          showCancelButton: true
+//        }).then((result) => {
+//          if (result.value) {
+//            $('[data-keys]').html('');
+//            loadedJSON = JSON.parse(e.target.result);
+//            loadJSON();
+//
+//            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+//            $("[data-action=fadeOut]").fadeOut(400, function() {
+//              $("[data-action=fadeOut]").remove();
+//            });
+//          }
+//        })
+//      } else {
+//        $('[data-keys]').html('');
+//        loadedJSON = JSON.parse(e.target.result);
+//        loadJSON();
+//
+//        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+//        $("[data-action=fadeOut]").fadeOut(400, function() {
+//          $("[data-action=fadeOut]").remove();
+//        });
+//      }
+    } else {
+      alertify.error('Error: File type not supported');
+    }
+  };
+  reader.readAsText(input.files[0]);
+}
+
+// detect if selector meets frame by frame animation parameters
 function detectForFrameByFrame() {
   // first detect if there's a selection
   if (!$('[data-selectorlist].selector').is(':visible')) {
@@ -131,51 +198,7 @@ function svgLoaded() {
   var $Canvas = document.querySelector(".canvas > svg");
   if ($Canvas) {
     // canvas interactive selection
-    $('.canvas svg *').on('click', function() {
-      // is library visible? if so proceed
-      if ($('.libraryh').is(':visible')) {
-        // is selected already visible? If so remove to select active one
-        if ($('[data-selected]').is(':visible')) {
-          $("[data-selected]").removeAttr("data-selected");
-          $(this).attr('data-selected', '');
-
-          // display selection in library
-          $('[data-display=selector] li').removeClass('selector');
-
-          // remember selector(s) via string
-          $str = "";
-
-          // activate selection in libary from canvas
-          $(".canvas svg [data-selected]").each(function() {
-            $str = $(this).getPath().split(remStr).join('');
-            $('[data-selectorlist]').each(function() {
-              if ($(this).find('span').text() === $str) {
-                $(this).addClass('selector');
-              }
-            });
-          });
-        } else {
-          $(this).attr('data-selected', '');
-
-          // display selection in library
-          $('[data-display=selector] li').removeClass('selector');
-
-          // remember selector(s) via string
-          $str = "";
-
-          // activate selection in libary from canvas
-          $(".canvas svg [data-selected]").each(function() {
-            $str = $(this).getPath().split(remStr).join('');
-            $('[data-selectorlist]').each(function() {
-              if ($(this).find('span').text() === $str) {
-                $(this).addClass('selector');
-              }
-            });
-          });
-        }
-      }
-      return false;
-    });
+    canvasClickSelect();
 
     // remove width/height attributes if detected
     if ($Canvas.getAttribute("width") || $Canvas.getAttribute("height")) {
@@ -1082,4 +1105,4 @@ function initDemo() {
 }
 
 // bot
-initDemo();
+//initDemo();

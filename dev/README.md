@@ -1,16 +1,16 @@
 svgMotion
 ===================
 
-This version is constantly updating and changing. Note that your project files may unexpectedly not work as this is an alpha development page NOT a beta or release candidate. 
+This version is constantly updating and changing. Note that your project files may unexpectedly not work as this is a dev version NOT an alpha, beta or release candidate. 
 
-You can view the live development page at - https://svgmotion.michaelsboost.repl.co/alpha/
+You can view the live development page at - https://svgmotion.michaelsboost.repl.co/dev/
 
 ![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/preview.png)
 
 Version
 -------------
 
-1.000-alpha
+1.000-dev
 
 License
 -------------
