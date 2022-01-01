@@ -329,7 +329,7 @@ svg.checkbox path {
   bottom: 0;
   overflow: auto;
 }
-.dialog:not([data-canvasbg]) {
+.dialog:not([data-canvasbg], .animationtype) {
   padding: 1em;
   font-size: 14px;
 }
@@ -429,17 +429,8 @@ svg.checkbox path {
   line-height: 20px;
   
   list-style: none;
-  margin: 0 0 60px 0;
+  margin: 0;
   padding: 0;
-}
-.dialogbtn {
-  position: fixed;
-  left: 50%;
-  width: 50%!important;
-  right: 0;
-  bottom: 0;
-  border-radius: 0!important;
-  margin: 0!important;
 }
 [data-dialog=layers].layers ul li {
   cursor: pointer;
@@ -510,7 +501,7 @@ body {
   border: 1px solid #1e7eeb;
 }
 
-/* white text color */
+/* white color */
 .topmenu,
 [data-play], [data-playit],
 .topmenu a,
@@ -602,7 +593,8 @@ input.numinhead,
   color: #e85b46;
 }
 .topmenu [data-render],
-.topmenu [data-export] {
+.topmenu [data-export],
+.topmenu .green {
   color: #2be71f;
 }
 [disabled] {

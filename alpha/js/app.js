@@ -9,7 +9,7 @@
 // variables
 var version = '1.000',
     remStr  = "html > body > div:nth-child(2) > div > svg > ",
-    $this, $str, $code, cssStr, jsStr, origSVG, thisTool, 
+    $this, $str, $code, cssStr, jsStr, origSVG, thisTool, anim,
     loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
       saveSvgAsPng(document.querySelector(".canvas svg"), value + ".png");
@@ -87,6 +87,41 @@ $('[data-confirm="newproject"]').click(function() {
     }
   })
 });
+
+function detectForFrameByFrame() {
+  // first detect if there's a selection
+  if (!$('[data-selectorlist].selector').is(':visible')) {
+    $('.librarylinks [data-init]').hide();
+    return false;
+  } else {
+    $('.librarylinks [data-init]').show();
+  }
+  
+  // detect that this is the only selector
+  if ($('[data-selected]').length === 1) {
+    $('.librarylinks [data-init=framebyframe]').show();
+
+    // if it's the only selector then...
+    // detect if the children are group elements
+    $('[data-selected]').find('> *').each(function(index) {
+      if ($(this).prop('tagName').toLowerCase() != 'g') {
+        $('.librarylinks [data-init=framebyframe]').hide();
+        return false;
+      } else {
+        $('.librarylinks [data-init=framebyframe]').show();
+      }
+    });
+  
+    // only show frame by frame if there's an array of only group children
+    if ($('[data-selected]').children().length === 0) {
+      $('.librarylinks [data-init=framebyframe]').hide();
+      return false;
+    }
+  } else {
+    // hide because this is not the only selector
+    $('.librarylinks [data-init=framebyframe]').hide();
+  }
+}
 
 function svgLoaded() {
   // clear canvas
@@ -187,6 +222,14 @@ function svgLoaded() {
           if ($('[data-selected]').is(':visible')) {
             $("[data-selected]").removeAttr("data-selected");
           }
+          
+          if ($('[data-selectorlist].selector').is(':visible')) {
+            // show tween and framebyframe init buttons
+            $('.librarylinks [data-init]').show();
+          } else {
+            // hide tween and framebyframe init buttons
+            $('.librarylinks [data-init]').hide();
+          }
 
           // render selectors in canvas
           $('[data-selectorlist].selector').each(function() {
@@ -196,6 +239,9 @@ function svgLoaded() {
               $str += ", .canvas svg > " + $(this).find('span').text();
             }
             $($str).attr("data-selected", "");
+          
+            // only show animation frame by frame init button if parameters are met
+            detectForFrameByFrame();
           });
           return false;
         });
@@ -234,6 +280,12 @@ function canvasClickSelect() {
             }
           });
         });
+        
+        // show tween and framebyframe init buttons
+        $('.librarylinks [data-init]').show();
+
+        // only show frame by frame if there's an array of only group children
+        detectForFrameByFrame();
       } else {
         $(this).attr('data-selected', '');
 
@@ -252,6 +304,12 @@ function canvasClickSelect() {
             }
           });
         });
+        
+        // show tween and framebyframe init buttons
+        $('.librarylinks [data-init]').show();
+
+        // only show frame by frame if there's an array of only group children
+        detectForFrameByFrame();
       }
     }
     return false;
@@ -371,6 +429,16 @@ $('[data-open=layers]').on('click', function() {
   $('[data-library]').show();
   $('[data-canvasbg]').css('right', '50%');
   $('[data-canvasbg]').css('border-right', '0');
+
+  // render selector(s) in canvas
+  $('[data-selectorlist].selector').each(function() {
+    if ($str === "") {
+      $str = ".canvas svg > " + $(this).find('span').text();
+    } else {
+      $str += ", .canvas svg > " + $(this).find('span').text();
+    }
+    $($str).attr("data-selected", "");
+  });
 });
 $('[data-close=layers]').on('click', function() {
   $('[data-open=layers].active').removeClass('active');
@@ -379,6 +447,22 @@ $('[data-close=layers]').on('click', function() {
   $('[data-mainmenu]').show();
   $('[data-canvasbg]').css('right', '');
   $('[data-canvasbg]').css('border', '');
+  $('[data-selected]').removeAttr("data-selected");
+});
+$('[data-init=tween]').on('click', function() {
+  if ($('[data-selectorlist].selector').length === 1) {
+//      if ($('[data-selected]')[0].tagName.toLowerCase() === 'path' || $('[data-selected]')[0].tagName.toLowerCase() === 'polygon' || $('[data-selected]')[0].tagName.toLowerCase() === 'line') {
+////        $('[data-open=editpath]').removeClass('hide');
+//      } else {
+////        $('[data-open=editpath]').addClass('hide');
+//      }
+    alertify.log('init tween on a single selector coming soon...');
+  } else {
+    alertify.log('init tween on multiple selectors coming soon...');
+  }
+});
+$('[data-init=framebyframe]').on('click', function() {
+  alertify.log('frame by frame animation coming soon...');
 });
 
 // selectors for layers
@@ -430,6 +514,9 @@ $('[data-select]').on('click', function() {
     if ($('[data-selected]').is(':visible')) {
       $("[data-selected]").removeAttr("data-selected");
     }
+    
+    // hide tween and framebyframe init buttons
+    $('.librarylinks [data-init]').hide();
     return false;
   } else 
     if ($val === 'parent') {
@@ -696,6 +783,9 @@ $('[data-select]').on('click', function() {
       $str += ", .canvas svg > " + $(this).find('span').text();
     }
     $($str).attr("data-selected", "");
+    
+    // show tween and framebyframe init buttons
+    detectForFrameByFrame();
   });
 });
 
@@ -737,60 +827,6 @@ $('.filterval').change(function() {
 });
 applyFilters();
 
-// set animation class name
-$('[data-change=name]').on('click', function() {
-  swal({
-    title: 'Project name!',
-    input: 'text',
-    inputValue: $(this).text(),
-    inputPlaceholder: "Project name!",
-    showCancelButton: true,
-    confirmButtonText: 'Confirm',
-    showLoaderOnConfirm: true
-  }).then((result) => {
-    if (result.value) {
-      $(this).text(result.value.replace(/[^\w\s]/gi, '').split(' ').join(''));
-    } else {
-      swal(
-        'Oops!',
-        console.error().toString(),
-        'error'
-      );
-    }
-  });
-});
-
-// call asset as a frame by frame animation or a tween animation
-$('[data-callAnim=framebyframe]').on('click', function() {
-  swal({
-    title: 'Proceed with frame by frame?',
-    text: "Are you sure? This current vector's animation data will be lost!",
-    type: 'question',
-    showCancelButton: true
-  }).then((result) => {
-    if (result.value) {
-      $(this).parent().find('textarea.css').val('.svgmotion svg.'+ $(this).parent().find('h1').text() +' > g > g:not(:first-of-type) {\n  display: none;\n}');
-      $(this).parent().find('textarea.js').val('let groups = gsap.utils.toArray(".svgmotion svg.'+ $(this).parent().find('h1').text() +' > g > g");\nlet wrap = gsap.utils.wrap(0, groups.length - 1);\nlet frame = 0;\n\ngsap.to({}, {\n  duration: 0.1,\n  repeat: -1,\n  onRepeat() {\n    let last = groups[wrap(frame)];\n    let next = groups[wrap(++frame)];\n    \n    last.style.display = "none";\n    next.style.display = "block";\n  }\n})');
-    } else {
-      return false;
-    }
-  })
-});
-$('[data-callAnim=tween]').on('click', function() {
-  swal({
-    title: 'Proceed with tween?',
-    text: "Are you sure? This current vector's animation data will be lost!",
-    type: 'question',
-    showCancelButton: true
-  }).then((result) => {
-    if (result.value) {
-      alertify.log('coming soon..');
-    } else {
-      return false;
-    }
-  })
-});
-
 // init animations
 function runAnim() {
   // set the canvas size
@@ -804,21 +840,10 @@ function runAnim() {
   getCode();
   
   // run the code
-  
-  
-  // hide settings
-  $('[data-call=settings] img').css({
-    width: 0,
-    padding: 0,
-    overflow: 'hidden'
-  });
 }
 function stopAnim() {
   // clear and reset the canvas
   $('[data-canvas]').empty().html(origSVG);
-  
-  // show settings
-  $('[data-call=settings] img').removeAttr('style');
 }
 function getCode() {
   // clear the variables
@@ -855,6 +880,13 @@ function render() {
   stopAnim();
 
   if ($('[data-render]').text() === 'RENDER') {
+    // hide settings
+    $('[data-call=settings] img').css({
+      width: 0,
+      padding: 0,
+      overflow: 'hidden'
+    });
+    
     $('[data-midbtns]').hide();
     $('[data-export]').show();
     $('[data-render]').text('STOP').css('color', '#e71fd8');
@@ -981,6 +1013,9 @@ function render() {
     
     // reset icon
     $('[data-render]').text('RENDER').attr('style', '');
+  
+    // show settings
+    $('[data-call=settings] img').removeAttr('style');
   }
 }
 $('[data-render]').click(function() {
@@ -1031,3 +1066,20 @@ $('[data-toolsmenu] [data-toolsoption]').hide();
 // hide dialogs onload
 $('[data-dialogs] [data-dialog]').hide();
 $('[data-tools=zoom]').trigger('click');
+
+function initDemo() {
+  $('[data-projectname]').val('Character Walking');
+  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\n https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
+  $('[data-call=layers]').trigger('click');
+  $('[data-selectorlist] span').filter(function() {
+    if (this.textContent === 'g > g:nth-child(4)') {
+      $(this).trigger('click');
+    } else {
+      return false;
+    }
+  });
+  // frame by frame animation string adds " > g"
+}
+
+// bot
+initDemo();
