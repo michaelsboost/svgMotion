@@ -405,13 +405,6 @@ svg.checkbox path {
   min-height: 100px;
   padding: 10px;
 }
-.canvas {
-  background: #fff;
-/*
-  width: 512px;
-  height: 512px;
-*/
-}
 .dialog:not(.colorpicker) .hscroll {
   white-space: nowrap;
   overflow: auto;
@@ -423,7 +416,7 @@ svg.checkbox path {
 }
 [data-dialog=layers].layers.right {
   position: absolute;
-  top: 0;
+  top: 50px;
   left: 50%;
   right: 0;
   bottom: 0;

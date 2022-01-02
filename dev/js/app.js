@@ -191,9 +191,9 @@ function detectForFrameByFrame() {
   }
 }
 
-function svgLoaded() {
-  // clear canvas
-  $('[data-display=selector]').html('');
+var svgLoaded = function() {
+  // clear canvas from layers window
+  $('[data-display=selector]').empty();
   
   // locate SVG
   var $Canvas = document.querySelector(".canvas > svg");
@@ -1134,4 +1134,4 @@ function initDemo() {
 
 // bot
 //initDemo();
-// $('[data-call=keys]').trigger('click');
+//$('[data-call=keys]').trigger('click');
