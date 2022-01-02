@@ -60,11 +60,14 @@ $('[data-confirm="newproject"]').click(function() {
       // reset fps
       $('[data-fps]').val( $('[data-new=fps]').val() );
       
+      // clear audio
+      $('[data-audio]').val('');
+      
       // clear notepad
       $('[data-notepad]').val('');
       
       // clear keys
-      $('[data-keys]').empty();
+      $('[data-dialog=keys]').empty();
       
       // reset filters
       $('[data-blurfilter]').val(0);
@@ -1079,26 +1082,68 @@ function getProjectJSON() {
   projectJSON = {
     "version": version,
     "settings": [{
-      "name": $('[data-projectname]')[0].textContent,
-      "width": $('[data-new=width]').val(),
-      "height": $('[data-new=height]').val(),
-      "framerate": $('[data-framerate]').val(),
-      "notepad": $('[data-notepad]').val()
+      "name"     : $('[data-projectname]')[0].textContent,
+      "width"    : $('[data-project=width]').val(),
+      "height"   : $('[data-project=height]').val(),
+      "framerate": $('[data-fps]').val(),
+      "audio"    : $('[data-audio]').val(),
+      "notepad"  : $('[data-notepad]').val()
     }],
-    swatches,
     "filters": [{
-      "blurfilter": blurfilter.value,
-      "huefilter": huefilter.value,
+      "blurfilter"      : blurfilter.value,
+      "huefilter"       : huefilter.value,
       "brightnessfilter": brightnessfilter.value,
-      "contrastfilter": contrastfilter.value,
-      "saturatefilter": saturatefilter.value,
-      "grayscalefilter": grayscalefilter.value,
-      "sepiafilter": sepiafilter.value,
-      "invertfilter": invertfilter.value
+      "contrastfilter"  : contrastfilter.value,
+      "saturatefilter"  : saturatefilter.value,
+      "grayscalefilter" : grayscalefilter.value,
+      "sepiafilter"     : sepiafilter.value,
+      "invertfilter"    : invertfilter.value
     }],
-    "svg": canvas.toSVG().replace(/Created with Fabric.js 4.6.0/g, "Created with svgMotion - https://michaelsboost.github.io/svgMotion/"),
-    "frames": $("[data-frames]").html()
+    "originalSVG": origSVG.toString().replace(/Created with Fabric.js 4.6.0/g, "Created with svgMotion - https://michaelsboost.github.io/svgMotion/"),
+    "keys": $("[data-dialog=keys]").html()
   };
+};
+function saveCode(filename) {
+  JSZipUtils.getBinaryContent("libraries/gsap/gsap-public.zip", function(err, data) {
+    if(err) {
+      throw err // or handle err
+    }
+
+    var zip = new JSZip();
+
+    // Put all application files in subfolder for shell script
+    var zipFolder = zip.folder("libraries");
+    zipFolder.load(data);
+
+    // html
+    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n    <style>\n    body {margin:0;}</style>\n  </head>\n  <body>\n    <div class="svgmotion">\n      '+ $('.canvas').html() +'\n    </div>\n\n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
+
+    // javascript
+    $code = '';
+    $('[data-function]').each(function() {
+      $code += this.value + '\n';
+    });
+    $code = '/*\n  This animation was created using svgMotion v'+ $version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar tl = new TimelineMax({\n  repeat: -1\n})\n\n' + $code.split('.canvas').join('.svgmotion') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0);'
+
+    zip.file("js/animation.js", $code);
+    var content = zip.generate({type:"blob"});
+    saveAs(content, filename + ".zip");
+  });
+}
+function exportSVGFrame() {
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
+  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-projectname]")[0].value = "svgMotion-animation-frame";
+  }
+  blob = new Blob([ '<!-- Generator: svgMotion - https://michaelsboost.com/svgMotion/ -->\n' + $(".canvas").html() ], {type: "text/html"});
+  saveAs(blob, projectname + ".svg");
+};
+function exportPNGFrame() {
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
+  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-projectname]")[0].value = "svgMotion-animation-frame";
+  }
+  saveSvgAsPng(document.querySelector(".canvas svg"), projectname + ".png");
 };
 function exportJSON() {
   getProjectJSON();
@@ -1108,7 +1153,16 @@ function exportJSON() {
   }
   var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
   saveAs(blob, projectname + ".json");
-}
+};
+$('[data-data-exportframe=svg]').on('click', function() {
+  $(".canvas script").remove();
+  exportSVGFrame();
+  updatePreview();
+});
+$('[data-data-exportframe=png]').on('click', function() {
+  exportPNGFrame();
+  updatePreview();
+});
 
 // hide tools options onload
 $('[data-toolsmenu]').hide();
@@ -1121,6 +1175,17 @@ $('[data-tools=zoom]').trigger('click');
 function initDemo() {
   $('[data-projectname]').val('Character Walking');
   $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\n https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
+  
+  // init filters
+  blurfilter.value = 0;
+  huefilter.value = -6;
+  brightnessfilter.value = 0.76;
+  contrastfilter.value = 1.8;
+  saturatefilter.value = 1;
+  grayscalefilter.value = 0;
+  sepiafilter.value = 30;
+  $('#invertfilter').val(0).trigger('change');
+  
   $('[data-call=layers]').trigger('click');
   $('[data-selectorlist] span').filter(function() {
     if (this.textContent === 'g > g:nth-child(4)') {
@@ -1130,8 +1195,9 @@ function initDemo() {
     }
   });
   // frame by frame animation string adds " > g"
+  $('[data-close=layers]').trigger('click');
 }
 
 // bot
-//initDemo();
+initDemo();
 //$('[data-call=keys]').trigger('click');

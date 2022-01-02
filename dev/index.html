@@ -407,7 +407,7 @@
         <span data-toolsoption="hue" style="display: none;">
           Hue:
 
-          <input id="huefilter" class="filterval" type="range" min="0" step="1" value="-6" max="360">
+          <input id="huefilter" class="filterval" type="range" min="0" step="1" value="0" max="360">
 
           <a data-close="filter">
             <svg style="isolation:isolate" viewBox="0 0 512 512">
@@ -418,7 +418,7 @@
         <span data-toolsoption="brightness" style="display: none;">
           Brightness:
           
-          <input id="brightnessfilter" class="filterval numinhead" type="number" min="0" step="0.01" value="0.76">
+          <input id="brightnessfilter" class="filterval numinhead" type="number" min="0" step="0.01" value="1">
           
           <a data-close="filter">
             <svg style="isolation:isolate" viewBox="0 0 512 512">
@@ -429,7 +429,7 @@
         <span data-toolsoption="contrast" style="display: none;">
           Contrast:
           
-          <input id="contrastfilter" class="filterval numinhead" type="number" min="0" step="0.01" value="1.8">
+          <input id="contrastfilter" class="filterval numinhead" type="number" min="0" step="0.01" value="1">
           
           <a data-close="filter">
             <svg style="isolation:isolate" viewBox="0 0 512 512">
@@ -462,7 +462,7 @@
         <span data-toolsoption="sepia" style="display: none;">
           Sepia:
           
-          <input id="sepiafilter" class="filterval" type="range" min="0" step="1" value="30" max="100">
+          <input id="sepiafilter" class="filterval" type="range" min="0" step="1" value="0" max="100">
           
           <a data-close="filter">
             <svg style="isolation:isolate" viewBox="0 0 512 512">
@@ -486,8 +486,9 @@
     
     <!-- canvas -->
     <div class="dialog" data-canvasbg>
+<!--        <svg style="isolation:isolate; filter: blur(0px) hue-rotate(-6deg) brightness(0.76) contrast(1.8) saturate(1) grayscale(0%) sepia(30%) invert(0%);" viewBox="0 0 1280 720">-->
       <div data-canvas class="canvas svgmotion">
-        <svg style="isolation:isolate; filter: blur(0px) hue-rotate(-6deg) brightness(0.76) contrast(1.8) saturate(1) grayscale(0%) sepia(30%) invert(0%);" viewBox="0 0 1280 720">
+        <svg style="isolation:isolate;" viewBox="0 0 1280 720">
           <defs>
             <clipPath id="_clipPath_YxltgJsdkqQfIXWFwTcnstzkUhzxkp0Y">
               <rect width="1280" height="720"/>
