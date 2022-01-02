@@ -506,6 +506,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
   } else 
     if ($val === 'none') {
     $('[data-display=selector] li').removeClass('selector');
@@ -564,6 +566,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
     return false;
   } else 
     if ($val === 'next') {
@@ -604,6 +608,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
     return false;
   } else 
     if ($val === 'prev') {
@@ -644,6 +650,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
     return false;
   } else 
     if ($val === 'even') {
@@ -685,6 +693,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
   } else 
     if ($val === 'odd') {
     if (!$('[data-selected]').is(':visible')) {
@@ -725,6 +735,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
   } else 
     if ($val === 'custom') {
     swal({
@@ -763,6 +775,8 @@ $('[data-select]').on('click', function() {
         return false;
       }
     });
+      
+    detectForFrameByFrame();
   } else {
     alertify.error('Selection error');
   }
