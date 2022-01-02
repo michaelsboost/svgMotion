@@ -12,7 +12,7 @@ var version = '1.000',
     $this, $str, $code, cssStr, jsStr, origSVG, thisTool, anim,
     loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
-      saveSvgAsPng(document.querySelector(".canvas svg"), value + ".png");
+      saveSvgAsPng(document.querySelector(".canvas > svg"), value + ".png");
     };
 
 // alertify log
@@ -1143,7 +1143,7 @@ function exportPNGFrame() {
   if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
     projectname = $("[data-projectname]")[0].value = "svgMotion-animation-frame";
   }
-  saveSvgAsPng(document.querySelector(".canvas svg"), projectname + ".png");
+  saveAsPNG(projectname);
 };
 function exportJSON() {
   getProjectJSON();
@@ -1154,14 +1154,15 @@ function exportJSON() {
   var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
   saveAs(blob, projectname + ".json");
 };
-$('[data-data-exportframe=svg]').on('click', function() {
+$('[data-exportframe=svg]').on('click', function() {
+  $(".canvas style").remove();
   $(".canvas script").remove();
   exportSVGFrame();
-  updatePreview();
+//  updatePreview();
 });
-$('[data-data-exportframe=png]').on('click', function() {
+$('[data-exportframe=png]').on('click', function() {
   exportPNGFrame();
-  updatePreview();
+//  updatePreview();
 });
 
 // hide tools options onload
