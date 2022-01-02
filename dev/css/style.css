@@ -275,10 +275,16 @@ svg.checkbox path {
   transform: scale(1.5) translate(2px, -3px);
   stroke: transparent;
 }
-.librarylinks a {
+.librarylinks a,
+.playback a {
   position: relative;
   top: 3px;
+}
+.librarylinks a {
   padding: 0 calc(3vw);
+}
+.playback a {
+  padding: 0 calc(2vw);
 }
 [data-midbtns] a {
   position: relative;
@@ -435,6 +441,13 @@ svg.checkbox path {
 [data-dialog=layers].layers ul li {
   cursor: pointer;
   padding: 10px;
+}
+[data-dialog=keys].timelinewindow.bottom {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 /* vertical center */

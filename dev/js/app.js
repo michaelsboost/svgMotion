@@ -88,6 +88,7 @@ $('[data-confirm="newproject"]').click(function() {
   })
 });
 
+// load file function
 function loadfile(input) {
   var reader = new FileReader();
   var path = input.value;
@@ -362,18 +363,11 @@ $('[data-project=width], [data-project=height]').on('change', function() {
 });
 
 // init panzoom
-//var prevArea = document.querySelector('.canvas');
-//var inst = panzoom(prevArea, {
-//  bounds: true,
-//  boundsPadding: 0.1
-//});
 var drawArea = document.querySelector('[data-canvas]');
 var instance = panzoom(drawArea, {
   bounds: true,
   boundsPadding: 0.1
 });
-//instance.pause();
-//instance.resume();
 
 // toggle dialogs
 function openDialog(dialog) {
@@ -412,40 +406,6 @@ $('[data-call]').on('click', function(val) {
 });
 
 // tools
-$('[data-play]').on('click', function() {
-  if ($(this).attr('data-play') === 'true') {
-    $(this).attr('data-play', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
-    $('[data-render]').hide();
-    stopAnim();
-  } else {
-    $(this).attr('data-play', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><g transform="matrix(1.61682,0,0,1.61682,-157.907,-157.907)"><g><path d="M352.877,276.034L174.818,408.882C160.033,419.81 148.034,413.81 148.034,395.383L148.034,116.617C148.034,98.19 160.033,92.19 174.818,103.118L352.877,235.966C367.662,246.893 367.662,264.892 352.877,276.034Z"/></g></g></svg>');
-    $('[data-render]').show();
-    runAnim();
-  }
-});
-$('[data-zoom]').on('click', function() {
-  if ($(this).attr('data-zoom') === 'true') {
-    $('[data-zoom]').attr('data-zoom', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#fff"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#fff"></line><g transform="matrix(1 0 0 1 4 0)"><g transform="matrix(1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g><g transform="matrix(-1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g></g></svg>');
-    $('[data-resetzoompos]').hide();
-    instance.pause();
-    canvasClickSelect();
-  } else {
-    $('[data-zoom]').attr('data-zoom', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#1e7eeb"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#1e7eeb"></line></svg>');
-    $('[data-resetzoompos]').show();
-    instance.resume();
-  }
-});
-// reset zoom position
-$('[data-resetzoompos]').click(function() {
-  $('[data-canvas]').css('transform-origin', '')
-                    .css('transform', '');
-  instance.restore();
-});
-
 // layers
 $('[data-open=layers]').on('click', function() {
   $('[data-topmenu] .mainmenu').hide();
@@ -486,6 +446,23 @@ $('[data-init=tween]').on('click', function() {
 });
 $('[data-init=framebyframe]').on('click', function() {
   alertify.log('frame by frame animation coming soon...');
+});
+
+// keyframes
+$('[data-open=keys]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-keys]').show();
+  $('[data-canvasbg]').css('bottom', '50%');
+  $('[data-canvasbg]').css('border-bottom', '0');
+  $('[data-selected]').removeAttr("data-selected");
+});
+$('[data-close=keys]').on('click', function() {
+  $('[data-open=keys].active').removeClass('active');
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-dialog=keys]').hide();
+  $('[data-mainmenu]').show();
+  $('[data-canvasbg]').css('bottom', '');
+  $('[data-canvasbg]').css('border', '');
 });
 
 // selectors for layers
@@ -850,6 +827,44 @@ $('.filterval').change(function() {
 });
 applyFilters();
 
+// zoom/pan
+$('[data-zoom]').on('click', function() {
+  if ($(this).attr('data-zoom') === 'true') {
+    $('[data-zoom]').attr('data-zoom', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#fff"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#fff"></line><g transform="matrix(1 0 0 1 4 0)"><g transform="matrix(1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g><g transform="matrix(-1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g></g></svg>');
+    $('[data-resetzoompos]').hide();
+    instance.pause();
+    canvasClickSelect();
+  } else {
+    $('[data-zoom]').attr('data-zoom', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#1e7eeb"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#1e7eeb"></line></svg>');
+    $('[data-resetzoompos]').show();
+    instance.resume();
+  }
+});
+// reset zoom position
+$('[data-resetzoompos]').click(function() {
+  $('[data-canvas]').css('transform-origin', '')
+                    .css('transform', '');
+  instance.restore();
+});
+
+// play/stop animation
+$('[data-play]').on('click', function() {
+  if ($(this).attr('data-play') === 'true') {
+    $(this).attr('data-play', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
+    $('[data-render]').hide();
+    stopAnim();
+  } else {
+    $(this).attr('data-play', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><g transform="matrix(1.61682,0,0,1.61682,-157.907,-157.907)"><g><path d="M352.877,276.034L174.818,408.882C160.033,419.81 148.034,413.81 148.034,395.383L148.034,116.617C148.034,98.19 160.033,92.19 174.818,103.118L352.877,235.966C367.662,246.893 367.662,264.892 352.877,276.034Z"/></g></g></svg>');
+    $('[data-render]').show();
+    runAnim();
+  }
+});
+$('[data-play]').trigger('click');
+
 // init animations
 function runAnim() {
   // set the canvas size
@@ -1044,7 +1059,6 @@ function render() {
 $('[data-render]').click(function() {
   render();
 });
-$('[data-play]').trigger('click');
 
 // export files
 function getProjectJSON() {
@@ -1106,3 +1120,4 @@ function initDemo() {
 
 // bot
 //initDemo();
+// $('[data-call=keys]').trigger('click');
