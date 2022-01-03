@@ -223,9 +223,10 @@ input.numinhead[type=text] {
   margin-top: 12px;
 }
 
-/* top and bottom menu */
-.topmenu, .bottommenu {
+/* top menu */
+.topmenu {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   height: 30px;
@@ -235,8 +236,6 @@ input.numinhead[type=text] {
   user-select: none;
   overflow: auto;
 }
-
-/* top menu */
 .topmenu > div:not(:first) {
   display: none;
 }
@@ -244,9 +243,6 @@ input.numinhead[type=text] {
   display: flex;
   justify-content: space-between;
   height: 0;
-}
-.topmenu {
-  top: 0;
 }
 .topmenu img,
 .topmenu svg {
@@ -261,6 +257,10 @@ input.numinhead[type=text] {
 }
 .topmenu a.txt {
   padding: 1px 6px;
+}
+.topmenu a {
+  position: relative;
+  top: 2px;
 }
 .topmenu .pointer {
   cursor: pointer;
@@ -278,16 +278,17 @@ svg.checkbox path {
   transform: scale(1.5) translate(2px, -3px);
   stroke: transparent;
 }
-.librarylinks a,
-.playback a {
+.librarylinks a {
   position: relative;
   top: 3px;
-}
-.librarylinks a {
   padding: 0 calc(3vw);
 }
 .playback a {
   padding: 0 calc(2vw);
+}
+[data-play] svg {
+  transform: scale(1.25);
+  transform-origin: center;
 }
 [data-midbtns] a {
   position: relative;
@@ -492,20 +493,6 @@ body {
 /* active frame color = #e4eb1e */
 
 /* header colors */
-/*
-.topmenu {
-  border-bottom: 1px solid #1e7eeb;
-}
-.bottommenu {
-  border-top: 1px solid #1e7eeb;
-}
-.lefticons {
-  border-right: 1px solid #1e7eeb;
-}
-.righticons {
-  border-left: 1px solid #1e7eeb;
-}
-*/
 [data-canvasbg], .dialog {
   border: 1px solid #1e7eeb;
 }
