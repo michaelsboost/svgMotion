@@ -158,6 +158,11 @@ function loadfile(input) {
   reader.readAsText(input.files[0]);
 }
 
+// update document title when project name changes
+$('[data-projectname]').on('keyup change', function() {
+  document.title = 'svgMotion: ' + this.value;
+});
+
 // detect if selector meets frame by frame animation parameters
 function detectForFrameByFrame() {
   // first detect if there's a selection
@@ -837,7 +842,7 @@ $('[data-clear=filters]').on('click', function() {
 
 // apply filters
 function applyFilters() {
-  $('[data-canvas] svg, .canvas svg').css('filter', 'blur('+ blurfilter.value +'px) hue-rotate('+ huefilter.value +'deg) brightness('+ brightnessfilter.value +')  contrast('+ contrastfilter.value +') saturate('+ saturatefilter.value +') grayscale('+ grayscalefilter.value +'%) sepia('+ sepiafilter.value +'%) invert('+ invertfilter.value +'%)');
+  $('[data-canvas] svg').css('filter', 'blur('+ blurfilter.value +'px) hue-rotate('+ huefilter.value +'deg) brightness('+ brightnessfilter.value +')  contrast('+ contrastfilter.value +') saturate('+ saturatefilter.value +') grayscale('+ grayscalefilter.value +'%) sepia('+ sepiafilter.value +'%) invert('+ invertfilter.value +'%)');
 }
 $('.filterval').change(function() {
   applyFilters();
@@ -890,6 +895,7 @@ function runAnim() {
   
   // clear and reset the canvas
   $('[data-canvas]').empty().html(origSVG);
+//  applyFilters();
   
   // get the code
   getCode();
@@ -899,6 +905,7 @@ function runAnim() {
 function stopAnim() {
   // clear and reset the canvas
   $('[data-canvas]').empty().html(origSVG);
+  applyFilters();
 }
 function getCode() {
   // clear the variables
@@ -906,7 +913,8 @@ function getCode() {
   jsStr = '';
   
   // clear and reset the canvas
-  $('[data-canvas]').empty();
+  $('[data-canvas]').empty().html(origSVG);
+  applyFilters();
   
   // apply the css (if any)
   $('textarea.css').each(function() {
@@ -920,7 +928,7 @@ function getCode() {
 
   $code = 'var tl = new TimelineMax({repeat:-1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);\n';
   
-  $('[data-canvas]').append(origSVG + '<style>'+ cssStr +'<'+'/'+'style'+'>\n\n<script>'+ $code +'</script>');
+  $('[data-canvas]').append('<style>'+ cssStr +'<'+'/'+'style'+'>\n\n<script>'+ $code +'</script>');
 }
 function render() {
   alertify.log("coming soon...");
@@ -1174,7 +1182,7 @@ $('[data-dialogs] [data-dialog]').hide();
 $('[data-tools=zoom]').trigger('click');
 
 function initDemo() {
-  $('[data-projectname]').val('Character Walking');
+  $('[data-projectname]').val('Character Walking').trigger('change');
   $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\n https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
   
   // init filters
@@ -1185,7 +1193,8 @@ function initDemo() {
   saturatefilter.value = 1;
   grayscalefilter.value = 0;
   sepiafilter.value = 30;
-  $('#invertfilter').val(0).trigger('change');
+  invertfilter.value = 0;
+  applyFilters();
   
   $('[data-call=layers]').trigger('click');
   $('[data-selectorlist] span').filter(function() {

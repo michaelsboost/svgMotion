@@ -259,6 +259,9 @@ input.numinhead[type=text] {
   position: relative;
   top: -3px;
 }
+.topmenu a.txt {
+  padding: 1px 6px;
+}
 .topmenu .pointer {
   cursor: pointer;
 }
