@@ -1,6 +1,9 @@
 svgMotion uses GSAP for the animation. Without GSAP svgMotion simply would not exist. In order to keep svgMotion free and open source for everyone and abide by GSAP's license svgMotion is licensed under GSAP's Standard License.
 
-# Plain English Summary:
+# Standard "No Charge" GreenSock License  
+# Copyright 2006-2021, GreenSock, Inc.
+
+## Plain English Summary:
 
 1. You may use the code at no charge in commercial or non-commercial apps, web sites, games, components, and other software as long as end users are not charged a fee of any kind to use your product or gain access to any part of it. If your client pays you a one-time fee to create the site/product, that's perfectly fine and qualifies under the "no charge" license. If end users are charged a usage/access/license fee, please sign up for a "[Business Green" Club GreenSock membership](https://greensock.com/club/) which comes with a comprehensive commercial license. See [https://greensock.com/club/](https://greensock.com/club/) for details.
 2. Use at your own risk. No warranties are offered.
@@ -8,7 +11,7 @@ svgMotion uses GSAP for the animation. Without GSAP svgMotion simply would not e
 
 <hr>
 
-# Legalese:  
+## Legalese:  
 
 This is a legal agreement between you (either an individual or a single entity) and GreenSock, Inc. ("GREENSOCK") for the proprietary GreenSock code known as GSAP, ScrollTrigger, TweenMax, TimelineMax, and other copyrighted code that is available for download at [https://greensock.com/](https://greensock.com/) (this code and documentation, as well as any updates which may at GREENSOCK's sole discretion be provided to you from time to time, are referred to in this Agreement as "PROGRAM"). By downloading, copying, or otherwise using the PROGRAM, you agree to the terms and conditions of this Agreement. If you do not agree to the terms and conditions of this Agreement, please do not download or use the PROGRAM.
 
