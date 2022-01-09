@@ -1031,12 +1031,22 @@ function render() {
     alertify.error("Abort Operation: No svg detected!");
     return false;
   }
+  
   // play state
   $('[data-play]').attr('data-play', true)
          .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
   $('.playback').hide();
   stopAnim();
+  
   getCode();
+  if (jsStr.toString().split(' ').join('').toLowerCase().includes('repeat:-1')) {
+    alertify.error("Error: Indefinite repeat found!");
+    alertify.error("Do NOT use repeat: -1");
+    alertify.error("Use a specific number!!");
+    $('.playback').show();
+    $('[data-render]').hide();
+    return false;
+  }
 
   if ($('[data-render]')[0].textContent.toLowerCase() === 'render') {
     // hide settings
@@ -1323,5 +1333,5 @@ function initDemo() {
 
 // bot
 initDemo();
-$('[data-call=keys]').trigger('click');
+// $('[data-call=keys]').trigger('click');
 
