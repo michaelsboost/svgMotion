@@ -176,6 +176,7 @@ function detectForFrameByFrame() {
   // detect that this is the only selector
   if ($('[data-selected]').length === 1) {
     $('.librarylinks [data-init=framebyframe]').show();
+    $('.librarylinks [data-init=draw]').show();
 
     // if it's the only selector then...
     // detect if the children are group elements
@@ -196,6 +197,7 @@ function detectForFrameByFrame() {
   } else {
     // hide because this is not the only selector
     $('.librarylinks [data-init=framebyframe]').hide();
+    $('.librarylinks [data-init=draw]').hide();
   }
 }
 
@@ -440,6 +442,12 @@ $('[data-close=layers]').on('click', function() {
   $('[data-canvasbg]').css('border', '');
   $('[data-selected]').removeAttr("data-selected");
 });
+$('[data-init=draw]').on('click', function() {
+  //  .to('.svgmotion > selector', { stroke: '#000',strokeWidth: 10,duration: 0, strokeDasharray: document.querySelector('.svgmotion > selector').getTotalLength() + "," + document.querySelector('.svgmotion > selector').getTotalLength(), strokeDashoffset: document.querySelector('.svgmotion > selector').getTotalLength() }, 0.0)
+  // .to('.svgmotion > selector', {strokeDashoffset: 0, duration: 1}, 0.0)
+  
+  alertify.log('init drawPath coming soon...');
+});
 $('[data-init=tween]').on('click', function() {
   if ($('[data-selectorlist].selector').length === 1) {
 //      if ($('[data-selected]')[0].tagName.toLowerCase() === 'path' || $('[data-selected]')[0].tagName.toLowerCase() === 'polygon' || $('[data-selected]')[0].tagName.toLowerCase() === 'line') {
@@ -457,12 +465,21 @@ $('[data-init=framebyframe]').on('click', function() {
 });
 
 // keyframes
+$('[data-add=snippet]').click(function() {
+  var addSnippet = "tl.to('.svgmotion "+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: 100%,\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"}\n}, 0.0)";
+  
+  $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
+//  $('[data-add=snippet]').hide();
+});
 $('[data-open=keys]').on('click', function() {
   $('[data-topmenu] .mainmenu').hide();
   $('[data-keys]').show();
   $('[data-canvasbg]').css('bottom', '50%');
   $('[data-canvasbg]').css('border-bottom', '0');
   $('[data-selected]').removeAttr("data-selected");
+  
+  // only show the selectable key's value
+  $('#elms').trigger('change');
 });
 $('[data-close=keys]').on('click', function() {
   $('[data-open=keys].active').removeClass('active');
@@ -471,6 +488,17 @@ $('[data-close=keys]').on('click', function() {
   $('[data-mainmenu]').show();
   $('[data-canvasbg]').css('bottom', '');
   $('[data-canvasbg]').css('border', '');
+});
+$('#elms').on('keyup change', function() {
+  $('[data-keyselector]').hide();
+  $('[data-keyselector="'+ this.value +'"]').show();
+  
+  // hide sample snippet button if frame by frame is visible
+  if ($('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe') {
+    $('[data-add=snippet]').hide();
+  } else {
+    $('[data-add=snippet]').show();
+  }
 });
 
 // selectors for layers
@@ -871,23 +899,56 @@ $('[data-resetzoompos]').click(function() {
   instance.restore();
 });
 
-// play/stop animation
+// play/pause animation
 $('[data-play]').on('click', function() {
   if ($(this).attr('data-play') === 'true') {
-    // stop state
-    $(this).attr('data-play', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
-    $('[data-render]').hide();
-    stopAnim();
-  } else {
-    // play state
-    $(this).attr('data-play', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
+    // pause state
+    $('[data-play]').attr('data-play', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.142 201.143 C 73.142 211.235 81.336 219.429 91.429 219.429 L 91.429 219.429 C 101.521 219.429 109.715 211.235 109.715 201.143 L 109.715 54.857 C 109.715 44.765 101.521 36.571 91.429 36.571 L 91.429 36.571 C 81.336 36.571 73.142 44.765 73.142 54.857 L 73.142 201.143 Z "/><path d=" M 146.286 201.143 C 146.286 211.235 154.48 219.429 164.572 219.429 L 164.572 219.429 C 174.664 219.429 182.858 211.235 182.858 201.143 L 182.858 54.857 C 182.858 44.765 174.664 36.571 164.572 36.571 L 164.572 36.571 C 154.48 36.571 146.286 44.765 146.286 54.857 L 146.286 201.143 Z "/></svg>');
+    
+//    // stop symbol
+//           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
     $('[data-render]').show();
     runAnim();
+  } else {
+    // play state
+    $('[data-play]').attr('data-play', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
+    $('[data-render]').hide();
+    stopAnim();
   }
 });
-$('[data-play]').trigger('click');
+//$('[data-play]').trigger('click');
+
+// timeline buttons
+$('[data-playit=firstframe]').click(function() {
+  tl.seek(tl.startTime())
+});
+//$('[data-playit=lastframe]').click(function() {
+//  tl.seek(tl.endTime())
+//});
+
+// loop animation?
+$('[data-repeat]').on('click', function() {
+  if ($(this).attr('data-repeat') === 'true') {
+    // no loop
+    $('[data-repeat]').attr('data-repeat', false);
+  } else {
+    // repeat/loop
+    $('[data-repeat]').attr('data-repeat', true);
+  }
+});
+
+// enable/disable snippet presets
+$('.props > div > div > input[type=checkbox]').on('change', function() {
+  if (this.checked) {
+    $(this).parent().find('input').removeAttr('disabled');
+    $(this).parent().find('select').removeAttr('disabled');
+  } else {
+    $(this).parent().find('input:not(input[type=checkbox])').attr('disabled', true);
+    $(this).parent().find('select').attr('disabled', true);
+  }
+});
 
 // init animations
 function runAnim() {
@@ -903,6 +964,7 @@ function runAnim() {
   getCode();
   
   // run the code
+  $('[data-canvas]').append('<script>'+ $code +'</script>');
 }
 function stopAnim() {
   // clear and reset the canvas
@@ -928,23 +990,55 @@ function getCode() {
     jsStr += $(this).val() + '\n';
   });
 
-  $code = 'var tl = new TimelineMax({repeat:-1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);\n';
+  $code = 'var tl = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale('+ timescale.value +');\n';
+
+//  $code = 'var tl = new TimelineMax({'+ ($('[data-repeat]').attr('data-repeat') === 'true') ? "repeat: -1" : "" +'})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale('+ timescale.value +');\n';
   
-  $('[data-canvas]').append('<style>'+ cssStr +'<'+'/'+'style'+'>\n\n<script>'+ $code +'</script>');
+//  var $sequenceTime = $("#time"),
+//      sequenceTrackLength,
+//      sequenceDragger,
+//      draggable;
+//  tl.eventCallback("onUpdate", updateDragger)
+//  sequenceTrackLength = tl.duration() * 160;
+//  sequenceDragger = $(".playhead");
+//  draggable = Draggable.create(sequenceDragger, {
+//    type:"x",
+//    bounds:{minX:0, maxX:sequenceTrackLength},
+//    trigger:".playhead",
+//    onDrag: function() {
+//      tl.progress(this.x / sequenceTrackLength).pause();
+//    }
+//  })[0];
+//
+//  function updateDragger() {
+//    TweenLite.set(sequenceDragger, {x:sequenceTrackLength * tl.progress()})
+//    $sequenceTime.html(tl.time().toFixed(2))
+//  }
+
+//  $("[data-play]").click(function(){
+//    if(tl.progress() < 1){
+//      tl.play();
+//    } else {
+//      tl.restart();
+//    }
+//  })
 }
 function render() {
-  alertify.log("coming soon...");
-  return false;
+//  alertify.log("coming soon...");
+//  return false;
   
   if (!$("[data-canvas]").html()) {
     alertify.error("Abort Operation: No svg detected!");
     return false;
   }
-  $('[data-play]').attr('data-play', false)
-         .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
+  // play state
+  $('[data-play]').attr('data-play', true)
+         .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
+  $('.playback').hide();
   stopAnim();
+  getCode();
 
-  if ($('[data-render]').text() === 'RENDER') {
+  if ($('[data-render]')[0].textContent.toLowerCase() === 'render') {
     // hide settings
     $('[data-call=settings] img').css({
       width: 0,
@@ -954,9 +1048,12 @@ function render() {
     
     $('[data-midbtns]').hide();
     $('[data-export]').show();
-    $('[data-render]').text('STOP').css('color', '#e71fd8');
+    $('[data-render]').text('RENDERING ANIMATION').css('color', '#e71fd8');
     
-    getCode();
+    // close keys
+    $('[data-close=keys]').trigger('click');
+    
+    runAnim();
     setTimeout(function() {
       var fps = $("[data-fps]").val();
       var duration = tl.duration();
@@ -1071,16 +1168,20 @@ function render() {
     $('[data-midbtns]').show();
 
     // stop animation
-    // reset initial svg code
-    $('[data-play]').attr('data-play', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><path d=" M 43.52 0 L 468.48 0 C 492.499 0 512 19.501 512 43.52 L 512 468.48 C 512 492.499 492.499 512 468.48 512 L 43.52 512 C 19.501 512 0 492.499 0 468.48 L 0 43.52 C 0 19.501 19.501 0 43.52 0 Z " /></svg>');
+    $('.playback').show();
+    // play state
+    $('[data-play]').attr('data-play', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
     stopAnim();
+    getCode();
     
     // reset icon
     $('[data-render]').text('RENDER').attr('style', '');
   
     // show settings
     $('[data-call=settings] img').removeAttr('style');
+    
+    $('[data-render]').hide();
   }
 }
 $('[data-render]').click(function() {
@@ -1184,6 +1285,16 @@ $('[data-dialogs] [data-dialog]').hide();
 $('[data-tools=zoom]').trigger('click');
 
 function initDemo() {
+  // set the canvas size
+  $('[data-project=width]').val(1280);
+  $('[data-project=height]').val(800);
+  $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
+  $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
+  
+  // clear and reset the canvas
+  $('[data-canvas]').empty().html(origSVG);
+  
+  // reset setting inputs
   $('[data-projectname]').val('Character Walking').trigger('change');
   $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\n https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
   
@@ -1212,4 +1323,5 @@ function initDemo() {
 
 // bot
 initDemo();
-//$('[data-call=keys]').trigger('click');
+$('[data-call=keys]').trigger('click');
+

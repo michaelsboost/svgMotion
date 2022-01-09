@@ -15,7 +15,7 @@ Version
 License
 -------------
 
-MIT
+[MIT](https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE)
 
 Tech
 -------------

@@ -1,6 +1,10 @@
+GSAP License:
+
+You can use the core/public GSAP files in an open source project as long as you make it clear that the GreenSock files are subject to their own license (they're not MIT or any official "open source" one, and that's a GOOD thing - see https://greensock.com/why-license) and you don't share any edited GSAP files because that could cause headaches for other people if variant versions of GSAP proliferate that have different functionality or bugs or whatever.
+
 MIT License
 
-Copyright (c) 2019 Michael Schwartz
+Copyright (c) 2019-2022 Michael Schwartz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
