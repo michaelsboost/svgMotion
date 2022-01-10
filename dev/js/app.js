@@ -10,6 +10,7 @@
 var version = '1.000',
     remStr  = "html > body > div:nth-child(2) > div > svg > ",
     $this, $str, $code, cssStr, jsStr, origSVG, thisTool, anim,
+    detectInt, totalInt, getPerc,
     loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
       saveSvgAsPng(document.querySelector(".canvas > svg"), value + ".png");
@@ -480,6 +481,7 @@ $('[data-open=keys]').on('click', function() {
   
   // only show the selectable key's value
   $('#elms').trigger('change');
+  $('textarea.js').trigger('change');
 });
 $('[data-close=keys]').on('click', function() {
   $('[data-open=keys].active').removeClass('active');
@@ -909,33 +911,129 @@ $('[data-play]').on('click', function() {
 //    // stop symbol
 //           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
     $('[data-render]').show();
-    runAnim();
+    
+    if(mainTL.progress() < 1) {
+      mainTL.play();
+    } else {
+      mainTL.restart();
+      $('.playhead').attr('style', 'left: 0%;');
+    }
+    
   } else {
     // play state
     $('[data-play]').attr('data-play', true)
            .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
     $('[data-render]').hide();
-    stopAnim();
+    mainTL.pause();
   }
 });
 //$('[data-play]').trigger('click');
 
+// init the player
+$('textarea.js').on('keyup change', function() {
+  // clear the variables
+  jsStr = '';
+  
+  // apply the javascript
+  $('textarea.js').each(function() {
+    jsStr += $(this).val() + '\n';
+  });
+
+//  $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
+  
+  if ($('[data-repeat]').attr('data-repeat') === 'true') {
+    $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
+  } else {
+    $code = 'var mainTL = new TimelineMax({onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}, onComplete: function() {$("[data-play]").trigger("click")}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
+  }
+
+  // run the code
+  $('[data-canvas]').empty().html(origSVG);
+  applyFilters();
+  $('[data-canvas]').append('<script>'+ $code +'\n\n  updatePlayer();</script>');
+});
+$('#timescale').on('keyup change', function() {
+  if ($('[data-play]').attr('data-play') === 'true') {
+      // is paused
+      $('textarea.js').trigger('change');
+  } else {
+    // is playing
+    $('[data-play]').trigger('click');
+    $('textarea.js').trigger('change');
+    $('[data-play]').trigger('click');
+  }
+});
+$(window).on('load resize', function() {
+  updatePlayer();
+});
+
+function updatePlayer() {
+  $(".playhead").removeAttr('style');
+  
+  var $sequenceTime = $("#time"),
+      sequenceTrackLength,
+      sequenceDragger,
+      draggable;
+
+  mainTL.eventCallback("onUpdate", updateDragger)
+  sequenceTrackLength = mainTL.duration() * $('.seek-bar').width();
+  sequenceDragger = $(".playhead");
+  draggable = Draggable.create(sequenceDragger, {
+    type:"x",
+    bounds:{minX:0, maxX:sequenceTrackLength},
+//      trigger:"#sequence .timelineUI-dragger div",
+    onDrag: function() {
+      mainTL.progress(this.x / sequenceTrackLength).pause();
+    }
+  })[0];
+
+  function updateDragger() {
+    TweenMax.set(sequenceDragger, {x:sequenceTrackLength * mainTL.progress()})
+    $sequenceTime.html(mainTL.time().toFixed(2))
+
+    detectInt = parseFloat(time.textContent).toFixed(2);
+    totalInt  = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc = (detectInt * 100) / totalInt;
+    getPerc = Math.round(getPerc);
+
+    $('.progress-bar').css('width', getPerc + '%');
+  }
+}
+
 // timeline buttons
 $('[data-playit=firstframe]').click(function() {
-  tl.seek(tl.startTime())
+  mainTL.progress(0);
+  time.textContent = parseFloat(mainTL.progress()).toFixed(2);
 });
-//$('[data-playit=lastframe]').click(function() {
-//  tl.seek(tl.endTime())
-//});
+$('[data-playit=nextframe]').click(function() {
+  if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
+    time.textContent = parseFloat(0.01 + parseFloat(mainTL.progress())).toFixed(2);
+//    time.textContent = parseFloat(0.10 + parseFloat(mainTL.progress())).toFixed(2);
+    mainTL.progress(parseFloat(time.textContent));
+  }
+});
+$('[data-playit=prevframe]').click(function() {
+  if (parseFloat(time.textContent).toFixed(2) > 0 || time.textContent > parseFloat(mainTL.progress()).toFixed(2)) {
+    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.01).toFixed(2);
+//    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.10).toFixed(2);
+    mainTL.progress(parseFloat(time.textContent));
+  }
+});
+$('[data-playit=lastframe]').click(function() {
+  mainTL.progress(mainTL.duration());
+  time.textContent = parseFloat(mainTL.progress()).toFixed(2);
+});
 
 // loop animation?
 $('[data-repeat]').on('click', function() {
   if ($(this).attr('data-repeat') === 'true') {
     // no loop
     $('[data-repeat]').attr('data-repeat', false);
+    $('textarea.js').trigger('change');
   } else {
     // repeat/loop
     $('[data-repeat]').attr('data-repeat', true);
+    $('textarea.js').trigger('change');
   }
 });
 
@@ -978,55 +1076,25 @@ function stopAnim() {
 }
 function getCode() {
   // clear the variables
-  cssStr = '';
   jsStr = '';
   
   // clear and reset the canvas
   $('[data-canvas]').empty().html(origSVG);
   applyFilters();
   
-  // apply the css (if any)
-  $('textarea.css').each(function() {
-    cssStr += $(this).val() + '\n';
-  });
-  
   // apply the javascript
   $('textarea.js').each(function() {
     jsStr += $(this).val() + '\n';
   });
-
-  $code = 'var tl = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale('+ timescale.value +');\n';
-
-//  $code = 'var tl = new TimelineMax({'+ ($('[data-repeat]').attr('data-repeat') === 'true') ? "repeat: -1" : "" +'})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale('+ timescale.value +');\n';
   
-//  var $sequenceTime = $("#time"),
-//      sequenceTrackLength,
-//      sequenceDragger,
-//      draggable;
-//  tl.eventCallback("onUpdate", updateDragger)
-//  sequenceTrackLength = tl.duration() * 160;
-//  sequenceDragger = $(".playhead");
-//  draggable = Draggable.create(sequenceDragger, {
-//    type:"x",
-//    bounds:{minX:0, maxX:sequenceTrackLength},
-//    trigger:".playhead",
-//    onDrag: function() {
-//      tl.progress(this.x / sequenceTrackLength).pause();
-//    }
-//  })[0];
-//
-//  function updateDragger() {
-//    TweenLite.set(sequenceDragger, {x:sequenceTrackLength * tl.progress()})
-//    $sequenceTime.html(tl.time().toFixed(2))
-//  }
-
-//  $("[data-play]").click(function(){
-//    if(tl.progress() < 1){
-//      tl.play();
-//    } else {
-//      tl.restart();
-//    }
-//  })
+//  $code = 'var mainTL = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+//  $code = 'var mainTL = new TimelineMax('+ ($('[data-repeat]').attr('data-repeat') === 'true') ? "{repeat: -1}" : "" +')\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+  
+  if ($('[data-repeat]').attr('data-repeat') === 'true') {
+    $code = 'var mainTL = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+  } else {
+    $code = 'var mainTL = new TimelineMax()\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+  }
 }
 function render() {
 //  alertify.log("coming soon...");

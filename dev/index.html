@@ -643,7 +643,7 @@ let groups1 = gsap.utils.toArray(".svgmotion g > g:nth-child(3) > g");
 let wrap1 = gsap.utils.wrap(0, groups1.length - 1);
 let frame1 = 0;
 
-tl.to({}, {
+mainTL.to({}, {
   duration: 0.1,
   repeat: 9,
   onRepeat() {
@@ -660,7 +660,7 @@ tl.to({}, {
             <div data-keyselector="g > g:nth-child(1) > g:nth-child(1)" data-animtype="tween">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // sidewalk
-tl.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
+mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
   x: 0,
   ease: 'none',
   duration: 1
@@ -669,7 +669,7 @@ tl.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
             <div data-keyselector="g > g:nth-child(1) > g:nth-child(2)" data-animtype="tween">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // bricks
-tl.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
+mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
   x: 0,
   ease: 'none',
   duration: 1
@@ -678,7 +678,7 @@ tl.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
             <div data-keyselector="g > g:nth-child(2) > ellipse" data-animtype="tween">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // shadow
-tl.to('.svgmotion g > g:nth-child(2) > ellipse', {
+mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
   scaleX: 0.9,
   scaleY: 0.9,
   transformOrigin: 'center center',
@@ -817,6 +817,7 @@ tl.to('.svgmotion g > g:nth-child(2) > ellipse', {
     <script src="libraries/sweetalert2/sweetalert2.min.js"></script>
 <!--    <script src="libraries/tinycolor/tinycolor.js"></script>-->
     <script src="libraries/gsap/minified/gsap.min.js"></script>
+    <script src="libraries/gsap/minified/Draggable.min.js"></script>
     <script src="js/browsersupport.js"></script>
     <script src="js/getPath.js"></script>
     <script src="js/app.js"></script>
