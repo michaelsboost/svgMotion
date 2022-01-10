@@ -115,8 +115,9 @@
         <span data-menubuttons>
           <a class="txt" title="Save Project" data-log="coming soon...">SAVE</a>
           <a class="txt" title="Render Animation Frames" data-render style="display: none;">RENDER</a>
-          <a class="txt" title="Export as a Image Sequence" data-export="images" style="display: none;">ZIP</a>
+          <a class="txt" title="Export as a Image Sequence" data-export="images" style="display: none;">PICS</a>
           <a class="txt" title="Export as a GIF Animation" data-export="gif" style="display: none;">GIF</a>
+          <a class="txt" title="Export as a Image Sequence" data-exportzip>ZIP</a>
 
           <a data-call="settings" title="Settings">
             <img src="svgs/cog.svg">
@@ -248,8 +249,13 @@
               <path d="M137.846,0C94.464,0 59.077,35.387 59.077,78.769L59.077,433.231C59.077,476.613 94.464,512 137.846,512L374.154,512C417.536,512 452.923,476.613 452.923,433.231L452.923,157.538C452.923,136.606 433.762,116.775 399.38,83.082C394.614,78.375 389.455,73.157 384.61,68.313C379.766,63.468 374.548,58.919 369.841,54.154C336.167,19.771 316.318,0 295.385,0L137.846,0ZM391.792,385.343L131.275,385.343L226.798,246.4L290.212,338.639L322.321,298.504L391.792,385.343ZM331.005,246.4C331.01,260.793 342.681,272.457 357.074,272.452C371.467,272.447 383.131,260.775 383.126,246.383C383.121,231.99 371.45,220.326 357.057,220.331C342.664,220.336 331,232.007 331.005,246.4Z"/>
             </svg>
           </a>
+          <a title="Save ZIP" data-exportzip>
+            <svg style="isolation:isolate" viewBox="0 0 256 256">
+              <path d=" M 147.692 0 C 158.158 0 168.083 9.886 184.921 27.077 C 187.273 29.46 189.882 31.734 192.304 34.157 C 194.727 36.579 197.307 39.188 199.689 41.541 C 216.88 58.388 226.462 68.303 226.462 78.769 L 226.462 216.616 C 226.462 238.307 208.768 256 187.076 256 L 68.922 256 C 47.231 256 29.538 238.307 29.538 216.616 L 29.538 39.385 C 29.538 17.694 47.231 0 68.922 0 L 147.692 0 Z  M 62.871 124.489 L 62.871 138.962 L 88.647 138.962 L 62.871 184.075 L 62.871 196.854 L 106.29 196.854 L 106.29 182.381 L 80.514 182.381 L 106.29 137.268 L 106.29 124.489 L 62.871 124.489 L 62.871 124.489 Z  M 120.763 124.489 L 120.763 196.854 L 135.237 196.854 L 135.237 124.489 L 120.763 124.489 L 120.763 124.489 Z  M 164.183 138.962 L 171.419 138.962 C 175.486 138.962 178.656 142.131 178.656 146.198 C 178.656 150.265 175.486 153.435 171.419 153.435 L 164.183 153.435 L 164.183 138.962 L 164.183 138.962 Z  M 149.71 124.489 L 149.71 196.854 L 164.183 196.854 L 164.183 167.908 L 171.419 167.908 C 183.331 167.908 193.129 158.11 193.129 146.198 C 193.129 134.287 183.331 124.489 171.419 124.489 L 149.71 124.489 L 149.71 124.489 Z " />
+            </svg>
+          </a>
           <a class="txt" title="Render Animation Frames" data-render style="display: none;">RENDER</a>
-          <a class="txt" title="Export as a Image Sequence" data-export="images" style="display: none;">ZIP</a>
+          <a class="txt" title="Export as a Image Sequence" data-export="images" style="display: none;">PICS</a>
           <a class="txt" title="Export as a GIF Animation" data-export="gif" style="display: none;">GIF</a>
         </span>
       </div>
@@ -608,14 +614,9 @@
         
         <h2>Project Name:</h2>
         <input class="input" data-projectname type="text" value="My Project">
-        
-        <h2>Audio:</h2>
-        <input class="input" data-audio type="text" value="https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3">
 
         <h2>Notepad:</h2>
-        <textarea data-notepad placeholder="your notes go here....">Audio source found at - https://www.123rf.com/stock-audio/hello.html 
-
-https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3</textarea>
+        <textarea data-notepad placeholder="your notes go here...."></textarea>
       </div>
       <div class="dialog layers right" data-dialog="layers">
         <!-- display's children/selectors -->

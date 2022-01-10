@@ -784,6 +784,7 @@ input.numinhead,
 }
 .topmenu [data-render],
 .topmenu [data-export],
+.topmenu > .mainmenu:not(.keysh) [data-exportzip],
 .topmenu .green {
   color: #2be71f;
 }

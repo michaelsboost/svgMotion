@@ -1054,26 +1054,6 @@ $('[data-fontsize]').on('keyup change', function() {
 });
 
 // init animations
-function runAnim() {
-  // set the canvas size
-  $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
-  $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
-  
-  // clear and reset the canvas
-  $('[data-canvas]').empty().html(origSVG);
-//  applyFilters();
-  
-  // get the code
-  getCode();
-  
-  // run the code
-  $('[data-canvas]').append('<script>'+ $code +'</script>');
-}
-function stopAnim() {
-  // clear and reset the canvas
-  $('[data-canvas]').empty().html(origSVG);
-  applyFilters();
-}
 function getCode() {
   // clear the variables
   jsStr = '';
@@ -1310,18 +1290,28 @@ function saveCode(filename) {
     zipFolder.load(data);
 
     // html
-    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n    <style>\n    body {margin:0;}</style>\n  </head>\n  <body>\n    <div class="svgmotion">\n      '+ $('.canvas').html() +'\n    </div>\n\n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
+    // run the code
+    $('[data-canvas]').empty().html(origSVG);
+    applyFilters();
+    
+    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <title>'+ filename +': An svgMotion Animation</title>\n    <meta charset="utf-8" />\n    <meta name="description" content="This animation was created using svgMotion!">\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n    <style>\n    body {margin:0;}</style>\n  </head>\n  <body>\n    <div class="svgmotion">\n      '+ $('.svgmotion').html() +'\n    </div>\n\n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
 
     // javascript
     $code = '';
-    $('[data-function]').each(function() {
+    $('textarea.js').each(function() {
       $code += this.value + '\n';
     });
-    $code = '/*\n  This animation was created using svgMotion v'+ $version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar tl = new TimelineMax({\n  repeat: -1\n})\n\n' + $code.split('.canvas').join('.svgmotion') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0);'
+  
+    if ($('[data-repeat]').attr('data-repeat') === 'true') {
+      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n})\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
+    } else {
+      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar mainTL = new TimelineMax()\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
+    }
 
     zip.file("js/animation.js", $code);
     var content = zip.generate({type:"blob"});
     saveAs(content, filename + ".zip");
+    $('textarea.js').trigger('change');
   });
 }
 function exportSVGFrame() {
@@ -1358,6 +1348,18 @@ $('[data-exportframe=png]').on('click', function() {
   exportPNGFrame();
 //  updatePreview();
 });
+$('[data-exportzip]').on('click', function() {
+  // if animation is playing stop it
+  $('[data-play=false]').trigger('click');
+  
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
+  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-projectname]")[0].value = "-svgMotion";
+  } else {
+    projectname = projectname + '-svgMotion';
+  }
+  saveCode(projectname);
+});
 
 // hide tools options onload
 $('[data-toolsmenu]').hide();
@@ -1379,7 +1381,7 @@ function initDemo() {
   
   // reset setting inputs
   $('[data-projectname]').val('Character Walking').trigger('change');
-  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween-based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\nhttps://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
+  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween-based animations.');
   
   // init filters
   blurfilter.value = 0;
