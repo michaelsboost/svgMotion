@@ -466,7 +466,7 @@ $('[data-init=framebyframe]').on('click', function() {
 
 // keyframes
 $('[data-add=snippet]').click(function() {
-  var addSnippet = "tl.to('.svgmotion "+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: 100%,\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"}\n}, 0.0)";
+  var addSnippet = "tl.to('.svgmotion "+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: 100%,\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
   
   $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
 //  $('[data-add=snippet]').hide();
@@ -950,6 +950,11 @@ $('.props > div > div > input[type=checkbox]').on('change', function() {
   }
 });
 
+// change input/textarea font size
+$('[data-fontsize]').on('keyup change', function() {
+  $('input, textarea').css('font-size', this.value + 'px');
+});
+
 // init animations
 function runAnim() {
   // set the canvas size
@@ -1306,7 +1311,7 @@ function initDemo() {
   
   // reset setting inputs
   $('[data-projectname]').val('Character Walking').trigger('change');
-  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\n https://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
+  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween-based animations.\n\nAudio source found at - https://www.123rf.com/stock-audio/hello.html\n\nhttps://audiocdn.123rf.com/preview/ledlightmusic/ledlightmusic2101/ledlightmusic210100011_preview.mp3');
   
   // init filters
   blurfilter.value = 0;
@@ -1329,6 +1334,9 @@ function initDemo() {
   });
   // frame by frame animation string adds " > g"
   $('[data-close=layers]').trigger('click');
+  
+  // lower font-size
+  $('[data-fontsize]').val(12).trigger('change');
 }
 
 // bot
