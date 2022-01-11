@@ -9,12 +9,34 @@
 // variables
 var version = '1.000',
     remStr  = "html > body > div:nth-child(2) > div > svg > ",
-    $this, $str, $code, cssStr, jsStr, origSVG, thisTool, anim,
+    $this, $str, $code, jsStr, origSVG, thisTool, anim,
     detectInt, totalInt, getPerc,
     loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
       saveSvgAsPng(document.querySelector(".canvas > svg"), value + ".png");
     };
+
+// init code editor
+$('.editor-container').show();
+$('.selectors').hide();
+var editor = CodeMirror(document.getElementById("editor"), {
+  tabMode: "indent",
+  theme: 'nord',
+  styleActiveLine: true,
+  lineNumbers: true,
+  lineWrapping: true,
+  autoCloseTags: true,
+  foldGutter: true,
+  dragDrop: true,
+  lint: false,
+  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+  mode: {name: "javascript", globalVars: false},
+  paletteHints: true
+});
+Inlet(editor);
+editor.on('change', function() {
+  $('[data-keyselector="'+ elms.value +'"] textarea').val(editor.getValue()).trigger('change');
+});
 
 // alertify log
 $('[data-log]').on('click', function() {
@@ -201,7 +223,6 @@ function detectForFrameByFrame() {
     $('.librarylinks [data-init=draw]').hide();
   }
 }
-
 var svgLoaded = function() {
   // clear canvas from layers window
   $('[data-display=selector]').empty();
@@ -467,9 +488,10 @@ $('[data-init=framebyframe]').on('click', function() {
 
 // keyframes
 $('[data-add=snippet]').click(function() {
-  var addSnippet = "tl.to('.svgmotion "+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: 100%,\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
+  var addSnippet = "mainTL.to('.svgmotion "+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: 100%,\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
   
   $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
+  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
 //  $('[data-add=snippet]').hide();
 });
 $('[data-open=keys]').on('click', function() {
@@ -481,7 +503,7 @@ $('[data-open=keys]').on('click', function() {
   
   // only show the selectable key's value
   $('#elms').trigger('change');
-  $('textarea.js').trigger('change');
+  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
 });
 $('[data-close=keys]').on('click', function() {
   $('[data-open=keys].active').removeClass('active');
@@ -501,6 +523,9 @@ $('#elms').on('keyup change', function() {
   } else {
     $('[data-add=snippet]').show();
   }
+  
+  // set code editor value
+  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
 });
 
 // selectors for layers
@@ -901,34 +926,6 @@ $('[data-resetzoompos]').click(function() {
   instance.restore();
 });
 
-// play/pause animation
-$('[data-play]').on('click', function() {
-  if ($(this).attr('data-play') === 'true') {
-    // pause state
-    $('[data-play]').attr('data-play', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.142 201.143 C 73.142 211.235 81.336 219.429 91.429 219.429 L 91.429 219.429 C 101.521 219.429 109.715 211.235 109.715 201.143 L 109.715 54.857 C 109.715 44.765 101.521 36.571 91.429 36.571 L 91.429 36.571 C 81.336 36.571 73.142 44.765 73.142 54.857 L 73.142 201.143 Z "/><path d=" M 146.286 201.143 C 146.286 211.235 154.48 219.429 164.572 219.429 L 164.572 219.429 C 174.664 219.429 182.858 211.235 182.858 201.143 L 182.858 54.857 C 182.858 44.765 174.664 36.571 164.572 36.571 L 164.572 36.571 C 154.48 36.571 146.286 44.765 146.286 54.857 L 146.286 201.143 Z "/></svg>');
-    
-//    // stop symbol
-//           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
-    $('[data-render]').show();
-    
-    if(mainTL.progress() < 1) {
-      mainTL.play();
-    } else {
-      mainTL.restart();
-      $('.playhead').attr('style', 'left: 0%;');
-    }
-    
-  } else {
-    // play state
-    $('[data-play]').attr('data-play', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
-    $('[data-render]').hide();
-    mainTL.pause();
-  }
-});
-//$('[data-play]').trigger('click');
-
 // init the player
 $('textarea.js').on('keyup change', function() {
   // clear the variables
@@ -1001,9 +998,34 @@ function updatePlayer() {
 }
 
 // timeline buttons
+$('[data-play]').on('click', function() {
+  if ($(this).attr('data-play') === 'true') {
+    // pause state
+    $('[data-play]').attr('data-play', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.142 201.143 C 73.142 211.235 81.336 219.429 91.429 219.429 L 91.429 219.429 C 101.521 219.429 109.715 211.235 109.715 201.143 L 109.715 54.857 C 109.715 44.765 101.521 36.571 91.429 36.571 L 91.429 36.571 C 81.336 36.571 73.142 44.765 73.142 54.857 L 73.142 201.143 Z "/><path d=" M 146.286 201.143 C 146.286 211.235 154.48 219.429 164.572 219.429 L 164.572 219.429 C 174.664 219.429 182.858 211.235 182.858 201.143 L 182.858 54.857 C 182.858 44.765 174.664 36.571 164.572 36.571 L 164.572 36.571 C 154.48 36.571 146.286 44.765 146.286 54.857 L 146.286 201.143 Z "/></svg>');
+    
+//    // stop symbol
+//           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
+    $('[data-render]').show();
+    
+    if(mainTL.progress() < 1) {
+      mainTL.play();
+    } else {
+      mainTL.restart();
+      $('.playhead').attr('style', 'left: 0%;');
+    }
+    
+  } else {
+    // play state
+    $('[data-play]').attr('data-play', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
+    $('[data-render]').hide();
+    mainTL.pause();
+  }
+});
 $('[data-playit=firstframe]').click(function() {
   mainTL.progress(0);
-  time.textContent = parseFloat(mainTL.progress()).toFixed(2);
+  time.textContent = parseFloat(mainTL.progress(0)).toFixed(2);
 });
 $('[data-playit=nextframe]').click(function() {
   if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
@@ -1023,8 +1045,6 @@ $('[data-playit=lastframe]').click(function() {
   mainTL.progress(mainTL.duration());
   time.textContent = parseFloat(mainTL.progress()).toFixed(2);
 });
-
-// loop animation?
 $('[data-repeat]').on('click', function() {
   if ($(this).attr('data-repeat') === 'true') {
     // no loop
@@ -1035,6 +1055,54 @@ $('[data-repeat]').on('click', function() {
     $('[data-repeat]').attr('data-repeat', true);
     $('textarea.js').trigger('change');
   }
+});
+$('[data-delit]').click(function() {
+  swal({
+    title: 'Proceed with deleting tween?',
+    text: "Are you sure? All your data will be lost!",
+    type: 'question',
+    showCancelButton: true
+  }).then((result) => {
+    if (result.value) {
+      // remove the div
+      $('.selectors [data-keyselector="'+ elms.value +'"]').remove();
+      
+      // lastly remove the select option
+      $('#elms option:selected').remove();
+      $('#elms').trigger('change');
+    } else {
+      return false;
+    }
+  })
+});
+$('[data-editname]').click(function() {
+  swal({
+    title: 'Change tween name?',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      $('#elms option').each(function() {
+        if ($(this).text() != result.value) {
+          $('#elms option:selected').text(result.value);
+        } else {
+          alertify.error('Error: That name already exists!');
+          $('#elms option:selected').text($this);
+          return false;
+        }
+      });
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
+  });
 });
 
 // enable/disable snippet presets
@@ -1050,7 +1118,7 @@ $('.props > div > div > input[type=checkbox]').on('change', function() {
 
 // change input/textarea font size
 $('[data-fontsize]').on('keyup change', function() {
-  $('input, textarea').css('font-size', this.value + 'px');
+  $('input, textarea, .CodeMirror').css('font-size', this.value + 'px');
 });
 
 // init animations
@@ -1411,5 +1479,5 @@ function initDemo() {
 
 // bot
 initDemo();
-// $('[data-call=keys]').trigger('click');
+$('[data-call=keys]').trigger('click');
 
