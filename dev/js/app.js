@@ -1479,5 +1479,5 @@ function initDemo() {
 
 // bot
 initDemo();
-$('[data-call=keys]').trigger('click');
+// $('[data-call=keys]').trigger('click');
 
