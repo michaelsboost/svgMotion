@@ -1024,8 +1024,8 @@ $('[data-play]').on('click', function() {
   }
 });
 $('[data-playit=firstframe]').click(function() {
+  time.textContent = parseFloat(0).toFixed(2);
   mainTL.progress(0);
-  time.textContent = parseFloat(mainTL.progress(0)).toFixed(2);
 });
 $('[data-playit=nextframe]').click(function() {
   if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
