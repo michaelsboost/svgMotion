@@ -29,6 +29,7 @@ var editor = CodeMirror(document.getElementById("editor"), {
   foldGutter: true,
   dragDrop: true,
   lint: false,
+  autoCloseBrackets: true,
   gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   mode: {name: "javascript", globalVars: false},
   paletteHints: true
