@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="libraries/pickr/themes/monolith.min.css" />
     <link rel="stylesheet" href="libraries/pickr/themes/nano.min.css" />
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/theme.css" />
     <meta property="og:url"         content="https://michaelsboost.com/svgMotion/" />
     <meta property="og:type"        content="website" />
     <meta property="og:title"       content="svgMotion" />
@@ -625,11 +624,11 @@
           <div class="editor-container">
             <div id="editor"></div>
           </div>
-          <div class="selectors">
-            <div data-keyselector="misc" data-animtype="tween">
+          <div class="selectors" data-keyscode>
+            <div data-keyselector="misc" data-animtype="tween" data-keyname="misc">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
             </div>
-            <div data-keyselector="g > g:nth-child(3)" data-animtype="framebyframe">
+            <div data-keyselector="g > g:nth-child(3)" data-animtype="framebyframe" data-keyname="character">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // character walking
 let groups1 = gsap.utils.toArray(".svgmotion g > g:nth-child(3) > g");
@@ -650,7 +649,7 @@ mainTL.to({}, {
   }
 }, 0.0)</textarea>
             </div>
-            <div data-keyselector="g > g:nth-child(1) > g:nth-child(1)" data-animtype="tween">
+            <div data-keyselector="g > g:nth-child(1) > g:nth-child(1)" data-animtype="tween" data-keyname="sidewalk">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // sidewalk
 mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
@@ -659,7 +658,7 @@ mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
   duration: 1
 }, 0.0)</textarea>
             </div>
-            <div data-keyselector="g > g:nth-child(1) > g:nth-child(2)" data-animtype="tween">
+            <div data-keyselector="g > g:nth-child(1) > g:nth-child(2)" data-animtype="tween" data-keyname="bricks">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // bricks
 mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
@@ -668,7 +667,7 @@ mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
   duration: 1
 }, 0.0)</textarea>
             </div>
-            <div data-keyselector="g > g:nth-child(2) > ellipse" data-animtype="tween">
+            <div data-keyselector="g > g:nth-child(2) > ellipse" data-animtype="tween" data-keyname="shadow">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
 // shadow
 mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
@@ -697,11 +696,11 @@ mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
           <div class="mainmenu" data-timeline>
             <span>
               <select class="elms" id="elms">
-                <option value="g > g:nth-child(3)">Character</option>
-                <option value="g > g:nth-child(1) > g:nth-child(1)">Sidewalk</option>
-                <option value="g > g:nth-child(1) > g:nth-child(2)">Bricks</option>
-                <option value="g > g:nth-child(2) > ellipse">Shadow</option>
-                <option value="misc">Misc</option>
+                <option value="g > g:nth-child(3)">character</option>
+                <option value="g > g:nth-child(1) > g:nth-child(1)">sidewalk</option>
+                <option value="g > g:nth-child(1) > g:nth-child(2)">bricks</option>
+                <option value="g > g:nth-child(2) > ellipse">shadow</option>
+                <option value="misc">misc</option>
               </select>
               
               <a data-delit>

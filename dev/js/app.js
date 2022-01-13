@@ -127,23 +127,33 @@ function loadfile(input) {
         $('[data-play=stop]').trigger('click');
       }
       
-      if ($("[data-keys]").is(':visible')) {
-        var keys = document.querySelector("[data-keys]");
-        if (keys.innerHTML) {
-          swal({
-            title: 'Keyframes Detected!',
-            text: "Would you like to clear these?",
-            type: 'question',
-            showCancelButton: true
-          }).then((result) => {
-            if (result.value) {
-              $('[data-keys]').html('');
-            }
-          })
-        }
+      var keys = $("[data-keyscode]");
+      if (keys.find('[data-keyselector]').length > 1) {
+        swal({
+          title: 'Keyframes Detected!',
+          text: "Would you like to clear these?",
+          type: 'question',
+          showCancelButton: true
+        }).then((result) => {
+          if (result.value) {
+            keys.find('[data-keyselector]').not('[data-keyselector=misc]').remove();
+            // now update select element (#elms) to reflect cleared keys
+            $("select#elms option").not('select#elms option[value=misc]').remove();
+            keys.find('[data-keyselector=misc]').val('').trigger('change');
+            editor.setValue('');
+            $('[data-clear=filters]').trigger('click');
+          }
+        })
+      } else {
+        // no keyframes detected
+        $("select#elms option").not('select#elms option[value=misc]').remove();
+        keys.find('[data-keyselector=misc]').val('').trigger('change');
+        editor.setValue('');
+        $('[data-clear=filters]').trigger('click');
       }
 
       document.querySelector(".canvas").innerHTML = e.target.result;
+      origSVG = $('.canvas').html();
       svgLoaded();
     } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
       alertify.log('project files coming soon...');
@@ -236,10 +246,8 @@ var svgLoaded = function() {
 
     // remove width/height attributes if detected
     if ($Canvas.getAttribute("width") || $Canvas.getAttribute("height")) {
-      w = $Canvas.getAttribute("width");
-      w = parseFloat(w);
-      h = $Canvas.getAttribute("height");
-      h = parseFloat(h);
+      w = $Canvas.viewBox.baseVal.width;
+      h = $Canvas.viewBox.baseVal.height;
       $("[data-project=width]").val(w);
       $("[data-project=height]").val(h).trigger('change');
       $Canvas.removeAttribute("width");
@@ -478,7 +486,40 @@ $('[data-init=tween]').on('click', function() {
 //      } else {
 ////        $('[data-open=editpath]').addClass('hide');
 //      }
-    alertify.log('init tween on a single selector coming soon...');
+//    alertify.log('init tween on a single selector coming soon...');
+    swal({
+      title: 'Give your tween a name!',
+      input: 'text',
+      inputPlaceholder: "something",
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      showLoaderOnConfirm: true
+    }).then((result) => {
+      if (result.value) {
+        $this = $('#elms option:selected').text();
+        if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+          alertify.error('Error: That name already exists!');
+          $('#elms option:selected').text($this);
+        } else {
+          // append the option
+          $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+          // now append the code
+          $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
+          // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
+          $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+        }
+        
+        alertify.success('Successfully added the "'+ result.value +'" tween.');
+      } else {
+        swal(
+          'Oops!',
+          console.error().toString(),
+          'error'
+        );
+      }
+    });
+//    $('select#elms').append('<option>'+ $('[data-selectorlist].selector').text() +'</option>');
   } else {
     alertify.log('init tween on multiple selectors coming soon...');
   }
@@ -893,7 +934,17 @@ $('[data-close=filter]').on('click', function() {
 $('[data-clear=filters]').on('click', function() {
   $('.canvas svg').css('filter', '');
   $('[data-canvas] svg').css('filter', '');
+  blurfilter.value = 0;
+  huefilter.value = 0;
+  brightnessfilter.value = 1;
+  contrastfilter.value = 1;
+  saturatefilter.value = 1;
+  grayscalefilter.value = 0;
+  sepiafilter.value = 0;
+  invertfilter.value = 0;
+
   $('[data-close=filters]').trigger('click');
+  applyFilters();
 });
 
 // apply filters
@@ -928,17 +979,17 @@ $('[data-resetzoompos]').click(function() {
 });
 
 // init the player
-$('textarea.js').on('keyup change', function() {
+function updateCode() {
   // clear the variables
   jsStr = '';
-  
+
   // apply the javascript
   $('textarea.js').each(function() {
     jsStr += $(this).val() + '\n';
   });
 
 //  $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
-  
+
   if ($('[data-repeat]').attr('data-repeat') === 'true') {
     $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
   } else {
@@ -949,6 +1000,10 @@ $('textarea.js').on('keyup change', function() {
   $('[data-canvas]').empty().html(origSVG);
   applyFilters();
   $('[data-canvas]').append('<script>'+ $code +'\n\n  updatePlayer();</script>');
+  return false;
+}
+$('textarea.js').on('keyup change', function() {
+  updateCode();
 });
 $('#timescale').on('keyup change', function() {
   if ($('[data-play]').attr('data-play') === 'true') {
