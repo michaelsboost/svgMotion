@@ -8,9 +8,10 @@
 
 // variables
 var version = '1.000',
+    counter = 0,
     remStr  = "html > body > div:nth-child(2) > div > svg > ",
-    $this, $str, $code, jsStr, origSVG, thisTool, anim,
-    detectInt, totalInt, getPerc,
+    $this, $str, $code, jsStr, origSVG, thisTool, anim, $selector,
+    detectInt, totalInt, getPerc, arr = [],
     loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
       saveSvgAsPng(document.querySelector(".canvas > svg"), value + ".png");
@@ -210,7 +211,13 @@ function detectForFrameByFrame() {
   // detect that this is the only selector
   if ($('[data-selected]').length === 1) {
     $('.librarylinks [data-init=framebyframe]').show();
-    $('.librarylinks [data-init=draw]').show();
+    
+    // draw is available for these elements
+    if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['text', 'ellipse', 'circle', 'rect', 'line', 'path', 'textPath', 'polygon', 'polyline']) !== -1) {
+      $('.librarylinks [data-init=draw]').show();
+    } else {
+      $('.librarylinks [data-init=draw]').hide();
+    }
 
     // if it's the only selector then...
     // detect if the children are group elements
@@ -474,10 +481,39 @@ $('[data-close=layers]').on('click', function() {
   $('[data-selected]').removeAttr("data-selected");
 });
 $('[data-init=draw]').on('click', function() {
-  //  .to('.svgmotion > selector', { stroke: '#000',strokeWidth: 10,duration: 0, strokeDasharray: document.querySelector('.svgmotion > selector').getTotalLength() + "," + document.querySelector('.svgmotion > selector').getTotalLength(), strokeDashoffset: document.querySelector('.svgmotion > selector').getTotalLength() }, 0.0)
-  // .to('.svgmotion > selector', {strokeDashoffset: 0, duration: 1}, 0.0)
-  
-  alertify.log('init drawPath coming soon...');
+  swal({
+    title: 'Give your animation a name!',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+        alertify.error('Error: That name already exists!');
+        $('#elms option:selected').text($this);
+      } else {
+        counter++;
+        
+        // append the option
+        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+        // now append the code
+        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="drawPath" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to(".svgmotion '+ $('[data-selectorlist].selector').text() +'", {\n  stroke: "#000",\n  strokeWidth: '+ parseFloat($('[data-selected]').css('stroke-width')) +',\n  duration: 0,\n  strokeDasharray: document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength() + "," + document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength(),\n  strokeDashoffset: document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength()\n}, 0.0)\n\nmainTL.to(".svgmotion '+ $('[data-selectorlist].selector').text() +'", {\n  strokeDashoffset: 0,\n  ease: "none",\n  duration: 1\n}, 0.0)</textarea></div>');
+        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+      }
+
+      alertify.success('Successfully added the "'+ result.value +'" drawPath animation.');
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
+  });
 });
 $('[data-init=tween]').on('click', function() {
   if ($('[data-selectorlist].selector').length === 1) {
@@ -486,7 +522,9 @@ $('[data-init=tween]').on('click', function() {
 //      } else {
 ////        $('[data-open=editpath]').addClass('hide');
 //      }
-//    alertify.log('init tween on a single selector coming soon...');
+
+    $selector = '.svgmotion ' + $('[data-selectorlist].selector').text();
+    
     swal({
       title: 'Give your tween a name!',
       input: 'text',
@@ -502,12 +540,12 @@ $('[data-init=tween]').on('click', function() {
           $('#elms option:selected').text($this);
         } else {
           // append the option
-          $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+          $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
 
           // now append the code
-          $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
+          $('[data-keyscode]').append('<div data-keyselector="'+ $selector +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
           // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
-          $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+          $('#elms option[value="'+ $selector +'"]').prop('selected', true);
         }
         
         alertify.success('Successfully added the "'+ result.value +'" tween.');
@@ -519,18 +557,86 @@ $('[data-init=tween]').on('click', function() {
         );
       }
     });
-//    $('select#elms').append('<option>'+ $('[data-selectorlist].selector').text() +'</option>');
   } else {
-    alertify.log('init tween on multiple selectors coming soon...');
+    arr = [];
+    $('[data-selectorlist].selector').each(function() {
+      arr.push('.svgmotion ' + this.textContent);
+    });
+    $selector = arr.join(', ');
+    
+    swal({
+      title: 'Give your tween a name!',
+      input: 'text',
+      inputPlaceholder: "something",
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      showLoaderOnConfirm: true
+    }).then((result) => {
+      if (result.value) {
+        $this = $('#elms option:selected').text();
+        if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+          alertify.error('Error: That name already exists!');
+          $('#elms option:selected').text($this);
+        } else {
+          // append the option
+          $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+          // now append the code
+          $('[data-keyscode]').append('<div data-keyselector="'+ $selector +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
+          // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
+          $('#elms option[value="'+ $selector +'"]').prop('selected', true);
+        }
+        
+        alertify.success('Successfully added the "'+ result.value +'" tween.');
+      } else {
+        swal(
+          'Oops!',
+          console.error().toString(),
+          'error'
+        );
+      }
+    });
   }
 });
 $('[data-init=framebyframe]').on('click', function() {
-  alertify.log('frame by frame animation coming soon...');
+  swal({
+    title: 'Give your animation a name!',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+        alertify.error('Error: That name already exists!');
+        $('#elms option:selected').text($this);
+      } else {
+        counter++;
+        
+        // append the option
+        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+        // now append the code
+        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">let groups'+ counter +' = gsap.utils.toArray(".svgmotion '+ $('[data-selectorlist].selector').text() +' > g");\nlet wrap'+ counter +' = gsap.utils.wrap(0, groups'+ counter +'.length - 1);\nlet frame'+ counter +' = 0;\n\nmainTL.to({}, {\n  duration: 0.1,\n  repeat: 9,\n  onRepeat() {\n    let last'+ counter +' = groups'+ counter +'[wrap'+ counter +'(frame'+ counter +')];\n    let next'+ counter +' = groups1[wrap'+ counter +'(++frame'+ counter +')];\n\n    last'+ counter +'.style.display = "none";\n    last'+ counter +'.style.opacity = "0";\n    next'+ counter +'.style.display = "block";\n    next'+ counter +'.style.opacity = "100%";\n  }\n}, 0.0)</textarea></div>');
+        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+      }
+
+      alertify.success('Successfully added the "'+ result.value +'" frame by frame animation.');
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
+  });
 });
 
 // keyframes
 $('[data-add=snippet]').click(function() {
-  var addSnippet = "mainTL.to('.svgmotion "+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: 100%,\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
+  var addSnippet = "mainTL.to('"+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: '100%',\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  // eases: none, power1, power2, power3, power4, back, elastic, bounce, rough, slow, steps, circ, expo, and sine\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
   
   $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
   editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
@@ -560,7 +666,7 @@ $('#elms').on('keyup change', function() {
   $('[data-keyselector="'+ this.value +'"]').show();
   
   // hide sample snippet button if frame by frame is visible
-  if ($('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe') {
+  if ($('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe' || $('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'drawpath') {
     $('[data-add=snippet]').hide();
   } else {
     $('[data-add=snippet]').show();
