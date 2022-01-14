@@ -568,6 +568,9 @@ $('#elms').on('keyup change', function() {
   
   // set code editor value
   editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
+//  mainTL.progress(parseFloat(getDecimal).toFixed(2));
+  $('[data-playit=nextframe]').trigger('click');
+  $('[data-playit=prevframe]').trigger('click');
 });
 
 // selectors for layers
@@ -1001,6 +1004,13 @@ function updateCode() {
   applyFilters();
   $('[data-canvas]').append('<script>'+ $code +'</script>');
   updatePlayer();
+  
+  detectInt  = parseFloat(time.textContent).toFixed(2);
+  totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+  getPerc    = (detectInt * 100) / totalInt;
+  getPerc    = Math.round(getPerc);
+  getDecimal = parseFloat(getPerc) / 100;
+  mainTL.progress(parseFloat(getDecimal).toFixed(2));
   return false;
 }
 $('#timescale').on('change', function() {
@@ -1014,9 +1024,6 @@ $('#timescale').on('change', function() {
     $('[data-play]').trigger('click');
   }
 });
-$(window).on('load resize', function() {
-  updatePlayer();
-});
 
 function updatePlayer() {
   $(".playhead").removeAttr('style');
@@ -1027,12 +1034,13 @@ function updatePlayer() {
       draggable;
 
   mainTL.eventCallback("onUpdate", updateDragger)
-  sequenceTrackLength = mainTL.duration() * $('.seek-bar').width();
+  sequenceTrackLength = $('.seek-bar').width();
   sequenceDragger = $(".playhead");
   draggable = Draggable.create(sequenceDragger, {
     type:"x",
+//    edgeResistance: 1,
+//    overshootTolerance: 0,
     bounds:{minX:0, maxX:sequenceTrackLength},
-//      trigger:"#sequence .timelineUI-dragger div",
     onDrag: function() {
       mainTL.progress(this.x / sequenceTrackLength).pause();
     }
@@ -1042,10 +1050,11 @@ function updatePlayer() {
     TweenMax.set(sequenceDragger, {x:sequenceTrackLength * mainTL.progress()})
     $sequenceTime.html(mainTL.time().toFixed(2))
 
-    detectInt = parseFloat(time.textContent).toFixed(2);
-    totalInt  = parseFloat($('[data-timeduration]').text()).toFixed(2);
-    getPerc = (detectInt * 100) / totalInt;
-    getPerc = Math.round(getPerc);
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
 
     $('.progress-bar').css('width', getPerc + '%');
   }
@@ -1079,25 +1088,57 @@ $('[data-play]').on('click', function() {
 });
 $('[data-playit=firstframe]').click(function() {
   time.textContent = '0.00';
-  mainTL.progress(0.00);
+//  mainTL.seek(0);
+  mainTL.progress(0);
+//  $('.progress-bar').css('width', '0%');
 });
 $('[data-playit=nextframe]').click(function() {
+  // detect if is already last frame
+  if ($('[data-timeduration]').text() === time.textContent) {
+    $('[data-playit=firstframe]').trigger('click');
+    return false;
+  }
+  
   if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
-    time.textContent = parseFloat(0.01 + parseFloat(mainTL.progress())).toFixed(2);
-//    time.textContent = parseFloat(0.10 + parseFloat(mainTL.progress())).toFixed(2);
-    mainTL.progress(parseFloat(time.textContent));
+//    time.textContent = parseFloat(0.01 + parseFloat(mainTL.progress())).toFixed(2);
+    time.textContent = parseFloat(0.01 + parseFloat(time.textContent)).toFixed(2);
+//    mainTL.seek(parseFloat(time.textContent));
+    
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
+    mainTL.progress(parseFloat(getDecimal).toFixed(2));
+//    $('.progress-bar').css('width', getPerc + '%');
   }
 });
 $('[data-playit=prevframe]').click(function() {
+  // detect if is already first frame
+  if (time.textContent === '0.00') {
+    $('[data-playit=lastframe]').trigger('click');
+    return false;
+  }
+  
   if (parseFloat(time.textContent).toFixed(2) > 0 || time.textContent > parseFloat(mainTL.progress()).toFixed(2)) {
-    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.01).toFixed(2);
-//    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.10).toFixed(2);
-    mainTL.progress(parseFloat(time.textContent));
+//    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.01).toFixed(2);
+    time.textContent = parseFloat(parseFloat(time.textContent - 0.01)).toFixed(2);
+//    mainTL.seek(parseFloat(time.textContent));
+    
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
+    mainTL.progress(parseFloat(getDecimal).toFixed(2));
+//    $('.progress-bar').css('width', getPerc + '%');
   }
 });
 $('[data-playit=lastframe]').click(function() {
-  mainTL.progress(mainTL.duration());
-  time.textContent = parseFloat(mainTL.progress()).toFixed(2);
+  time.textContent = $('[data-timeduration]').text();
+//  mainTL.seek(time.textContent);
+  mainTL.progress(1);
+//  $('.progress-bar').css('width', '100%');
 });
 $('[data-repeat]').on('click', function() {
   if ($(this).attr('data-repeat') === 'true') {
