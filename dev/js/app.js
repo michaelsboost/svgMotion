@@ -1423,11 +1423,10 @@ function render() {
     return false;
   }
   
-  // play state
-  $('[data-play]').attr('data-play', true)
-         .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
-  $('.playback').hide();
-  stopAnim();
+  // if animation is already playing
+  if ($('[data-play=false]').is(':visible')) {
+    $('[data-play=false]').trigger('click')
+  }
   
   getCode();
   if (jsStr.toString().split(' ').join('').toLowerCase().includes('repeat:-1')) {
@@ -1454,10 +1453,12 @@ function render() {
     // close keys
     $('[data-close=keys]').trigger('click');
     
-    runAnim();
+    $('[data-canvas]').empty().html(origSVG);
+    applyFilters();
+    $('[data-canvas]').append('<script>'+ $code +'</script>');
     setTimeout(function() {
       var fps = $("[data-fps]").val();
-      var duration = tl.duration();
+      var duration = mainTL.duration();
 //      var duration = tl.totoalDuration();
 //      var duration = tl.totalDuration();
       var frames   = Math.ceil(duration / 1 * fps);
@@ -1473,7 +1474,7 @@ function render() {
       var jsonStr = [];
 
       function processImage() {
-        tl.progress(current++ / frames);
+        mainTL.progress(current++ / frames);
 
         var xml  = new XMLSerializer().serializeToString(svg);
         var blob = window.btoa(xml);
@@ -1512,7 +1513,7 @@ function render() {
                   } else {
                     var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
                     if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-                      projectname = $("[data-projectname]")[0].value = "my-svgmotion-animation";
+                      projectname = $("[data-projectname]")[0].value = "_svgMotion";
                     }
 
                     if (bowser.msie && bowser.version <= 6) {
@@ -1549,7 +1550,7 @@ function render() {
             var content = zip.generate({type:"blob"});
             var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
             if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-              projectname = $("[data-projectname]")[0].value = "my-svgmotion-animation";
+              projectname = $("[data-projectname]")[0].value = "_svgMotion";
             }
             saveAs(content, projectname + "-sequence.zip");
           };
@@ -1558,7 +1559,7 @@ function render() {
         if (current <= frames) {
           processImage();
         } else {
-          tl.play(0).timeScale(1.0);
+          mainTL.play(0).timeScale(1.0);
         }
       }
       processImage();
@@ -1571,10 +1572,11 @@ function render() {
     // stop animation
     $('.playback').show();
     // play state
-    $('[data-play]').attr('data-play', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
-    stopAnim();
-    getCode();
+    // if animation is already playing
+    if ($('[data-play=false]').is(':visible')) {
+      $('[data-play=false]').trigger('click')
+    }
+    updateCode();
     
     // reset icon
     $('[data-render]').text('RENDER').attr('style', '');
