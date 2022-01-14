@@ -10,7 +10,7 @@
 var version = '1.000',
     counter = 0,
     remStr  = "html > body > div:nth-child(2) > div > svg > ",
-    $this, $str, $code, jsStr, origSVG, thisTool, anim, $selector,
+    $this, $str, $code, jsStr, origSVG, thisTool, anim, $selector, $attr = '',
     detectInt, totalInt, getPerc, arr = [],
     loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
@@ -550,19 +550,6 @@ $('[data-init=draw]').on('click', function() {
       } else {
         counter++;
         
-        if ($('[data-selected]').length === 1) {
-          // attribute presets for snippet
-          if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['path', 'polygon']) !== -1) {
-            // matches
-            $str = 'attr: {d: "'+ $('[data-selected]').attr('d').toString() +'"},';
-          } else {
-            // does not match
-            // $str = 'attr: {d: "m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z"},';
-            // $str = 'attr: {attributeKey: "attributeValue"},';
-            $str = '';
-          }
-        }
-        
         // append the option
         $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
 
@@ -587,11 +574,17 @@ $('[data-init=draw]').on('click', function() {
 });
 $('[data-init=tween]').on('click', function() {
   if ($('[data-selectorlist].selector').length === 1) {
-//      if ($('[data-selected]')[0].tagName.toLowerCase() === 'path' || $('[data-selected]')[0].tagName.toLowerCase() === 'polygon' || $('[data-selected]')[0].tagName.toLowerCase() === 'line') {
-////        $('[data-open=editpath]').removeClass('hide');
-//      } else {
-////        $('[data-open=editpath]').addClass('hide');
-//      }
+    // attribute presets for snippet
+    if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['path', 'polygon']) !== -1) {
+      // matches
+      $attr = '\n  attr: {d: \"'+ $('[data-selected]').attr('d').toString() +'\"},';
+    } else {
+      // does not match
+      // $str = 'attr: {d: "m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z"},';';
+      // $attr = '\n  attr: {d: \"'+ $('[data-selected]').attr('d').toString() +'\"},';
+      // $attr = '\n  attr: {attributeKey: "attributeValue"},';
+      $attr = '';
+    }
 
     $selector = '.svgmotion ' + $('[data-selectorlist].selector').text();
     
@@ -638,6 +631,10 @@ $('[data-init=tween]').on('click', function() {
     });
     $selector = arr.join(', ');
     
+    // attribute presets for snippet
+    $attr = '\n  attr: {attributeKey: "attributeValue"},';
+    // $attr = '';
+    
     swal({
       title: 'Give your tween a name!',
       input: 'text',
@@ -651,7 +648,7 @@ $('[data-init=tween]').on('click', function() {
         if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
           alertify.error('Error: That name already exists!');
           $('#elms option:selected').text($this);
-        } else {
+        } else {          
           // append the option
           $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
 
@@ -718,7 +715,7 @@ $('[data-init=framebyframe]').on('click', function() {
 
 // keyframes
 $('[data-add=snippet]').click(function() {
-  var addSnippet = "mainTL.to('"+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: '100%',\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  // eases: none, power1, power2, power3, power4, back, elastic, bounce, rough, slow, steps, circ, expo, and sine\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
+  var addSnippet = "mainTL.to('"+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: '100%',\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  // eases: none, power1, power2, power3, power4, back, elastic, bounce, rough, slow, steps, circ, expo, and sine\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},"+ $attr +"\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
   
   $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
   editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
