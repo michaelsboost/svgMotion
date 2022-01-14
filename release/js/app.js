@@ -550,6 +550,19 @@ $('[data-init=draw]').on('click', function() {
       } else {
         counter++;
         
+        if ($('[data-selected]').length === 1) {
+          // attribute presets for snippet
+          if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['path', 'polygon']) !== -1) {
+            // matches
+            $str = 'attr: {d: "'+ $('[data-selected]').attr('d').toString() +'"},';
+          } else {
+            // does not match
+            // $str = 'attr: {d: "m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z"},';
+            // $str = 'attr: {attributeKey: "attributeValue"},';
+            $str = '';
+          }
+        }
+        
         // append the option
         $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
 
