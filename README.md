@@ -3,7 +3,7 @@ svgMotion
 
 I love making vector animations but finding an app to make vector animations on a phone simply didn't exist. Desktop users have [Animate CC](https://www.adobe.com/products/animate.html), [After Effects](https://www.adobe.com/products/aftereffects.html), [Toon Boom](https://www.toonboom.com/), [Rive](https://rive.app/), [Blender](https://blender.org/), [Synfig Studio](https://www.synfig.org/), [Haiku Animator](https://www.haikuanimator.com/), [Keyshape](https://www.keyshapeapp.com/), [Glaxnimate](https://glaxnimate.mattbas.org/), [Enve](https://maurycyliebner.github.io/index) etc: If you're on a Chromebook you have [Animatron Studio](https://www.animatron.com/studio/), [TweenUI](https://tweenui.com/animator/), [Wick Editor](https://www.wickeditor.com/), [Expressive Animator](https://www.expressivesuite.com/), and even [aniGen](http://anigen.org/) but mobile users have been left in the dark far too long. That's why I decided to build [svgMotion](https://michaelsboost.github.io/svgMotion)!
 
-![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/screenshot.png)
+![](https://raw.githubusercontent.com/michaelsboost/svgMotion/gh-pages/screenshots/preview.png)
 
 Version
 -------------
