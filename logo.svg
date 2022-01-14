@@ -1,1 +1,76 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generator: Gravit.io --><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 512 512" width="512pt" height="512pt"><defs><clipPath id="_clipPath_o00eU7Uh5bDBfX8Wj1R3HK7FfXSVITMB"><rect width="512" height="512"/></clipPath></defs><g clip-path="url(#_clipPath_o00eU7Uh5bDBfX8Wj1R3HK7FfXSVITMB)"><g><rect x="0" y="0" width="512" height="512" transform="matrix(1,0,0,1,0,0)" fill="rgb(133,30,203)"/><path d=" M 318.472 129.912 L 193.522 129.912 L 180.344 64 L 331.651 64 L 318.472 129.912 Z  M 202.729 144.452 C 198.342 175.782 181.413 202.37 142.967 240.815 L 138.754 245.028 L 142.058 249.986 C 180.2 307.19 241.555 433.178 248.728 447.995 L 248.728 261.372 C 248.728 260.837 248.923 260.365 249.031 259.866 C 246.18 258.906 243.586 257.307 241.447 255.191 C 235.207 248.957 233.798 239.366 237.983 231.601 C 242.168 223.836 250.953 219.739 259.592 221.523 C 268.23 223.308 274.672 230.552 275.437 239.339 C 276.202 248.127 271.108 256.374 262.908 259.625 C 263.052 260.2 263.257 260.755 263.257 261.372 L 263.262 448 C 270.414 433.234 331.795 307.2 369.937 249.986 L 373.246 245.033 L 369.033 240.821 C 330.587 202.375 313.653 175.782 309.271 144.447 L 202.729 144.452 Z " fill="rgb(255,255,255)"/></g><g><linearGradient id="_lgradient_0" x1="0" y1="1.1102230246251565e-16" x2="1" y2="0.9999999999999999" gradientTransform="matrix(512,0,0,512,0,0)" gradientUnits="userSpaceOnUse"><stop offset="1.3043478260869565%" stop-opacity="1" style="stop-color:rgb(153,0,255)"/><stop offset="97.82608695652173%" stop-opacity="1" style="stop-color:rgb(93,93,93)"/></linearGradient><rect x="0" y="0" width="512" height="512" transform="matrix(1,0,0,1,0,0)" fill="url(#_lgradient_0)"/><g><linearGradient id="_lgradient_1" x1="0.8509136851168925" y1="0.14906228977084124" x2="2.220446049250313e-16" y2="1.0000000000000004" gradientTransform="matrix(182.046,-182.046,182.04,182.04,73.957,273.224)" gradientUnits="userSpaceOnUse"><stop offset="1.7391304347826086%" stop-opacity="1" style="stop-color:rgb(255,193,7)"/><stop offset="99.1304347826087%" stop-opacity="1" style="stop-color:rgb(255,240,194)"/></linearGradient><path d=" M 202.729 144.452 C 198.342 175.782 181.413 202.37 142.967 240.815 L 138.754 245.028 L 142.058 249.986 C 180.2 307.19 241.555 433.178 248.728 447.995 L 248.728 261.372 C 248.728 260.837 248.923 260.365 249.031 259.866 C 246.18 258.906 243.586 257.307 241.447 255.191 C 235.207 248.957 233.798 239.366 237.983 231.601 C 242.168 223.836 250.953 219.739 259.592 221.523 C 268.23 223.308 274.672 230.552 275.437 239.339 C 276.202 248.127 271.108 256.374 262.908 259.625 C 263.052 260.2 263.257 260.755 263.257 261.372 L 263.262 448 C 270.414 433.234 331.795 307.2 369.937 249.986 L 373.246 245.033 L 369.033 240.821 C 330.587 202.375 313.653 175.782 309.271 144.447 L 202.729 144.452 Z " fill="url(#_lgradient_1)"/><linearGradient id="_lgradient_2" x1="0.6581126310893053" y1="0.35620986096284835" x2="0.2793941304282797" y2="0.7349283552990573" gradientTransform="matrix(110.02,-110.02,110.02,110.02,145.98,98.367)" gradientUnits="userSpaceOnUse"><stop offset="2.1739130434782608%" stop-opacity="1" style="stop-color:rgb(233,30,99)"/><stop offset="98.26086956521739%" stop-opacity="1" style="stop-color:rgb(149,4,52)"/></linearGradient><path d=" M 318.475 145.912 L 193.525 145.912 L 180.347 64 L 331.653 64 L 318.475 145.912 Z " fill="url(#_lgradient_2)"/></g></g><g opacity="0.15"><path d=" M 0 0 L 512 0 L 0 512 L 0 0 Z " fill="rgb(235,235,235)"/></g></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Gravit.io -->
+
+<svg
+   style="isolation:isolate"
+   viewBox="0 0 512 512"
+   width="512pt"
+   height="512pt"
+   version="1.1"
+   id="svg27"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs5">
+    <clipPath
+       id="_clipPath_8awORL9QosgWkelytpt180td0f15gYGL">
+      <rect
+         width="512"
+         height="512"
+         id="rect2" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#_clipPath_8awORL9QosgWkelytpt180td0f15gYGL)"
+     id="g25">
+    <g
+       id="g23">
+      <linearGradient
+         id="_lgradient_5"
+         x1="0"
+         y1="1.1102230246251565e-16"
+         x2="1"
+         y2="0.9999999999999999"
+         gradientTransform="matrix(512,0,0,512,0,0)"
+         gradientUnits="userSpaceOnUse">
+        <stop
+           offset="1.3043478260869565%"
+           stop-opacity="1"
+           style="stop-color:rgb(153,0,255)"
+           id="stop7" />
+        <stop
+           offset="97.82608695652173%"
+           stop-opacity="1"
+           style="stop-color:rgb(93,93,93)"
+           id="stop9" />
+      </linearGradient>
+      <g
+         id="g21">
+        <linearGradient
+           id="_lgradient_6"
+           x1="0.8509136851168925"
+           y1="0.14906228977084124"
+           x2="2.220446049250313e-16"
+           y2="1.0000000000000004"
+           gradientTransform="matrix(307.054,-307.054,307.046,307.046,-51.05,217.208)"
+           gradientUnits="userSpaceOnUse">
+          <stop
+             offset="1.7391304347826086%"
+             stop-opacity="1"
+             style="stop-color:rgb(255,193,7)"
+             id="stop14" />
+          <stop
+             offset="99.1304347826087%"
+             stop-opacity="1"
+             style="stop-color:rgb(255,240,194)"
+             id="stop16" />
+        </linearGradient>
+        <path
+           d=" M 166.149 0.009 C 158.748 52.853 130.195 97.698 65.349 162.544 L 58.243 169.65 L 63.815 178.012 C 128.149 274.497 231.636 486.999 243.734 511.991 L 243.734 197.216 C 243.734 196.314 244.063 195.517 244.245 194.677 C 239.436 193.057 235.061 190.359 231.454 186.791 C 220.928 176.276 218.552 160.099 225.611 147.002 C 232.669 133.905 247.487 126.994 262.058 130.004 C 276.628 133.014 287.495 145.232 288.785 160.054 C 290.075 174.876 281.482 188.787 267.651 194.269 C 267.894 195.24 268.24 196.176 268.24 197.216 L 268.249 512 C 280.312 487.095 383.842 274.514 448.177 178.012 L 453.757 169.659 L 446.651 162.553 C 381.805 97.707 353.243 52.853 345.851 0 L 166.149 0.009 Z "
+           fill="url(#_lgradient_6)"
+           id="path19"
+           style="fill:#851ecb;fill-opacity:1" />
+      </g>
+    </g>
+  </g>
+</svg>
