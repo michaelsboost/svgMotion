@@ -67,6 +67,35 @@ $('[data-info]').click(function() {
 });
 
 // init new project
+function newProj() {
+  // first clear the canvas
+  $('[data-canvas]').empty();
+
+  // reset project name
+  $('[data-projectname]').text('My Project');
+
+  // reset fps
+  $('[data-fps]').val( $('[data-new=fps]').val() );
+
+  // clear audio
+  $('[data-audio]').val('');
+
+  // clear notepad
+  $('[data-notepad]').val('');
+
+  // clear keys
+  $('[data-dialog=keys]').empty();
+
+  // reset filters
+  $('[data-blurfilter]').val(0);
+  $('[data-huefilter]').val(0);
+  $('[data-brightnessfilter]').val(1);
+  $('[data-contrastfilter]').val(1);
+  $('[data-saturatefilter]').val(1);
+  $('[data-grayscalefilter]').val(0);
+  $('[data-sepiafilter]').val(0);
+  $('[data-invertfilter]').val(0).trigger('change');
+}
 $('[data-confirm="newproject"]').click(function() {
   swal({
     title: 'Proceed with new project?',
@@ -76,33 +105,7 @@ $('[data-confirm="newproject"]').click(function() {
   }).then((result) => {
     if (result.value) {
       // initiate a new project
-      // first clear the canvas
-      $('[data-canvas]').empty();
-      
-      // reset project name
-      $('[data-projectname]').text('My Project');
-      
-      // reset fps
-      $('[data-fps]').val( $('[data-new=fps]').val() );
-      
-      // clear audio
-      $('[data-audio]').val('');
-      
-      // clear notepad
-      $('[data-notepad]').val('');
-      
-      // clear keys
-      $('[data-dialog=keys]').empty();
-      
-      // reset filters
-      $('[data-blurfilter]').val(0);
-      $('[data-huefilter]').val(0);
-      $('[data-brightnessfilter]').val(1);
-      $('[data-contrastfilter]').val(1);
-      $('[data-saturatefilter]').val(1);
-      $('[data-grayscalefilter]').val(0);
-      $('[data-sepiafilter]').val(0);
-      $('[data-invertfilter]').val(0).trigger('change');
+      newProj();
   
       // close new icon
       $('[data-call=new].active').removeClass('active');
@@ -157,40 +160,90 @@ function loadfile(input) {
       origSVG = $('.canvas').html();
       svgLoaded();
     } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
-      alertify.log('project files coming soon...');
-//      if ($('[data-keys]').html()) {
-//        swal({
-//          title: 'Keys Detected!',
-//          text: "Would you like to clear these?",
-//          type: 'question',
-//          showCancelButton: true
-//        }).then((result) => {
-//          if (result.value) {
-//            $('[data-keys]').html('');
-//            loadedJSON = JSON.parse(e.target.result);
-//            loadJSON();
-//
-//            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-//            $("[data-action=fadeOut]").fadeOut(400, function() {
-//              $("[data-action=fadeOut]").remove();
-//            });
-//          }
-//        })
-//      } else {
-//        $('[data-keys]').html('');
-//        loadedJSON = JSON.parse(e.target.result);
-//        loadJSON();
-//
-//        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-//        $("[data-action=fadeOut]").fadeOut(400, function() {
-//          $("[data-action=fadeOut]").remove();
-//        });
-//      }
+      if ($('[data-keys]').html()) {
+        swal({
+          title: 'Keys Detected!',
+          text: "Would you like to clear these?",
+          type: 'question',
+          showCancelButton: true
+        }).then((result) => {
+          if (result.value) {
+            $("[data-keyscode]").empty();
+            loadedJSON = JSON.parse(e.target.result);
+            loadJSON();
+            origSVG = $('.canvas').html();
+            svgLoaded();
+            $('#elms option:last').prop('selected', true).trigger('change');
+            $('[data-open=keys]').trigger('click');
+            setTimeout(function() {
+              $('[data-playit=firstframe]').trigger('click');
+            }, 100)
+
+            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+            $("[data-action=fadeOut]").fadeOut(400, function() {
+              $("[data-action=fadeOut]").remove();
+            });
+          }
+        })
+      } else {
+        $("[data-keyscode]").empty();
+        loadedJSON = JSON.parse(e.target.result);
+        loadJSON();
+        origSVG = $('.canvas').html();
+        svgLoaded();
+        $('#elms option:last').prop('selected', true).trigger('change');
+        $('[data-open=keys]').trigger('click');
+        setTimeout(function() {
+          $('[data-playit=firstframe]').trigger('click');
+        }, 100)
+
+        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+        $("[data-action=fadeOut]").fadeOut(400, function() {
+          $("[data-action=fadeOut]").remove();
+        });
+      }
     } else {
       alertify.error('Error: File type not supported');
     }
   };
   reader.readAsText(input.files[0]);
+}
+function loadJSON() {
+  $("#elms").empty();
+  $("[data-canvas]").html(loadedJSON.originalSVG.toString());
+  $("#elms").html(loadedJSON.elmkeys);
+  $("[data-keyscode]").html(loadedJSON.keys);
+    
+  if (parseFloat(loadedJSON.version) <= 0.1) {
+    swal({
+      title: 'Warning!',
+      text: "This project is using a version of svgMotion that's no longer supported.",
+      type: 'warning',
+    })
+  } else 
+  if (parseFloat(version) > parseFloat(loadedJSON.version)) {
+    swal({
+      title: 'Warning!',
+      text: "This project is using an older version of svgMotion. Some features may not work!",
+      type: 'warning',
+    })
+  }
+  
+  $('#blurfilter').val(loadedJSON.filters[0].blurfilter);
+  $('#huefilter').val(loadedJSON.filters[0].huefilter);
+  $('#brightnessfilter').val(loadedJSON.filters[0].brightnessfilter);
+  $('#contrastfilter').val(loadedJSON.filters[0].contrastfilter);
+  $('#saturatefilter').val(loadedJSON.filters[0].saturatefilter);
+  $('#grayscalefilter').val(loadedJSON.filters[0].grayscalefilter);
+  $('#sepiafilter').val(loadedJSON.filters[0].sepiafilter);
+  $('#invertfilter').val(loadedJSON.filters[0].invertfilter).trigger('change');
+
+  $('[data-projectname]').text(loadedJSON.settings[0].name);
+  $('[data-project=width]').val(loadedJSON.settings[0].width);
+  $('[data-project=height]').val(loadedJSON.settings[0].height).trigger('change');
+  $('[data-fps], [data-new=fps]').val(loadedJSON.settings[0].framerate);
+  $('[data-fontsize]').val(loadedJSON.settings[0].fontsize);
+  $('[data-notepad]').val(loadedJSON.settings[0].notepad);
 }
 
 // update document title when project name changes
@@ -1545,7 +1598,7 @@ function getProjectJSON() {
       "width"    : $('[data-project=width]').val(),
       "height"   : $('[data-project=height]').val(),
       "framerate": $('[data-fps]').val(),
-      "audio"    : $('[data-audio]').val(),
+      "fontsize" : $('[data-fontsize]').val(),
       "notepad"  : $('[data-notepad]').val()
     }],
     "filters": [{
@@ -1558,8 +1611,9 @@ function getProjectJSON() {
       "sepiafilter"     : sepiafilter.value,
       "invertfilter"    : invertfilter.value
     }],
-    "originalSVG": origSVG.toString().replace(/Created with Fabric.js 4.6.0/g, "Created with svgMotion - https://michaelsboost.github.io/svgMotion/"),
-    "keys": $("[data-dialog=keys]").html()
+    "originalSVG": origSVG.toString(),
+    "elmkeys": $("#elms").html(),
+    "keys"   : $("[data-keyscode]").html()
   };
 };
 function saveCode(filename) {
@@ -1600,29 +1654,32 @@ function saveCode(filename) {
   });
 }
 function exportSVGFrame() {
-  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-") + "-frame-" + time.textContent;
   if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-projectname]")[0].value = "svgMotion-animation-frame";
+    projectname = $("[data-projectname]")[0].value = "-frame-" + time.textContent;
   }
   blob = new Blob([ '<!-- Generator: svgMotion - https://michaelsboost.com/svgMotion/ -->\n' + $(".canvas").html() ], {type: "text/html"});
   saveAs(blob, projectname + ".svg");
 };
 function exportPNGFrame() {
-  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-") + "-frame-" + time.textContent;
   if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-projectname]")[0].value = "svgMotion-animation-frame";
+    projectname = $("[data-projectname]")[0].value = "-frame-" + time.textContent;
   }
   saveAsPNG(projectname);
 };
 function exportJSON() {
   getProjectJSON();
-  var projectname = $('[data-projectname]')[0].textContent.toLowerCase().replace(/ /g, "-")
-  if (!$('[data-projectname]')[0].textContent.toLowerCase().replace(/ /g, "-")) {
-    projectname = $('[data-projectname]')[0].textContent = "_svgMotion";
+  var projectname = $('[data-projectname]')[0].value.toLowerCase().replace(/ /g, "-") + '_svgMotion';
+  if (!$('[data-projectname]')[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $('[data-projectname]')[0].value = "_svgMotion";
   }
   var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
   saveAs(blob, projectname + ".json");
 };
+$('[data-project=export]').on('click', function() {
+  exportJSON();
+});
 $('[data-exportframe=svg]').on('click', function() {
   $(".canvas style").remove();
   $(".canvas script").remove();
@@ -1639,9 +1696,9 @@ $('[data-exportzip]').on('click', function() {
   
   var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
   if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-projectname]")[0].value = "-svgMotion";
+    projectname = $("[data-projectname]")[0].value = "_svgMotion";
   } else {
-    projectname = projectname + '-svgMotion';
+    projectname = projectname + '_svgMotion';
   }
   saveCode(projectname);
 });
