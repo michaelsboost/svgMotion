@@ -1,5 +1,5 @@
 /*
-  Version: 0.401
+  Version: 1.000-release
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
@@ -9,16 +9,20 @@
 /* resets */
 @font-face {
   font-family: Lato;
-  src: url("../libraries/font-awesome/Lato-Light.ttf");
+  src: url("Lato-Light.ttf");
 }
 body {
   font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18.45px;
+  font-weight: 400;
+  line-height: 20px;
 }
 a {
   cursor: pointer;
   text-decoration: none;
 }
 .alertify-log {
+  font-size: 14px;
   text-shadow: 0 0 #000;
 }
 .alertify-log-success {
@@ -28,60 +32,40 @@ a {
 .alertify-log-error {
   background: #ec4040;
 }
+.alertify-log h1, 
+.alertify-log h5 {
+  font-weight: 100;
+}
+.swal2-show h1, .swal2-show h5 {
+  margin: 20px;
+  font-weight: 100;
+}
 button {
   background: transparent;
   border: 0;
 }
-html, body {
-  font-family: "Helvetica","Arial",sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-}
 input[type=range] {
   position: relative;
   top: -4px;
-  width: calc(100vw - 210px);
+  width: calc(100vw - 300px);
   margin-top: -3.1px;
   background-color: transparent;
   -webkit-appearance: none;
 }
-
-/* checkbox */
-input.checkbox {
-  position: relative;
-  margin-top: 10px;
-  -webkit-appearance: none;
+select {
+  background: transparent;
+  border: 0;
   outline: none;
-  width: 50px;
-  height: 30px;
-  border-radius: 50px;
+  padding: 0;
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+  text-transform: capitalize;
 }
-input.checkbox:after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-}
-input.checkbox:checked:after {
-  left: 20px;
-}
-/* svg checkbox */
-svg.checkbox {
-  cursor: pointer;
-  overflow: visible;
-}
-svg.checkbox:not(.fr) {
-  position: relative;
-  top: 5px;
-}
-svg.checkbox path {
-  transform-origin: center;
-  transform: scale(1.5) translate(2px, -3px);
-  stroke: transparent!important;
+select option {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
 }
 
 /* Hide Arrows From Input Number */
@@ -98,65 +82,143 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* Project Settings */
-.settings {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1008;
-  overflow: auto;
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
 }
-.settings h2 {
-  line-height: 48px;
+::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
 }
-.settingsbg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+::-webkit-scrollbar-thumb {
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #000;
+}
+::-webkit-scrollbar-track {
+  background: #242424;
+  border: 0 none #fff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #404040;
+}
+::-webkit-scrollbar-track:active {
+  background: #1b1b1b;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+/* firefox*/
+body, 
+select, select option {
+  scrollbar-width: thin;
+  scrollbar-color: #1e7eeb #2a2e39;
+}
+
+/* input range slider */
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: #282c36;
+  border: 0;
+  width: 100%;
+  height: 1px;
   cursor: pointer;
 }
-.projectSettings {
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -0.75em;
+  width: 1.5em;
+  height: 1.5em;
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 100%;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #35353a;
+}
+input[type=range]::-moz-range-track {
+  background-color: #282c36;
   width: 100%;
-  height: calc(100vh - 150px);
+  height: 1px;
+  cursor: pointer;
 }
-.projectSettings > div {
-  border-radius: 1em;
-  padding: 1em 2em;
+input[type=range]::-moz-range-thumb {
+  margin-top: -0.75em;
+  width: 1.5em;
+  height: 1.5em;
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 100%;
+  cursor: pointer;
 }
-.settings .minicolors-panel {
-  margin-top: -16px;
-}
-.settings .minicolors-input {
-  display: inline-block;
-  width: calc(100vw - 85vw);
-}
-.settings select {
-  display: block;
-  padding: 15px;
+input[type=range]::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 0 0;
+  color: transparent;
   width: 100%;
-  outline: 0;
+  height: 10px;
+  cursor: pointer;
+}
+input[type=range]::-ms-fill-lower {
+  background: #351d22;
   border: 0;
 }
-.settings .minicolors-input[data-selectioncolor] {
-  display: block;
-  padding: 25px 50px;
-  width: 100%;
-  outline: 0;
+input[type=range]::-ms-fill-upper {
+  background: #351d22;
   border: 0;
 }
-.settings .minicolors-input[data-selectioncolor] + span.minicolors-swatch {
-  top: 9px;
-  left: 9px;
-  width: 30px;
-  height: 30px;
+input[type=range]::-ms-thumb {
+  width: 1.5em;
+  height: 1.5em;
+  background: #1e7eeb;
+  border: 0;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 0;
+  /*Needed to keep the Edge thumb centred*/
 }
-.selectioncolor .minicolors-theme-default.minicolors {
-  width: 100%;
-  display: block;
+input[type=range]:focus::-ms-fill-lower {
+  background: #351d22;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #351d22;
+}
+/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+how to remove the virtical space around the range input in IE*/
+@supports (-ms-ime-align:auto) {
+  /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+  input[type=range] {
+    margin: 0;
+    /*Edge starts the margin from the thumb, not the track as other browsers do*/
+  }
+}
+
+/* input[type=number] styles */
+input.numinhead {
+  background: transparent;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+input.numinhead[type=number] {
+  width: 75px;
+  font-size: 4vh;
+  text-align: center;
+}
+input.numinhead[type=text] {
+  width: 150px;
 }
 
 /* SWAL */
@@ -176,325 +238,466 @@ input[type=number] {
   margin-top: 12px;
 }
 
-/* header */
-.header {
-  text-align: center;
-  white-space: nowrap;
-  overflow: auto;
-}
-.header a {
-  padding: 0 calc(5vw);
-}
-.header a .fa {
-  font-size: 20px;
-}
-.header a h1 {
-  display: inline;
-}
-.header .mainh > a svg,
-.header .libraryh > a svg,
-.header .keysh {
-  white-space: nowrap;
-}
-.header .keysh {
-  text-align: left;
-}
-.header .keysh > a svg {
-  transform: scale(1.5);
-}
-.header input[type=range] {
-  position: relative;
-  top: -7px;
-  width: calc(100% - 580px);
-  margin: 0;
-}
-.header .libraryh a,
-.header .keysh a {
-  padding: 0 calc(4vw);
-}
-.header .settime {
-  background: transparent;
-  border: 0;
-  font-size: 2em;
-  font-weight: bold!important;
-  font-family: "Helvetica","Arial",sans-serif;
-  font-weight: 400;
-  line-height: 20px;
-  margin: 0!important;
-  padding: 0!important;
-  width: 50px;
-}
-.header {
-  user-select: none;
-  margin: 0;
-  padding: 15px 15px 8px 15px;
-}
-.header img,
-.header svg,
-[data-key=delete] svg {
-  height: 20px;
-}
-
-/* canvas */
-.canvas {
-  display: block;
+/* top menu */
+.topmenu {
   position: absolute;
-  top: 49px;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  margin: 0 auto;
-  overflow: hidden;
-  border: 0;
+  height: 30px;
+  white-space: nowrap;
+  padding: 10px 0;
+  z-index: 1;
+  user-select: none;
+  overflow: auto;
 }
-.canvas > svg {
-  width: 100%!important;
-  height: 100%!important;
-  border: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateY(-50%) translateX(-50%);
+.topmenu > div:not(:first) {
+  display: none;
+}
+.topmenu > div, .toolsmenu {
+  display: flex;
+  justify-content: space-between;
+  height: 0;
+}
+.topmenu img,
+.topmenu svg {
+  cursor: pointer;
+  fill: currentcolor;
+  height: 25px;
+  padding: 0 15px;
+}
+.topmenu .txt {
+  position: relative;
+  top: -3px;
+}
+.topmenu a.txt  {
+  padding: 1px 6px;
+}
+.topmenu a {
+  position: relative;
+  top: 2px;
+}
+.topmenu .pointer {
+  cursor: pointer;
+}
+svg.checkbox {
+  position: relative;
+  top: 4px;
+  margin: -3px 15px;
+  height: 25px;
+  cursor: pointer;
+  overflow: visible;
+}
+svg.checkbox path {
+  transform-origin: center;
+  transform: scale(1.5) translate(2px, -3px);
+  stroke: transparent;
+}
+.librarylinks a {
+  position: relative;
+  top: 3px;
+  padding: 0 calc(3vw);
+}
+.playback a {
+  padding: 0 calc(2vw);
+}
+[data-midbtns] a {
+  position: relative;
+  top: 2px;
+  padding: 0 7px;
+}
+[data-menubuttons] {
+  position: relative;
+  top: -1px;
 }
 
-/* layers */
+/* color picker/palette */
+.pcr-button {
+  display: none;
+}
+.pcr-app {
+  display: none;
+  margin: 0;
+  width: 0;
+  height: 0;
+}
+.pcr-app.visible {
+  display: flex;
+  margin: -12px -12px;
+/*
+  width: calc(100vw - 100px);
+  height: calc(100% - 22px);
+*/
+  width: calc(100vw - 142px);
+  height: calc(100% - 5px);
+}
+.pcr-last-color {
+  display: none;
+}
+.pcr-app[data-theme='classic'] .pcr-selection .pcr-color-preview .pcr-current-color {
+  height: 100%;
+}
+.pcr-app[data-theme='classic'] .pcr-selection .pcr-color-palette {
+  height: auto;
+}
+
+/* canvas and dialogs */
 .dialog {
   position: absolute;
-  top: 49px;
+  top: 50px;
+  left: 0;
   right: 0;
-  left: 50%;
   bottom: 0;
   overflow: auto;
 }
-.dialog ul:not(.minicolors-swatches) {
+.dialog:not([data-canvasbg], .animationtype, .CodeMirror, .CodeMirror *) {
+  padding: 1em;
+  font-size: 14px;
+}
+.dialog[data-canvasbg] {
+  padding: 0;
+  background: transparent;
+}
+[data-canvas] {
+  line-height: 0;
+}
+[data-canvas] svg,
+[data-dialog=layers] .origsvg svg,
+[data-dialog=render] svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* dialog */
+.dialogs > .dialog {
+  display: none;
+}
+.dialog:not(.colorpicker) h2 {
+  font-weight: 100;
+}
+.dialog:not(.colorpicker) input, 
+.dialog:not(.colorpicker) textarea {
+  display: block;
+  margin: 0;
+  padding: 10px;
+  resize: none;
+  border-radius: 0;
+  outline: 0;
+  font-size: x-large;
+  border: 0;
+  background: transparent;
+}
+.dimensions {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.inputs {
+  display: flex;
+  justify-content: space-between;
+}
+.inputs input {
+  width: calc(50vw - 66px);
+  padding: 0;
+  text-align: center;
+}
+.input {
+  width: calc(100vw - 50px);
+}
+.dialog:not(.colorpicker) button {
+  width: 100%;
+  padding: 15px 30px;
+  border: 0;
+  border-radius: 0.4em;
+  text-transform: uppercase;
+  font-size: 0.875em;
+/*  font-weight: bold;*/
+  transition: opacity 0.3s;
+  display: block;
+  margin: 1.42857em 0;
+}
+.dialog:not(.colorpicker) textarea {
+  width: calc(100vw - 50px);
+/*  height: calc(100% - 251px);*/
+  height: calc(50vh - 130px);
+  min-height: 100px;
+  padding: 10px;
+}
+.dialog:not(.colorpicker) .hscroll {
+  white-space: nowrap;
+  overflow: auto;
+  width: 100%;
+}
+.dialog:not(.colorpicker) .hscroll button {
+  display: inline-block;
+  width: auto;
+}
+[data-dialog=layers].layers.right {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  right: 0;
+  bottom: 0;
+}
+[data-dialog=layers].layers ul {
+  font-family: "Helvetica","Arial",sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  
   list-style: none;
   margin: 0;
   padding: 0;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  bottom: 50px;
 }
-.librarydialog ul:not(.minicolors-swatches) {
-  overflow: auto;
-}
-.dialog.librarydialog ul li {
+[data-dialog=layers].layers ul li {
+  cursor: pointer;
   padding: 10px;
 }
-.dialog ul li.selector {
+[data-dialog=keys].timelinewindow.bottom {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* bottom menu */
+.props-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 85px;
+  z-index: 1;
+  overflow: auto;
+}
+.props-container > .tc > a {
   color: #1e7eeb;
 }
-.dialog ul li svg {
-  width: 20px;
-  height: 20px;
-}
-.dialog.props button {
-  cursor: pointer;
-  display: inline-block;
-  margin: 0;
-  padding: 10px;
-  font-size: 2em;
-}
-.dialog.props {
-  left: 0;
-  bottom: 0;
-  z-index: 1;
-}
-ul.dialog.props {
-  bottom: 0;
-  padding-bottom: 0.5em;
-}
-.dialog ul li.footer svg {
-  width: 40px;
-  height: 30px;
-}
-.dialog.props.animpanel {
-  border: 0;
-}
-
-/* layer inputs */
-.numinhead {
-  background: transparent;
-  border: 0;
-  margin: 0;
-  padding: 0;
-}
-.numinhead.color {
-  height: 26px;
-}
-.numinhead[type=number] {
-  width: 50px;
-}
-.numinhead[type=text] {
-  width: 150px;
-}
-
-/* attributes */
-/* color picker */
-.props ul:not(.minicolors-swatches) {
-  background: transparent;
-}
-
-/* animation type dialog */
-.animationtype {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-content: center;
-  overflow: auto;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-.animationtype header {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-content: center;
-  justify-content: center;
+.props-container > .tc {
   text-align: center;
 }
-.animationtype header .wrap {
-  display: flex;
-  height: calc(50vh);
+.props-container button.addsnippet {
+  width: calc(100% - 25px);
+  margin-left: 10px;
+  margin-right: 10px;
 }
-.animationtype header,
-.animationtype header svg {
-  position: relative;
-  box-sizing: border-box;
+.props-container > .selectors > textarea.css {
+  display: none;
 }
-.closeanimationtype {
-  position: absolute;
-  right: 0;
-  margin: 5px 10px;
-  font-size: 3em;
-}
-.animationtype .content {
-  width: 50%;
-  height: 100%;
-  position: relative;
-  box-sizing: border-box;
-  overflow: auto;
-}
-.animationtype .definition {
+.props-container > .selectors > textarea.js {
   padding: 10px;
+  width: calc(100% - 42px);
+  height: calc(100% - 42px);
+  border: 0;
+  background: transparent;
+  font-size: 14px;
 }
-.animationtype .footer {
+.props-container > .selectors {
+  padding: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
+  border: 0;
+  background: transparent;
+}
+.props-container > .selectors input {
+  font-size: 14px;
+  padding: 0;
+  border: 0!important;
+  display: inline-block;
+}
+.props-container > .selectors input[type=checkbox] {
+  float: right;
+}
+.tl-top {
   position: absolute;
-  bottom: 0;
+  bottom: 30px;
   left: 0;
-  width: 100%;
-}
-
-/* timeline */
-.playback {
-  width: calc(100% - 41vw);
-  text-align: right;
-}
-.dialog.animpanel {
+  right: 0;
+  height: 30px;
+  white-space: nowrap;
+  padding: 10px 0;
+  z-index: 1;
   user-select: none;
-  left: 0;
-  top: auto;
-  height: 55px;
-  bottom: 55px;
+  overflow: hidden;
 }
-.dialog.animpanel ul li:not(.minicolors-swatch) {
+.tl-top .timeline {
+  position: relative;
+  height: 8px;
+  margin-left: 15px;
+  margin-right: 15px;
+  overflow: visible;
+}
+.tl-top .progress-bar, .tl-top .timeline-track {
+  height: 8px;
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
+}
+.tl-top .timeline-track {
+  background-color: #999;
+  opacity: .6;
+}
+.tl-top .progress-bar {
+  background-color: #3d99ff;
+  height: 8px;
+  top: 0;
+  width: 0;
+  pointer-events: none;
+}
+.tl-top .seek-bar {
+  width: 100%;
+  position: absolute;
+  height: 24px;
+  top: -12px;
+  left: 0;
+  background-color: transparent;
+}
+.tl-top .playhead {
+  position: absolute;
+  top: -5px;
+  transform: translate(-50%,0);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #3d99ff;
+  background-color: #3d99ff;
+  
+  touch-action: manipulation;
+  cursor: ew-resize;
+  user-select: none;
+  left: 0%;
+}
+
+.tl-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   right: 0;
-  padding: 16px 0;
+  height: 30px;
   white-space: nowrap;
+  padding: 10px 0;
+  z-index: 1;
+  user-select: none;
+  overflow: auto;
+  
+  font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18.45px;
+  font-weight: 400;
+  line-height: 20px;
 }
-.dialog.animpanel ul li a {
-  padding: 0 calc(5vw);
+.tl-bottom > div:not(:first) {
+  display: none;
 }
-.dialog.animpanel ul li svg {
-  transform: scale(1.5);
+.tl-bottom > div {
+  display: flex;
+  justify-content: space-between;
+  height: 0;
+}
+.tl-bottom svg {
+  cursor: pointer;
+  fill: currentcolor;
+  height: 25px;
+  padding: 0;
+  margin: -10px;
+}
+.tl-bottom .txt {
+  position: relative;
+  top: -3px;
+}
+.tl-bottom a.txt  {
+  padding: 1px 6px;
+}
+.tl-bottom a {
+  position: relative;
+  top: 2px;
+}
+.tl-bottom .pointer {
+  cursor: pointer;
+}
+.tl-bottom select {
+  font-size: 18.45px;
+}
+.tl-bottom > div > span:first-child {
+  position: relative;
+  top: 4px;
+  margin-left: 15px;
+}
+.tl-bottom > div > span:last-child {
+  position: relative;
+  top: 8px;
+  margin-right: 15px;
+}
+.tl-bottom > div > span > select.timescale {
+  position: relative;
+  top: 5px;
+}
+[data-play] svg {
+  transform: scale(1.25);
   transform-origin: center;
 }
-.dialog.props.animpanel {
-  user-select: auto;
-  border-left: 0;
+[data-repeat=true] path,
+[data-repeat=true] circle {
+  fill: #1e7eeb;
+}
+[data-delit] svg {
+  height: 18px;
+  margin-bottom: -2px;
+  margin-right: 2px;
 }
 
-.dialog.animtimeline {
-  user-select: none;
-  left: 0;
-  top: auto;
-  height: 55px;
-}
-.dialog.animtimeline ul li:not(.minicolors-swatch) {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-.dialog.animtimeline ul li:not(.minicolors-swatch) {
-  padding: 10px 10px;
-  white-space: nowrap;
-}
-.dialog.animtimeline .dialog.props li:not(.minicolors-swatch) {
-  padding: 17px 10px;
-}
-.dialog.animtimeline .dialog.props li:not(.tl, .minicolors-swatch) {
-  text-align: center;
-}
-.dialog.props {
-  border: 0;
-}
-.center {
-  position: fixed;
-  bottom: 0;
-  left: calc(50% - 2px);
-  width: 1px;
-  height: 55px;
-}
-.center span {
-  position: absolute;
-  left: 5px;
-  bottom: 0;
-  font-size: 10px;
-}
-.key {
-  position: relative;
-  background: none!important;
-  overflow: visible!important;
-  margin-bottom: 25px;
-  z-index: 1;
-}
-.footer {
-/*  width: calc(100vw + 100px);*/
+/* editor */
+.CodeMirror {
+  z-index: 0;
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: normal;
+  display: block;
   width: 100%;
 }
-.timeline {
-  width: calc(100vw - 10px);
-  height: 32px;
+.CodeMirror, .CodeMirror-gutters {
+  height: 100%!important;
 }
-.addkey, .delkey {
-  position: fixed;
-  bottom: 0;
-  padding: 10px 5px;
+.lint-error {
+  font-family: arial;
+  font-size: 70%;
+  padding: 2px 5px 3px;
 }
-.addkey {
-  left: 0;
+.lint-error-icon {
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 0 3px;
+  margin-right: 7px;
 }
-.delkey {
-  right: 0;
+.CodeMirror .cm-palette-hint {
+  display: inline-block;
+  box-sizing: border-box;
+  margin: -2px 2px 0 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 1px 2px #fff,
+              0 0 1px 3px #a0a09c;
 }
-.keyframe {
-  position: absolute;
-  top: 0;
+#pickerHolder {
+  margin-top: 65px;
+  margin-left: 56px;
+/*  margin-left: 49px;*/
 }
 
 /* vertical center */
 .table {
   display: table;
   position: absolute;
-  top: 49px;
+/*  top: 49px;*/
+  top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 .cell {
   display: table-cell;
@@ -521,96 +724,124 @@ ul.dialog.props {
   }
 }
 
-/* misc */
-.defaultcur {
-  cursor: default;
+/* colors */
+body {
+  background-color: #131722;
+  background-image: linear-gradient(45deg, #1a1f2c 25%, transparent 25%), linear-gradient(-45deg, #1a1f2c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1f2c 75%), linear-gradient(-45deg, transparent 75%, #1a1f2c 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
 }
-.block {
-  display: block;
+
+/* active tool color  = #1e7eeb */
+/* active frame color = #e4eb1e */
+
+/* header colors */
+[data-canvasbg], .dialog {
+  border: 1px solid #1e7eeb;
 }
-.ib {
-  display: inline-block;
+
+/* white color */
+.topmenu,
+[data-play], [data-playit],
+.topmenu a,
+.topmenu button,
+.dialog:not(.colorpicker),
+.dialog:not(.colorpicker) input,
+.dialog:not(.colorpicker) textarea,
+.dialog:not(.colorpicker) button,
+input.numinhead,
+.toolsmenu select,
+.toolsmenu select option {
+  color: #fff;
 }
-.hide {
-  display: none;
+/*
+.preloader tspan {
+  stroke: #fff;
 }
-.hidden {
-  visibility: hidden;
+*/
+
+/* filter for original blue image */
+.active img {
+  filter: brightness(1)!important;
 }
-.fl {
-  float: left;
+
+/* dark background */
+.topmenu,
+.preloaderbg {
+/*  background: #030a1e;*/
+  background: #071230;
 }
-.fr {
-  float: right;
+
+/* black background */
+.dialog {
+  background: #191e2a;
 }
-.pr {
-  position: absolute;
-  right: 0;
+input.numinhead,
+.toolsmenu select,
+.toolsmenu select option {
+  background: #000;
 }
-.tl {
-  text-align: left;
+
+/* filter for white */
+[data-call=settings] img,
+.logo {
+  fill: currentcolor;
+  filter: brightness(10);
 }
-.tc {
-  text-align: center;
+[data-midbtns] img {
+  fill: currentcolor;
+  filter: brightness(10);
 }
-.tr {
-  text-align: right;
+
+/* blue color */
+.dialog:not(.colorpicker) input, 
+.dialog:not(.colorpicker) textarea {
+  border: 1px solid #1e7eeb;
+/*
+  border: 0;
+  border-bottom: 1px solid #1e7eeb;
+*/
 }
-.pointer {
-  cursor: pointer;
+.dialog:not(.colorpicker) button {
+  background-color: #1e7eeb;
 }
-.w100p {
-  width: 100%;
+.dialog:not(.colorpicker) button.green {
+  background-color: #19bfa4;
 }
-.w50p {
-  width: 50%;
+.mainmenu a.active,
+.mainmenu button.active {
+  color: #1e7eeb;
 }
-.w25p {
-  width: 25%;
+[data-canvas] {
+  border: 1px solid #1e7eeb;
 }
-.r50p {
-  right: 50%;
+[data-toolsoption=colorpicker] button.active {
+  color: #1e7eeb;
 }
-.t50p {
-  top: 50%;
+[data-zoom=true] img {
+  fill: currentcolor;
+  filter: brightness(1);
 }
-.b50p {
-  bottom: 50%;
+.dialog ul li.selector {
+  color: #1e7eeb;
 }
-.nopad {
-  padding: 0;
+.preloader tspan {
+  stroke: #1e7eeb;
 }
-.nomar {
-  margin: 0;
+
+/* misc colors */
+.spacer {
+  color: transparent!important;
 }
-.nomart {
-  margin-top: 0;
+.topmenu [data-donate] {
+  color: #e85b46;
 }
-.nomarb {
-  margin-bottom: 0;
+.topmenu [data-render],
+.topmenu [data-export],
+.topmenu > .mainmenu:not(.keysh) [data-exportzip],
+.topmenu .green {
+  color: #2be71f;
 }
-.bdrn {
-  border-radius: 0;
-}
-.dialogbtn {
-  position: fixed;
-  left: 50%;
-  right: 0;
-  bottom: 0;
-}
-.scale1h {
-  transform: scale(1.5);
-}
-.scale2 {
-  transform: scale(2);
-}
-.red {
-  color: #e93657;
-}
-.stack1 {
-  position: relative;
-  z-index: 1;
-}
-.bgnone {
-  background: transparent!important;
+[disabled] {
+  opacity: 0.2;
 }

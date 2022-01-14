@@ -8,16 +8,12 @@ I love making vector animations but finding an app to make vector animations on 
 Version
 -------------
 
-0.401
+1.000-release
 
 To Do:
 -------------
  * Tool to Edit Paths (Bezier Curves), Polygons, Lines and Polylines  
- * Integrate the ability to render frame by frame animation  
- * Incorporate controllers to handle character rigging for tweens and frame by frame animation  
  * Integrate filters for user to animate (blur, hue, brightness, contrast, saturate, grayscale, sepia, invert) (adds to element via css: `filter: hue-rotate(119deg) grayscale(30%);`)  
- * Show group/class list for what's already animated to jump to it (fast way instead of re-selecting those objects again)  
- * Add help link  
 
 License
 -------------

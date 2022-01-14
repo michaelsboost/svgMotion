@@ -1,213 +1,125 @@
 /*
-  Version: 0.401
+  Version: 1.000-release
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
   This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
 */
 
-var $arr, $array, $str, $elm, $this, $sel, $val, $valz, $code, $start, $num, origCanvas,
-    $version    = '0.401',
-    codeStr     = "",
-    remStr      = "html > body > div:nth-child(3) > svg > ",
-    projectJSON = "",
+// variables
+var version = '1.000',
+    counter = 0,
+    remStr  = "html > body > div:nth-child(2) > div > svg > ",
+    $this, $str, $code, jsStr, origSVG, thisTool, anim, $selector,
+    detectInt, totalInt, getPerc, arr = [],
+    loadedJSON = {}, projectJSON = "",
     saveAsPNG = function(value) {
-      saveSvgAsPng(document.querySelector(".canvas svg"), value + ".png");
+      saveSvgAsPng(document.querySelector(".canvas > svg"), value + ".png");
     };
 
-// initiate new project
-function newProject() {
+// init code editor
+$('.editor-container').show();
+$('.selectors').hide();
+var editor = CodeMirror(document.getElementById("editor"), {
+  tabMode: "indent",
+  theme: 'nord',
+  styleActiveLine: true,
+  lineNumbers: true,
+  lineWrapping: true,
+  autoCloseTags: true,
+  foldGutter: true,
+  dragDrop: true,
+  lint: false,
+  autoCloseBrackets: true,
+  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+  mode: {name: "javascript", globalVars: false},
+  paletteHints: true
+});
+Inlet(editor);
+editor.on('change', function() {
+  $('[data-keyselector="'+ elms.value +'"] textarea').val(editor.getValue()).trigger('change');
+});
+
+// alertify log
+$('[data-log]').on('click', function() {
+  var val = $(this).attr('data-log');
+  alertify.log(val);
+});
+
+// svgMotion info
+$('[data-info]').click(function() {
+//  alertify.log('<div style="font-size: 14px; text-align: center;"><img src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5></div>');
+  
+//  swal({
+//    html: '<img class="logo" src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+//  });
   swal({
-    title: 'Are you sure you want to start a new project?',
-    text: "You will lose all your work and you won't be able to revert this!",
-    type: 'warning',
+    html: '<svg class="logo" style="isolation:isolate; width: 50%;" viewBox="0 0 512 512"><path d=" M 166.149 0.009 C 158.748 52.853 130.195 97.698 65.349 162.544 L 58.243 169.65 L 63.815 178.012 C 128.149 274.497 231.636 486.999 243.734 511.991 L 243.734 197.216 C 243.734 196.314 244.063 195.517 244.245 194.677 C 239.436 193.057 235.061 190.359 231.454 186.791 C 220.928 176.276 218.552 160.099 225.611 147.002 C 232.669 133.905 247.487 126.994 262.058 130.004 C 276.628 133.014 287.495 145.232 288.785 160.054 C 290.075 174.876 281.482 188.787 267.651 194.269 C 267.894 195.24 268.24 196.176 268.24 197.216 L 268.249 512 C 280.312 487.095 383.842 274.514 448.177 178.012 L 453.757 169.659 L 446.651 162.553 C 381.805 97.707 353.243 52.853 345.851 0 L 166.149 0.009 Z " /></svg><br><h1>svgMotion</h1><h5>Version '+ version +'-release</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
+  });
+//  $('.swal2-show').css('background', '#000');
+  $('.swal2-show').css('font-size', '14px');
+  $('.swal2-show').css('background', '#131722');
+  $('.swal2-show a').css('color', '#3085d6');
+  $('.swal2-show h1, .swal2-show h5').css({
+    'font-weight': '100',
+    'color': '#fff'
+  });
+});
+
+// init new project
+function newProj() {
+  // first clear the canvas
+  $('[data-canvas]').empty();
+
+  // reset project name
+  $('[data-projectname]').text('My Project');
+
+  // reset fps
+  $('[data-fps]').val( $('[data-new=fps]').val() );
+
+  // clear audio
+  $('[data-audio]').val('');
+
+  // clear notepad
+  $('[data-notepad]').val('');
+
+  // clear keys
+  $('[data-dialog=keys]').empty();
+
+  // reset filters
+  $('[data-blurfilter]').val(0);
+  $('[data-huefilter]').val(0);
+  $('[data-brightnessfilter]').val(1);
+  $('[data-contrastfilter]').val(1);
+  $('[data-saturatefilter]').val(1);
+  $('[data-grayscalefilter]').val(0);
+  $('[data-sepiafilter]').val(0);
+  $('[data-invertfilter]').val(0).trigger('change');
+}
+$('[data-confirm="newproject"]').click(function() {
+  swal({
+    title: 'Proceed with new project?',
+    text: "Are you sure? All your data will be lost!",
+    type: 'question',
     showCancelButton: true
   }).then((result) => {
     if (result.value) {
-      if ($('[data-show].active').is(':visible')) {
-        $('[data-props]').addClass('hide');
-        $('[data-display=props]').addClass('hide');
-        $('[data-show].active').removeClass('active');
-      }
-      if ($('.dialog.animpanel').is(':visible')) {
-        $('[data-close=keys]').trigger('click');
-      }
-      if ($('.dialog.librarydialog').is(':visible')) {
-        $('[data-close=library]').trigger('click');
-      }
-      $('[data-keys], .canvas').empty();
-      $('.defaultcur').text('0.0');
-      updateKeyPosition(0.0);
+      // initiate a new project
+      newProj();
+  
+      // close new icon
+      $('[data-call=new].active').removeClass('active');
+      $('[data-dialog=new]').hide();
+      
+      // init zoom tool by default
+      $('[data-tools=zoom]').trigger('click');
+    } else {
+      return false;
     }
   })
-}
-$('[data-project=new]').on("click", function() {
-  newProject();
 });
 
-// save files
-function getProjectJSON() {
-  projectJSON = {
-    "version": 0.4,
-    "svg": origCanvas,
-    "keys": $("[data-keys]").html(),
-    "groups": $("[data-groups] ul").html(),
-    "settings": [{
-      "theme": $('[data-theme]').attr('data-theme'),
-      "name": $('[data-project=name]').val(),
-      "size": $('[data-project=size]').val(),
-      "fps": $('[data-project=fps]').val(),
-      "selectioncolor": $('[data-selectioncolor]').val(),
-      "swatches": [
-        $('.defaultswatch')[0].value,
-        $('.defaultswatch')[1].value,
-        $('.defaultswatch')[2].value,
-        $('.defaultswatch')[3].value,
-        $('.defaultswatch')[4].value,
-        $('.defaultswatch')[5].value,
-        $('.defaultswatch')[6].value,
-        $('.defaultswatch')[7].value,
-        $('.defaultswatch')[8].value,
-        $('.defaultswatch')[9].value,
-        $('.defaultswatch')[10].value,
-        $('.defaultswatch')[11].value,
-        $('.defaultswatch')[12].value,
-        $('.defaultswatch')[13].value
-      ],
-      "notepad": $('[data-project=notepad]').val()
-    }]
-  };
-};
-function saveCode(filename) {
-  JSZipUtils.getBinaryContent("libraries/gsap/gsap-public.zip", function(err, data) {
-    if(err) {
-      throw err // or handle err
-    }
-
-    var zip = new JSZip();
-
-    // Put all application files in subfolder for shell script
-    var zipFolder = zip.folder("libraries");
-    zipFolder.load(data);
-
-    // html
-    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n    <style>\n    body {margin:0;}</style>\n  </head>\n  <body>\n    <div class="svgmotion">\n      '+ $('.canvas').html() +'\n    </div>\n\n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
-
-    // javascript
-    $code = '';
-    $('[data-function]').each(function() {
-      $code += this.value + '\n';
-    });
-    $code = '/*\n  This animation was created using svgMotion v'+ $version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar tl = new TimelineMax({\n  repeat: -1\n})\n\n' + $code.split('.canvas').join('.svgmotion') + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0);'
-
-    zip.file("js/animation.js", $code);
-    var content = zip.generate({type:"blob"});
-    saveAs(content, filename + ".zip");
-  });
-}
-function exportSVGFrame() {
-  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-");
-  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-project=name]")[0].value = "svgMotion-animation-frame-" + $('.defaultcur').text().toString().split('.').join('_');
-  }
-  blob = new Blob([ '<!-- Generator: svgMotion - https://michaelsboost.com/svgMotion/ -->\n' + $(".canvas").html() ], {type: "text/html"});
-  saveAs(blob, projectname + ".svg");
-}
-function exportPNGFrame() {
-  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-");
-  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-project=name]")[0].value = "svgMotion-animation-frame-" + $('.defaultcur').text().toString().split('.').join('_');
-  }
-  saveSvgAsPng(document.querySelector(".canvas svg"), projectname + ".png");
-}
-$('[data-export=zip]').click(function() {
-  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-");
-  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-project=name]")[0].value = "svgMotion-animation";
-  }
-  saveCode(projectname);
-});
-$('[data-export=json]').click(function() {
-  getProjectJSON();
-  var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-  if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-project=name]")[0].value = "svgMotion-animation";
-  }
-  var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
-  saveAs(blob, projectname + ".json");
-});
-$('[data-export=svgframe]').on('click', function() {
-  $(".canvas script").remove();
-  exportSVGFrame();
-  updatePreview();
-});
-$('[data-export=pngframe]').on('click', function() {
-  exportPNGFrame();
-  updatePreview();
-});
-
-// load svg file functions
-var loadedJSON = {};
-function loadJSON() {
-  $(".canvas, [data-keys], [data-display=selector]").html('');
-  $(".canvas").html(loadedJSON.svg);
-  $("[data-keys]").html(loadedJSON.keys);
-  $("[data-groups] ul").html(loadedJSON.groups);
-    
-  if (!loadedJSON.version) {
-    swal({
-      title: 'Warning!',
-      text: "This project is using a version of svgMotion that's no longer supported.",
-      type: 'warning',
-    })
-  } else {
-    if (parseFloat(loadedJSON.version) <= 0.3) {
-      swal({
-        title: 'Warning!',
-        text: "This project is using a version of svgMotion that's no longer supported.",
-        type: 'warning',
-      })
-    } else 
-    if (parseFloat($version) > parseFloat(loadedJSON.version)) {
-      swal({
-        title: 'Warning!',
-        text: "This project is using an older version of svgMotion. Some features may not work!",
-        type: 'warning',
-      })
-    }
-  }
-  // detect if is light or dark theme
-  if (loadedJSON.settings[0].theme === 'dark') {
-    if ($('[data-theme]').attr('data-theme') === 'light') {
-      $('[data-theme]').trigger('click');
-    }
-  } else {
-    if ($('[data-theme]').attr('data-theme') === 'dark') {
-      $('[data-theme]').trigger('click');
-    }
-  }
-
-  $('[data-project=name]').val(loadedJSON.settings[0].name);
-  $('[data-project=size]').val(loadedJSON.settings[0].size);
-  $('[data-project=fps]').val(loadedJSON.settings[0].fps);
-  $('[data-selectioncolor]').val(loadedJSON.settings[0].selectioncolor);
-  $('.defaultswatch')[0].value = loadedJSON.settings[0].swatches[0];
-  $('.defaultswatch')[1].value = loadedJSON.settings[0].swatches[1];
-  $('.defaultswatch')[2].value = loadedJSON.settings[0].swatches[2];
-  $('.defaultswatch')[3].value = loadedJSON.settings[0].swatches[3];
-  $('.defaultswatch')[4].value = loadedJSON.settings[0].swatches[4];
-  $('.defaultswatch')[5].value = loadedJSON.settings[0].swatches[5];
-  $('.defaultswatch')[6].value = loadedJSON.settings[0].swatches[6];
-  $('.defaultswatch')[7].value = loadedJSON.settings[0].swatches[7];
-  $('.defaultswatch')[8].value = loadedJSON.settings[0].swatches[8];
-  $('.defaultswatch')[9].value = loadedJSON.settings[0].swatches[9];
-  $('.defaultswatch')[10].value = loadedJSON.settings[0].swatches[10];
-  $('.defaultswatch')[11].value = loadedJSON.settings[0].swatches[11];
-  $('.defaultswatch')[12].value = loadedJSON.settings[0].swatches[12];
-  $('.defaultswatch')[13].value = loadedJSON.settings[0].swatches[13];
-  $('[data-project=notepad]').val(loadedJSON.settings[0].notepad);
-  svgLoaded();
-}
+// load file function
 function loadfile(input) {
   var reader = new FileReader();
   var path = input.value;
@@ -219,8 +131,8 @@ function loadfile(input) {
         $('[data-play=stop]').trigger('click');
       }
       
-      var keys = document.querySelector("[data-keys]");
-      if (keys.innerHTML) {
+      var keys = $("[data-keyscode]");
+      if (keys.find('[data-keyselector]').length > 1) {
         swal({
           title: 'Keyframes Detected!',
           text: "Would you like to clear these?",
@@ -228,12 +140,24 @@ function loadfile(input) {
           showCancelButton: true
         }).then((result) => {
           if (result.value) {
-            $('[data-keys]').html('');
+            keys.find('[data-keyselector]').not('[data-keyselector=misc]').remove();
+            // now update select element (#elms) to reflect cleared keys
+            $("select#elms option").not('select#elms option[value=misc]').remove();
+            keys.find('[data-keyselector=misc]').val('').trigger('change');
+            editor.setValue('');
+            $('[data-clear=filters]').trigger('click');
           }
         })
+      } else {
+        // no keyframes detected
+        $("select#elms option").not('select#elms option[value=misc]').remove();
+        keys.find('[data-keyselector=misc]').val('').trigger('change');
+        editor.setValue('');
+        $('[data-clear=filters]').trigger('click');
       }
 
       document.querySelector(".canvas").innerHTML = e.target.result;
+      origSVG = $('.canvas').html();
       svgLoaded();
     } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
       if ($('[data-keys]').html()) {
@@ -244,9 +168,16 @@ function loadfile(input) {
           showCancelButton: true
         }).then((result) => {
           if (result.value) {
-            $('[data-keys]').html('');
+            $("[data-keyscode]").empty();
             loadedJSON = JSON.parse(e.target.result);
             loadJSON();
+            origSVG = $('.canvas').html();
+            svgLoaded();
+            $('#elms option:last').prop('selected', true).trigger('change');
+            $('[data-open=keys]').trigger('click');
+            setTimeout(function() {
+              $('[data-playit=firstframe]').trigger('click');
+            }, 100)
 
             $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
             $("[data-action=fadeOut]").fadeOut(400, function() {
@@ -255,9 +186,16 @@ function loadfile(input) {
           }
         })
       } else {
-        $('[data-keys]').html('');
+        $("[data-keyscode]").empty();
         loadedJSON = JSON.parse(e.target.result);
         loadJSON();
+        origSVG = $('.canvas').html();
+        svgLoaded();
+        $('#elms option:last').prop('selected', true).trigger('change');
+        $('[data-open=keys]').trigger('click');
+        setTimeout(function() {
+          $('[data-playit=firstframe]').trigger('click');
+        }, 100)
 
         $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
         $("[data-action=fadeOut]").fadeOut(400, function() {
@@ -270,164 +208,108 @@ function loadfile(input) {
   };
   reader.readAsText(input.files[0]);
 }
-function dropfile(file) {
-  var reader = new FileReader();  
-  reader.onload = function(e) {
-    if (file.type === "image/svg+xml") {
-      // is animation playing? If so stop
-      if ($('[data-play]').attr('data-play') === 'stop') {
-        // trigger stop
-        $('[data-play=stop]').trigger('click');
-      }
-      
-      var keys = document.querySelector("[data-keys]");
-      if (keys.innerHTML) {
-        swal({
-          title: 'Keyframes Detected!',
-          text: "Would you like to clear these?",
-          type: 'question',
-          showCancelButton: true
-        }).then((result) => {
-          if (result.value) {
-            if ($('[data-show].active').is(':visible')) {
-              $('[data-props]').addClass('hide');
-              $('[data-display=props]').addClass('hide');
-              $('[data-show].active').removeClass('active');
-            }
-            if ($('.dialog.animpanel').is(':visible')) {
-              $('[data-close=keys]').trigger('click');
-            }
-            if ($('.dialog.librarydialog').is(':visible')) {
-              $('[data-close=library]').trigger('click');
-            }
-            $('[data-keys]').empty();
-            $('.defaultcur').text('0.0');
-            updateKeyPosition(0.0);
-          }
-        })
-      }
+function loadJSON() {
+  $("#elms").empty();
+  $("[data-canvas]").html(loadedJSON.originalSVG.toString());
+  $("#elms").html(loadedJSON.elmkeys);
+  $("[data-keyscode]").html(loadedJSON.keys);
+    
+  if (parseFloat(loadedJSON.version) <= 0.1) {
+    swal({
+      title: 'Warning!',
+      text: "This project is using a version of svgMotion that's no longer supported.",
+      type: 'warning',
+    })
+  } else 
+  if (parseFloat(version) > parseFloat(loadedJSON.version)) {
+    swal({
+      title: 'Warning!',
+      text: "This project is using an older version of svgMotion. Some features may not work!",
+      type: 'warning',
+    })
+  }
+  
+  $('#blurfilter').val(loadedJSON.filters[0].blurfilter);
+  $('#huefilter').val(loadedJSON.filters[0].huefilter);
+  $('#brightnessfilter').val(loadedJSON.filters[0].brightnessfilter);
+  $('#contrastfilter').val(loadedJSON.filters[0].contrastfilter);
+  $('#saturatefilter').val(loadedJSON.filters[0].saturatefilter);
+  $('#grayscalefilter').val(loadedJSON.filters[0].grayscalefilter);
+  $('#sepiafilter').val(loadedJSON.filters[0].sepiafilter);
+  $('#invertfilter').val(loadedJSON.filters[0].invertfilter).trigger('change');
 
-      document.querySelector(".canvas").innerHTML = e.target.result;
-      svgLoaded();
-    } else if (file.type === "application/json") {
-      // is animation playing? If so stop
-      if ($('[data-play]').attr('data-play') === 'stop') {
-        // trigger stop
-        $('[data-play=stop]').trigger('click');
-      }
-      
-      var keys = document.querySelector("[data-keys]");
-      if (keys.innerHTML) {
-        swal({
-          title: 'Project Detected!',
-          text: "Are you sure you want to clear this?",
-          type: 'question',
-          showCancelButton: true
-        }).then((result) => {
-          if (result.value) {
-            if ($('[data-show].active').is(':visible')) {
-              $('[data-props]').addClass('hide');
-              $('[data-display=props]').addClass('hide');
-              $('[data-show].active').removeClass('active');
-            }
-            if ($('.dialog.animpanel').is(':visible')) {
-              $('[data-close=keys]').trigger('click');
-            }
-            if ($('.dialog.librarydialog').is(':visible')) {
-              $('[data-close=library]').trigger('click');
-            }
-            $('[data-keys]').empty();
-            $('.defaultcur').text('0.0');
-            updateKeyPosition(0.0);
-            
-            loadedJSON = JSON.parse(e.target.result);
-            loadJSON();
-
-            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-            $("[data-action=fadeOut]").fadeOut(400, function() {
-              $("[data-action=fadeOut]").remove();
-            });
-          } else {
-            return false;
-          }
-        })
-      } else {
-        $('[data-keys]').html('');
-        loadedJSON = JSON.parse(e.target.result);
-        loadJSON();
-
-        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-        $("[data-action=fadeOut]").fadeOut(400, function() {
-          $("[data-action=fadeOut]").remove();
-        });
-      }
-    } else {
-      alertify.error("Sorry that file type is not supported. .svg and .json files only!");
-    }
-  }        
-  reader.readAsText(file,"UTF-8"); 
+  $('[data-projectname]').text(loadedJSON.settings[0].name);
+  $('[data-project=width]').val(loadedJSON.settings[0].width);
+  $('[data-project=height]').val(loadedJSON.settings[0].height).trigger('change');
+  $('[data-fps], [data-new=fps]').val(loadedJSON.settings[0].framerate);
+  $('[data-fontsize]').val(loadedJSON.settings[0].fontsize);
+  $('[data-notepad]').val(loadedJSON.settings[0].notepad);
 }
-function svgLoaded() {
-  // clear canvas
-  $('[data-display=selector]').html('');
+
+// update document title when project name changes
+$('[data-projectname]').on('keyup change', function() {
+  document.title = 'svgMotion: ' + this.value;
+});
+
+// detect if selector meets frame by frame animation parameters
+function detectForFrameByFrame() {
+  // first detect if there's a selection
+  if (!$('[data-selectorlist].selector').is(':visible')) {
+    $('.librarylinks [data-init]').hide();
+    return false;
+  } else {
+    $('.librarylinks [data-init]').show();
+  }
+  
+  // detect that this is the only selector
+  if ($('[data-selected]').length === 1) {
+    $('.librarylinks [data-init=framebyframe]').show();
+    
+    // draw is available for these elements
+    if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['text', 'ellipse', 'circle', 'rect', 'line', 'path', 'textPath', 'polygon', 'polyline']) !== -1) {
+      $('.librarylinks [data-init=draw]').show();
+    } else {
+      $('.librarylinks [data-init=draw]').hide();
+    }
+
+    // if it's the only selector then...
+    // detect if the children are group elements
+    $('[data-selected]').find('> *').each(function(index) {
+      if ($(this).prop('tagName').toLowerCase() != 'g') {
+        $('.librarylinks [data-init=framebyframe]').hide();
+        return false;
+      } else {
+        $('.librarylinks [data-init=framebyframe]').show();
+      }
+    });
+  
+    // only show frame by frame if there's an array of only group children
+    if ($('[data-selected]').children().length === 0) {
+      $('.librarylinks [data-init=framebyframe]').hide();
+      return false;
+    }
+  } else {
+    // hide because this is not the only selector
+    $('.librarylinks [data-init=framebyframe]').hide();
+    $('.librarylinks [data-init=draw]').hide();
+  }
+}
+var svgLoaded = function() {
+  // clear canvas from layers window
+  $('[data-display=selector]').empty();
   
   // locate SVG
   var $Canvas = document.querySelector(".canvas > svg");
   if ($Canvas) {
     // canvas interactive selection
-    $('.canvas svg *').on('click', function() {
-      // is library visible? if so proceed
-      if ($('.libraryh').is(':visible')) {
-        // is selected already visible? If so remove to select active one
-        if ($('[data-selected]').is(':visible')) {
-          $("[data-selected]").removeAttr("data-selected");
-          $(this).attr('data-selected', '');
-
-          // display selection in library
-          $('[data-display=selector] li').removeClass('selector');
-
-          // remember selector(s) via string
-          $str = "";
-
-          // activate selection in libary from canvas
-          $(".canvas svg [data-selected]").each(function() {
-            $str = $(this).getPath().split(remStr).join('');
-            $('[data-selectorlist]').each(function() {
-              if ($(this).find('span').text() === $str) {
-                $(this).addClass('selector');
-              }
-            });
-          });
-        } else {
-          $(this).attr('data-selected', '');
-
-          // display selection in library
-          $('[data-display=selector] li').removeClass('selector');
-
-          // remember selector(s) via string
-          $str = "";
-
-          // activate selection in libary from canvas
-          $(".canvas svg [data-selected]").each(function() {
-            $str = $(this).getPath().split(remStr).join('');
-            $('[data-selectorlist]').each(function() {
-              if ($(this).find('span').text() === $str) {
-                $(this).addClass('selector');
-              }
-            });
-          });
-        }
-      }
-      return false;
-    });
+    canvasClickSelect();
 
     // remove width/height attributes if detected
     if ($Canvas.getAttribute("width") || $Canvas.getAttribute("height")) {
-      w = $Canvas.getAttribute("width");
-      w = parseFloat(w, 10);
-      h = $Canvas.getAttribute("height");
-      h = parseFloat(h, 10);
-      $("[data-project=size]").val(w + "x" + h).trigger('change');
+      w = $Canvas.viewBox.baseVal.width;
+      h = $Canvas.viewBox.baseVal.height;
+      $("[data-project=width]").val(w);
+      $("[data-project=height]").val(h).trigger('change');
       $Canvas.removeAttribute("width");
       $Canvas.removeAttribute("height");
       alertify.log("Width/Height attributes removed for fullscreen display.");
@@ -440,11 +322,12 @@ function svgLoaded() {
     $("[data-action=fadeOut]").fadeOut(400, function() {
       $("[data-action=fadeOut]").remove();
     });
-    $("[data-project=name]").trigger("keyup");
+    $("[data-projectname]").trigger("keyup");
     
     // list all elements as list
     var fullSVGlength = $(".canvas svg *").length;
     $(".canvas svg *").each(function(i) {
+//      $val = $(this).getPath();
       $val = $(this).getPath().split(remStr).join('');
 
       // append layers
@@ -464,6 +347,14 @@ function svgLoaded() {
           if ($('[data-selected]').is(':visible')) {
             $("[data-selected]").removeAttr("data-selected");
           }
+          
+          if ($('[data-selectorlist].selector').is(':visible')) {
+            // show tween and framebyframe init buttons
+            $('.librarylinks [data-init]').show();
+          } else {
+            // hide tween and framebyframe init buttons
+            $('.librarylinks [data-init]').hide();
+          }
 
           // render selectors in canvas
           $('[data-selectorlist].selector').each(function() {
@@ -473,20 +364,391 @@ function svgLoaded() {
               $str += ", .canvas svg > " + $(this).find('span').text();
             }
             $($str).attr("data-selected", "");
+          
+            // only show animation frame by frame init button if parameters are met
+            detectForFrameByFrame();
           });
           return false;
         });
       }
     });
     
-    origCanvas = $('.canvas').html();
+    origSVG = $('.canvas').html();
   } else {
     alertify.error("Error: No svg element detected!");
   }
 }
 svgLoaded();
 
-// selectors for svg animation
+// canvas interactive selection
+function canvasClickSelect() {
+  $('.canvas svg *').on('click', function() {
+    // is library visible? if so proceed
+    if ($('.libraryh').is(':visible') && $('[data-zoom=false]').is(':visible')) {
+      // is selected already visible? If so remove to select active one
+      if ($('[data-selected]').is(':visible')) {
+        $("[data-selected]").removeAttr("data-selected");
+        $(this).attr('data-selected', '');
+
+        // display selection in library
+        $('[data-display=selector] li').removeClass('selector');
+
+        // remember selector(s) via string
+        $str = "";
+
+        // activate selection in libary from canvas
+        $(".canvas svg [data-selected]").each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $('[data-selectorlist]').each(function() {
+            if ($(this).find('span').text() === $str) {
+              $(this).addClass('selector');
+            }
+          });
+        });
+        
+        // show tween and framebyframe init buttons
+        $('.librarylinks [data-init]').show();
+
+        // only show frame by frame if there's an array of only group children
+        detectForFrameByFrame();
+      } else {
+        $(this).attr('data-selected', '');
+
+        // display selection in library
+        $('[data-display=selector] li').removeClass('selector');
+
+        // remember selector(s) via string
+        $str = "";
+
+        // activate selection in libary from canvas
+        $(".canvas svg [data-selected]").each(function() {
+          $str = $(this).getPath().split(remStr).join('');
+          $('[data-selectorlist]').each(function() {
+            if ($(this).find('span').text() === $str) {
+              $(this).addClass('selector');
+            }
+          });
+        });
+        
+        // show tween and framebyframe init buttons
+        $('.librarylinks [data-init]').show();
+
+        // only show frame by frame if there's an array of only group children
+        detectForFrameByFrame();
+      }
+    }
+    return false;
+  });
+}
+
+// size presets
+$('[data-size]').on('click', function() {
+  str = $(this).attr('data-size');
+  w = str.substr(0, str.indexOf('x'));
+  h = str.substring(str.length, str.indexOf('x') + 1);
+  
+  $('[data-new=width]').val(w);
+  $('[data-new=height]').val(h);
+});
+$('[data-projectsize]').on('click', function() {
+  str = $(this).attr('data-projectsize');
+  w = str.substr(0, str.indexOf('x'));
+  h = str.substring(str.length, str.indexOf('x') + 1);
+  
+  $('[data-project=width]').val(w);
+  $('[data-project=height]').val(h).trigger('change');
+});
+$('[data-project=width], [data-project=height]').on('change', function() {
+  $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
+  $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
+});
+
+// init panzoom
+var drawArea = document.querySelector('[data-canvas]');
+var instance = panzoom(drawArea, {
+  bounds: true,
+  boundsPadding: 0.1
+});
+
+// toggle dialogs
+function openDialog(dialog) {
+  // detect active tool
+  $('[data-dialogs] [data-dialog]').hide();
+  $('[data-dialogs] [data-dialog='+ dialog.toString().toLowerCase() +']').show();
+}
+function closeDialogs() {
+  $('[data-dialogs] [data-dialog]').hide();
+}
+$('[data-call]').on('click', function(val) {
+  thisTool = $(this).attr('data-call').toString().toLowerCase();
+  val = thisTool;
+  
+  // if tool is not active
+  if (!$('[data-call].active').is(':visible')) {
+    $(this).addClass('active');
+    openDialog(val);
+  } else {
+    // if tool is active
+    // are you clicking on same tool or not?
+    $(this).each(function(i) {
+      // if you are remove the class
+      if ($('[data-call].active').attr('data-call').toString().toLowerCase() === thisTool) {
+        $('[data-call].active').removeClass('active');
+        closeDialogs()
+
+        // if not remove the class from the original and then add it
+      } else {
+        $('[data-call].active').removeClass('active');
+        $(this).addClass('active');
+        openDialog(val);
+      }
+    });
+  }
+});
+
+// tools
+// layers
+$('[data-open=layers]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-library]').show();
+  $('[data-canvasbg]').css('right', '50%');
+  $('[data-canvasbg]').css('border-right', '0');
+
+  // render selector(s) in canvas
+  $('[data-selectorlist].selector').each(function() {
+    if ($str === "") {
+      $str = ".canvas svg > " + $(this).find('span').text();
+    } else {
+      $str += ", .canvas svg > " + $(this).find('span').text();
+    }
+    $($str).attr("data-selected", "");
+  });
+});
+$('[data-close=layers]').on('click', function() {
+  $('[data-open=layers].active').removeClass('active');
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-dialog=layers]').hide();
+  $('[data-mainmenu]').show();
+  $('[data-canvasbg]').css('right', '');
+  $('[data-canvasbg]').css('border', '');
+  $('[data-selected]').removeAttr("data-selected");
+});
+$('[data-init=draw]').on('click', function() {
+  swal({
+    title: 'Give your animation a name!',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+        alertify.error('Error: That name already exists!');
+        $('#elms option:selected').text($this);
+      } else {
+        counter++;
+        
+        // append the option
+        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+        // now append the code
+        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="drawPath" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to(".svgmotion '+ $('[data-selectorlist].selector').text() +'", {\n  stroke: "#000",\n  strokeWidth: '+ parseFloat($('[data-selected]').css('stroke-width')) +',\n  duration: 0,\n  strokeDasharray: document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength() + "," + document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength(),\n  strokeDashoffset: document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength()\n}, 0.0)\n\nmainTL.to(".svgmotion '+ $('[data-selectorlist].selector').text() +'", {\n  strokeDashoffset: 0,\n  ease: "none",\n  duration: 1\n}, 0.0)</textarea></div>');
+        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+      }
+
+      alertify.success('Successfully added the "'+ result.value +'" drawPath animation.');
+      
+      // close layers and open the newly added keyframe
+      $('[data-close=layers]').trigger('click');
+      $('[data-open=keys]').trigger('click');
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
+  });
+});
+$('[data-init=tween]').on('click', function() {
+  if ($('[data-selectorlist].selector').length === 1) {
+//      if ($('[data-selected]')[0].tagName.toLowerCase() === 'path' || $('[data-selected]')[0].tagName.toLowerCase() === 'polygon' || $('[data-selected]')[0].tagName.toLowerCase() === 'line') {
+////        $('[data-open=editpath]').removeClass('hide');
+//      } else {
+////        $('[data-open=editpath]').addClass('hide');
+//      }
+
+    $selector = '.svgmotion ' + $('[data-selectorlist].selector').text();
+    
+    swal({
+      title: 'Give your tween a name!',
+      input: 'text',
+      inputPlaceholder: "something",
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      showLoaderOnConfirm: true
+    }).then((result) => {
+      if (result.value) {
+        $this = $('#elms option:selected').text();
+        if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+          alertify.error('Error: That name already exists!');
+          $('#elms option:selected').text($this);
+        } else {
+          // append the option
+          $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+          // now append the code
+          $('[data-keyscode]').append('<div data-keyselector="'+ $selector +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
+          // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
+          $('#elms option[value="'+ $selector +'"]').prop('selected', true);
+        }
+        
+        alertify.success('Successfully added the "'+ result.value +'" tween.');
+      
+        // close layers and open the newly added keyframe
+        $('[data-close=layers]').trigger('click');
+        $('[data-open=keys]').trigger('click');
+      } else {
+        swal(
+          'Oops!',
+          console.error().toString(),
+          'error'
+        );
+      }
+    });
+  } else {
+    arr = [];
+    $('[data-selectorlist].selector').each(function() {
+      arr.push('.svgmotion ' + this.textContent);
+    });
+    $selector = arr.join(', ');
+    
+    swal({
+      title: 'Give your tween a name!',
+      input: 'text',
+      inputPlaceholder: "something",
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      showLoaderOnConfirm: true
+    }).then((result) => {
+      if (result.value) {
+        $this = $('#elms option:selected').text();
+        if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+          alertify.error('Error: That name already exists!');
+          $('#elms option:selected').text($this);
+        } else {
+          // append the option
+          $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+          // now append the code
+          $('[data-keyscode]').append('<div data-keyselector="'+ $selector +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
+          // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
+          $('#elms option[value="'+ $selector +'"]').prop('selected', true);
+        }
+        
+        alertify.success('Successfully added the "'+ result.value +'" tween.');
+      
+        // close layers and open the newly added keyframe
+        $('[data-close=layers]').trigger('click');
+        $('[data-open=keys]').trigger('click');
+      } else {
+        swal(
+          'Oops!',
+          console.error().toString(),
+          'error'
+        );
+      }
+    });
+  }
+});
+$('[data-init=framebyframe]').on('click', function() {
+  swal({
+    title: 'Give your animation a name!',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+        alertify.error('Error: That name already exists!');
+        $('#elms option:selected').text($this);
+      } else {
+        counter++;
+        
+        // append the option
+        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+        // now append the code
+        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">let groups'+ counter +' = gsap.utils.toArray(".svgmotion '+ $('[data-selectorlist].selector').text() +' > g");\nlet wrap'+ counter +' = gsap.utils.wrap(0, groups'+ counter +'.length - 1);\nlet frame'+ counter +' = 0;\n\nmainTL.to({}, {\n  duration: 0.1,\n  repeat: 9,\n  onRepeat() {\n    let last'+ counter +' = groups'+ counter +'[wrap'+ counter +'(frame'+ counter +')];\n    let next'+ counter +' = groups1[wrap'+ counter +'(++frame'+ counter +')];\n\n    last'+ counter +'.style.display = "none";\n    last'+ counter +'.style.opacity = "0";\n    next'+ counter +'.style.display = "block";\n    next'+ counter +'.style.opacity = "100%";\n  }\n}, 0.0)</textarea></div>');
+        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+      }
+
+      alertify.success('Successfully added the "'+ result.value +'" frame by frame animation.');
+      
+      // close layers and open the newly added keyframe
+      $('[data-close=layers]').trigger('click');
+      $('[data-open=keys]').trigger('click');
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
+  });
+});
+
+// keyframes
+$('[data-add=snippet]').click(function() {
+  var addSnippet = "mainTL.to('"+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: '100%',\n  fill: #fff,\n  stroke: #fff,\n  strokeWidth: 0,\n  borderRadius: 0,\n  // eases: none, power1, power2, power3, power4, back, elastic, bounce, rough, slow, steps, circ, expo, and sine\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},\n  attr: {d: \"m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z\"},\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, 0.0)";
+  
+  $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
+  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
+//  $('[data-add=snippet]').hide();
+});
+$('[data-open=keys]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-keys]').show();
+  $('[data-canvasbg]').css('bottom', '50%');
+  $('[data-canvasbg]').css('border-bottom', '0');
+  $('[data-selected]').removeAttr("data-selected");
+  
+  // only show the selectable key's value
+  $('#elms').trigger('change');
+  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
+});
+$('[data-close=keys]').on('click', function() {
+  $('[data-open=keys].active').removeClass('active');
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-dialog=keys]').hide();
+  $('[data-mainmenu]').show();
+  $('[data-canvasbg]').css('bottom', '');
+  $('[data-canvasbg]').css('border', '');
+});
+$('#elms').on('keyup change', function() {
+  $('[data-keyselector]').hide();
+  $('[data-keyselector="'+ this.value +'"]').show();
+  
+  // hide sample snippet button if frame by frame is visible
+  if ($('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe' || $('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'drawpath') {
+    $('[data-add=snippet]').hide();
+  } else {
+    $('[data-add=snippet]').show();
+  }
+  
+  // set code editor value
+  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
+//  mainTL.progress(parseFloat(getDecimal).toFixed(2));
+  $('[data-playit=nextframe]').trigger('click');
+  $('[data-playit=prevframe]').trigger('click');
+});
+
+// selectors for layers
 $('[data-select]').on('click', function() {
   $val = $(this).data('select');
 
@@ -527,6 +789,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
   } else 
     if ($val === 'none') {
     $('[data-display=selector] li').removeClass('selector');
@@ -535,6 +799,9 @@ $('[data-select]').on('click', function() {
     if ($('[data-selected]').is(':visible')) {
       $("[data-selected]").removeAttr("data-selected");
     }
+    
+    // hide tween and framebyframe init buttons
+    $('.librarylinks [data-init]').hide();
     return false;
   } else 
     if ($val === 'parent') {
@@ -582,6 +849,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
     return false;
   } else 
     if ($val === 'next') {
@@ -622,6 +891,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
     return false;
   } else 
     if ($val === 'prev') {
@@ -662,6 +933,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
     return false;
   } else 
     if ($val === 'even') {
@@ -703,6 +976,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
   } else 
     if ($val === 'odd') {
     if (!$('[data-selected]').is(':visible')) {
@@ -743,6 +1018,8 @@ $('[data-select]').on('click', function() {
         }
       });
     });
+      
+    detectForFrameByFrame();
   } else 
     if ($val === 'custom') {
     swal({
@@ -781,6 +1058,8 @@ $('[data-select]').on('click', function() {
         return false;
       }
     });
+      
+    detectForFrameByFrame();
   } else {
     alertify.error('Selection error');
   }
@@ -801,649 +1080,401 @@ $('[data-select]').on('click', function() {
       $str += ", .canvas svg > " + $(this).find('span').text();
     }
     $($str).attr("data-selected", "");
+    
+    // show tween and framebyframe init buttons
+    detectForFrameByFrame();
   });
 });
 
-// load svg file on drop
-document.addEventListener("dragover", function(e) {
-  e.preventDefault();
+// filters
+$('[data-open=filters]').on('click', function() {
+  if ($('[data-call].active').is(':visible')) {
+    $('[data-call].active').trigger('click');
+  }
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-filtericons]').show();
 });
-document.addEventListener("drop", function(e) {
-  e.preventDefault();
-  var file = e.dataTransfer.files[0];
-  dropfile(file);
+$('[data-filter]').on('click', function() {
+  $this = $(this).attr('data-filter');
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-toolsoption]').hide();
+  $('[data-filters]').show();
+  $('[data-toolsoption='+ $this +']').show();
+});
+$('[data-close=filters]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-mainmenu]').show();
+});
+$('[data-close=filter]').on('click', function() {
+  $('[data-topmenu] .mainmenu').hide();
+  $('[data-filtericons]').show();
+});
+$('[data-clear=filters]').on('click', function() {
+  $('.canvas svg').css('filter', '');
+  $('[data-canvas] svg').css('filter', '');
+  blurfilter.value = 0;
+  huefilter.value = 0;
+  brightnessfilter.value = 1;
+  contrastfilter.value = 1;
+  saturatefilter.value = 1;
+  grayscalefilter.value = 0;
+  sepiafilter.value = 0;
+  invertfilter.value = 0;
+
+  $('[data-close=filters]').trigger('click');
+  applyFilters();
 });
 
-// project name show in document title
-$("[data-project=name]").on("keyup", function() {
-  document.title = "svgMotion: " + this.value;
-}).trigger('keyup');
+// apply filters
+function applyFilters() {
+  $('[data-canvas] svg').css('filter', 'blur('+ blurfilter.value +'px) hue-rotate('+ huefilter.value +'deg) brightness('+ brightnessfilter.value +')  contrast('+ contrastfilter.value +') saturate('+ saturatefilter.value +') grayscale('+ grayscalefilter.value +'%) sepia('+ sepiafilter.value +'%) invert('+ invertfilter.value +'%)');
+}
+$('.filterval').change(function() {
+  applyFilters();
+});
+applyFilters();
 
-// open library
-$('[data-open=library]').click(function() {
-  $('.canvas').addClass('r50p');
-  $('.mainh').addClass('hide');
-  $('.librarydialog, .libraryh').removeClass('hide');
-  $('[data-open=animationtype]').text('animate');
-  $('[data-selected]').removeAttr('style');
+// zoom/pan
+$('[data-zoom]').on('click', function() {
+  if ($(this).attr('data-zoom') === 'true') {
+    $('[data-zoom]').attr('data-zoom', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#fff"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#fff"></line><g transform="matrix(1 0 0 1 4 0)"><g transform="matrix(1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g><g transform="matrix(-1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g></g></svg>');
+    $('[data-resetzoompos]').hide();
+    instance.pause();
+    canvasClickSelect();
+  } else {
+    $('[data-zoom]').attr('data-zoom', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#1e7eeb"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#1e7eeb"></line></svg>');
+    $('[data-resetzoompos]').show();
+    instance.resume();
+  }
+});
+// reset zoom position
+$('[data-resetzoompos]').click(function() {
+  $('[data-canvas]').css('transform-origin', '')
+                    .css('transform', '');
+  instance.restore();
+});
 
-  // remember selector(s) via string
-  $str = "";
+// init the player
+function updateCode() {
+  // clear the variables
+  jsStr = '';
 
-  // render selector(s) in canvas
-  $('[data-selectorlist].selector').each(function() {
-    if ($str === "") {
-      $str = ".canvas svg > " + $(this).find('span').text();
-    } else {
-      $str += ", .canvas svg > " + $(this).find('span').text();
-    }
-    $($str).attr("data-selected", "");
+  // apply the javascript
+  $('textarea.js').each(function() {
+    jsStr += $(this).val() + '\n';
   });
-});
-// close library
-$('[data-close=library]').click(function() {
-  $('.canvas').removeClass('r50p');
-  $('.mainh').removeClass('hide');
-  $('.librarydialog, .libraryh').addClass('hide');
 
-  // is selected already visible? If so remove to select active one
-  if ($('[data-selected]').is(':visible')) {
-    $("[data-selected]").removeAttr("data-selected");
+//  $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
+
+  if ($('[data-repeat]').attr('data-repeat') === 'true') {
+    $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
+  } else {
+    $code = 'var mainTL = new TimelineMax({onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}, onComplete: function() {$("[data-play]").trigger("click")}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
   }
-});
 
-// canvas interactive selection
-$('.canvas svg *').on('click', function() {
-  // is library visible? if so proceed
-  if ($('.libraryh').is(':visible')) {
-    // is selected already visible? If so remove to select active one
-    if ($('[data-selected]').is(':visible')) {
-      $("[data-selected]").removeAttr("data-selected");
-      $(this).attr('data-selected', '');
-
-      // display selection in library
-      $('[data-display=selector] li').removeClass('selector');
-
-      // remember selector(s) via string
-      $str = "";
-
-      // activate selection in libary from canvas
-      $(".canvas svg [data-selected]").each(function() {
-        $str = $(this).getPath().split(remStr).join('');
-        $('[data-selectorlist]').each(function() {
-          if ($(this).find('span').text() === $str) {
-            $(this).addClass('selector');
-          }
-        });
-      });
-    } else {
-      $(this).attr('data-selected', '');
-
-      // display selection in library
-      $('[data-display=selector] li').removeClass('selector');
-
-      // remember selector(s) via string
-      $str = "";
-
-      // activate selection in libary from canvas
-      $(".canvas svg [data-selected]").each(function() {
-        $str = $(this).getPath().split(remStr).join('');
-        $('[data-selectorlist]').each(function() {
-          if ($(this).find('span').text() === $str) {
-            $(this).addClass('selector');
-          }
-        });
-      });
-    }
-  }
-  $fill   = $(this).attr('fill');
-  $stroke = $(this).attr('stroke');
-  $('[data-animate=fill]').val($fill);
-  $('[data-animate=stroke]').val($stroke);
-  $('[data-animate=fill]').minicolors('value', $('[data-animate=fill]').val());
-  $('[data-animate=stroke]').minicolors('value', $('[data-animate=stroke]').val());
-
+  // run the code
+  $('[data-canvas]').empty().html(origSVG);
+  applyFilters();
+  $('[data-canvas]').append('<script>'+ $code +'</script>');
+  updatePlayer();
+  
+  detectInt  = parseFloat(time.textContent).toFixed(2);
+  totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+  getPerc    = (detectInt * 100) / totalInt;
+  getPerc    = Math.round(getPerc);
+  getDecimal = parseFloat(getPerc) / 100;
+  mainTL.progress(parseFloat(getDecimal).toFixed(2));
   return false;
+}
+$('#timescale').on('change', function() {
+  if ($('[data-play]').attr('data-play') === 'true') {
+    // is paused
+    updateCode();
+  } else {
+    // is playing
+    $('[data-play]').trigger('click');
+    updateCode();
+    $('[data-play]').trigger('click');
+  }
 });
 
-// animation window to add keyframe
-$('[data-trigger]').on('click', function() {
-  $val = $(this).data('trigger');
+function updatePlayer() {
+  $(".playhead").removeAttr('style');
   
-  if ($val === 'animate') {
-    // trigger animation dialog
-    if (!$('[data-selectorlist].selector').is(":visible")) {
-      alertify.error('Error: Selector not found');
-      return false;
+  var $sequenceTime = $("#time"),
+      sequenceTrackLength,
+      sequenceDragger,
+      draggable;
+
+  mainTL.eventCallback("onUpdate", updateDragger)
+  sequenceTrackLength = $('.seek-bar').width();
+  sequenceDragger = $(".playhead");
+  draggable = Draggable.create(sequenceDragger, {
+    type:"x",
+//    edgeResistance: 1,
+//    overshootTolerance: 0,
+    bounds:{minX:0, maxX:sequenceTrackLength},
+    onDrag: function() {
+      mainTL.progress(this.x / sequenceTrackLength).pause();
     }
-  } else {
-    alertify.error('Selection error');
+  })[0];
+
+  function updateDragger() {
+    TweenMax.set(sequenceDragger, {x:sequenceTrackLength * mainTL.progress()})
+    $sequenceTime.html(mainTL.time().toFixed(2))
+
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
+
+    $('.progress-bar').css('width', getPerc + '%');
   }
+}
+
+// timeline buttons
+$('[data-play]').on('click', function() {
+  if ($(this).attr('data-play') === 'true') {
+    // pause state
+    $('[data-play]').attr('data-play', false)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.142 201.143 C 73.142 211.235 81.336 219.429 91.429 219.429 L 91.429 219.429 C 101.521 219.429 109.715 211.235 109.715 201.143 L 109.715 54.857 C 109.715 44.765 101.521 36.571 91.429 36.571 L 91.429 36.571 C 81.336 36.571 73.142 44.765 73.142 54.857 L 73.142 201.143 Z "/><path d=" M 146.286 201.143 C 146.286 211.235 154.48 219.429 164.572 219.429 L 164.572 219.429 C 174.664 219.429 182.858 211.235 182.858 201.143 L 182.858 54.857 C 182.858 44.765 174.664 36.571 164.572 36.571 L 164.572 36.571 C 154.48 36.571 146.286 44.765 146.286 54.857 L 146.286 201.143 Z "/></svg>');
+    
+//    // stop symbol
+//           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
+    $('[data-render]').show();
+    
+    if(mainTL.progress() < 1) {
+      mainTL.play();
+    } else {
+      mainTL.restart();
+      $('.playhead').attr('style', 'left: 0%;');
+    }
+    
+  } else {
+    // play state
+    $('[data-play]').attr('data-play', true)
+           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
+    $('[data-render]').hide();
+    mainTL.pause();
+  }
+});
+$('[data-playit=firstframe]').click(function() {
+  time.textContent = '0.00';
+//  mainTL.seek(0);
+  mainTL.progress(0);
+//  $('.progress-bar').css('width', '0%');
+});
+$('[data-playit=nextframe]').click(function() {
+  // detect if is already last frame
+  if ($('[data-timeduration]').text() === time.textContent) {
+    $('[data-playit=firstframe]').trigger('click');
+    return false;
+  }
+  
+  if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
+//    time.textContent = parseFloat(0.01 + parseFloat(mainTL.progress())).toFixed(2);
+    time.textContent = parseFloat(0.01 + parseFloat(time.textContent)).toFixed(2);
+//    mainTL.seek(parseFloat(time.textContent));
+    
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
+    mainTL.progress(parseFloat(getDecimal).toFixed(2));
+//    $('.progress-bar').css('width', getPerc + '%');
+  }
+});
+$('[data-playit=prevframe]').click(function() {
+  // detect if is already first frame
+  if (time.textContent === '0.00') {
+    $('[data-playit=lastframe]').trigger('click');
+    return false;
+  }
+  
+  if (parseFloat(time.textContent).toFixed(2) > 0 || time.textContent > parseFloat(mainTL.progress()).toFixed(2)) {
+//    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.01).toFixed(2);
+    time.textContent = parseFloat(parseFloat(time.textContent - 0.01)).toFixed(2);
+//    mainTL.seek(parseFloat(time.textContent));
+    
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
+    mainTL.progress(parseFloat(getDecimal).toFixed(2));
+//    $('.progress-bar').css('width', getPerc + '%');
+  }
+});
+$('[data-playit=lastframe]').click(function() {
+  time.textContent = $('[data-timeduration]').text();
+//  mainTL.seek(time.textContent);
+  mainTL.progress(1);
+//  $('.progress-bar').css('width', '100%');
+});
+$('[data-repeat]').on('click', function() {
+  if ($(this).attr('data-repeat') === 'true') {
+    // no loop
+    $('[data-repeat]').attr('data-repeat', false);
+    $('textarea.js').trigger('change');
+  } else {
+    // repeat/loop
+    $('[data-repeat]').attr('data-repeat', true);
+    $('textarea.js').trigger('change');
+  }
+});
+$('[data-delit]').click(function() {
+  swal({
+    title: 'Proceed with deleting tween?',
+    text: "Are you sure? All your data will be lost!",
+    type: 'question',
+    showCancelButton: true
+  }).then((result) => {
+    if (result.value) {
+      // remove the div
+      $('.selectors [data-keyselector="'+ elms.value +'"]').remove();
       
-  // clear canvas selector(s)
-  if ($('[data-selected]').is(':visible')) {
-    $("[data-selected]").removeAttr("data-selected");
-  }
-  
-  // remember selector(s) via string
-  $str = "";
-
-  // render selector(s) in canvas
-  $('[data-selectorlist].selector').each(function() {
-    if ($str === "") {
-      $str = ".canvas svg > " + $(this).find('span').text();
-    } else {
-      $str += ", .canvas svg > " + $(this).find('span').text();
-    }
-    $($str).attr("data-selected", "");
-  });
-});
-
-// open/close animation type dialog
-$('[data-close=animationtype]').click(function() {
-  $(this).parent().addClass('hidden');
-  anim.restart();
-  anim.pause();
-});
-$('[data-open=animationtype]').click(function() {
-  if ($('li[data-selectorlist].selector').length === 0) {
-    alertify.error('Error: Selector not found!');
-    return false;
-  }
-  
-  if (this.textContent.toLowerCase() === "animate") {
-    // if only 1 class is selected automatically use a .to() tween
-    if ($('[data-selectorlist].selector').length === 1) {
-      $('[data-confirm=to]').trigger('click');
-      
-//      if ($('[data-selected]')[0].tagName.toLowerCase() === 'path' || $('[data-selected]')[0].tagName.toLowerCase() === 'polygon' || $('[data-selected]')[0].tagName.toLowerCase() === 'line') {
-////        $('[data-open=editpath]').removeClass('hide');
-//      } else {
-////        $('[data-open=editpath]').addClass('hide');
-//      }
-
-    } else {
-      $('[data-dialog=animationtype]').removeClass('hidden');
-//      $('[data-open=editpath]').addClass('hide');
-      anim.play();
-    }
-  }
-});
-
-// edit path
-//$('[data-open=editpath]').click(function() {
-//  if ($('.keyframe.active').is(':visible')) {
-//    if ($('[data-selected]')[0].tagName.toLowerCase() === 'path' || $('[data-selected]')[0].tagName.toLowerCase() === 'polygon' || $('[data-selected]')[0].tagName.toLowerCase() === 'line') {
-//      alertify.log('edit path');
-//    }
-//  } else {
-//    alertify.error('Error: Cannot Open! No keyframe selected!');
-//  }
-//});
-
-// open animation
-function openAnimation() {
-  $('.libraryh').addClass('hide');
-  $('.keysh').removeClass('hide');
-  $('.dialog').not('.animationtype').addClass('hide');
-  $('.dialog.animpanel').removeClass('hide');
-  $('.dialog.animtimeline').removeClass('hide');
-  $('[data-close=animationtype]').trigger('click');
-  $('.canvas').removeClass('r50p').css('bottom', '110px');
-  $('[data-selected]').css('outline', 'none');
-  updatePreview();
-  
-  // only show keyframes for the selected library
-  if ($('li[data-selectorlist].selector').length === 1) {
-    $sel = $('li[data-selectorlist].selector span').text();
-    $sel = '.canvas > svg > ' + $sel;
-  } else {
-    $arr = [];
-
-    $('li[data-selectorlist].selector span').each(function() {
-      $arr.push(this.textContent);
-    });
-    $sel = $arr.join().replace(/,/g, ', .canvas > svg > ');
-    $sel = '.canvas > svg > ' + $sel;
-    $sel.split(',').join(', .canvas > svg > ');
-  }
-
-  if (!$('.keyframe > span:contains('+ $sel +')').is(':visible')) {
-    $('.keyframe').addClass('hide');
-    $('.keyframe').find('span:contains('+ $sel +')').parent().removeClass('hide');
-  } else {
-    $('.keyframe').addClass('hide');
-  }
-  
-  // remember if keyframe properties are open
-  if ($('[data-show].active').is(':visible')) {
-    $('[data-display=props]').removeClass('hide');
-    $('[data-props='+ $('[data-show].active').attr('data-show') +']').addClass('removeClass');
-  } else {
-    $('[data-display=props]').addClass('hide');
-    $('[data-props]').addClass('hide');
-  }
-}
-
-// live preview
-function updatePreview() {
-  $('[data-selected]').css('outline', 'none');
-  
-  // javascript
-  $code = '';
-  $('[data-function]').each(function() {
-    $code += this.value + '\n';
-  });
-  $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.pause('+ $('.defaultcur').text() +').timeScale(1);';
-  
-  $(".canvas").empty().append( origCanvas + '<script>\n      '+ $code +'\n    </script>');
-}
-
-// open/close keys
-$('[data-confirm=stagger]').click(function() {
-  openAnimation();
-  $('[data-close=animationtype]').trigger('click');
-  
-  // disable drawPath for array of selectors
-  $str = 'drawPath';
-  if ($('li[data-selectorlist].selector').length === 1) {
-    $sel = $('li[data-selectorlist].selector span').text();
-    $sel = '.canvas > svg > ' + $sel;
-    $('a[data-show=amount]').addClass('hide');
-    $('[data-prop=amount]').addClass('hide');
-    $('[data-animate=amount]').val('');
-  } else {
-    if (!$('[data-animate=drawPath]').is(':disabled')) {
-      alertify.error('Error: Cannot drawPath for an array of selectors!');
-      $('[data-drawPath]').attr('data-' + $str, 'false');
-      $('[data-animate='+ $str +']').attr('disabled', 'true').trigger('change');
-    }
-    $arr = [];
-
-    $('li[data-selectorlist].selector span').each(function() {
-      $arr.push(this.textContent);
-    });
-    $sel = $arr.join().replace(/,/g, ', ');
-    $('a[data-show=amount]').removeClass('hide');
-    $('[data-prop=amount]').removeClass('hide');
-    $('[data-animate=amount]').val('');
-  }
-
-  // if an animation property is already visible lets hide it
-  if ($('[data-show].active').is(':visible')) {
-    if (!$('.keyframe.active').is(':visible')) {
-      $('[data-show].active').removeClass('active');
-      $('[data-display=props], [data-display=props] li').addClass('hide');
-    }
-  }
-});
-$('[data-confirm=to]').click(function() {
-  openAnimation();
-  $('.libraryh').addClass('hide');
-  $('.keysh').removeClass('hide');
-  $('[data-close=animationtype]').trigger('click');
-  
-  // disable drawPath for array of selectors
-  $str = 'drawPath';
-  if ($('li[data-selectorlist].selector').length === 1) {
-    $sel = $('li[data-selectorlist].selector span').text();
-    $sel = '.canvas > svg > ' + $sel;
-    $('a[data-show=amount]').addClass('hide');
-    $('[data-prop=amount]').addClass('hide');
-    $('[data-animate=amount]').val('');
-  } else {
-    if (!$('[data-animate=drawPath]').is(':disabled')) {
-      alertify.error('Error: Cannot drawPath for an array of selectors!');
-      $('[data-drawPath]').attr('data-' + $str, 'false');
-      $('[data-animate='+ $str +']').attr('disabled', 'true').trigger('change');
-    }
-    $arr = [];
-
-    $('li[data-selectorlist].selector span').each(function() {
-      $arr.push(this.textContent);
-    });
-    $sel = $arr.split(', .canvas > svg > ');
-    $sel.split('.canvas > svg > ');
-    
-    $('a[data-show=amount]').addClass('hide');
-    $('[data-prop=amount]').addClass('hide');
-    $('[data-animate=amount]').val('');
-  }
-
-  // if an animation property is already visible lets hide it
-  if ($('[data-show].active').is(':visible')) {
-    if (!$('.keyframe.active').is(':visible')) {
-      $('[data-show].active').removeClass('active');
-      $('[data-display=props], [data-display=props] li').addClass('hide');
-    }
-  }
-});
-
-// open keys
-$('[data-open=keys]').click(function() {
-  if ($('li[data-selectorlist].selector').length === 0) {
-    alertify.error('Error: Selector not found!');
-    return false;
-  }
-  $('[data-open=library]').trigger('click');
-  openAnimation();
-  
-  // only show keys for the active selector
-  if ($('li[data-selectorlist].selector').length === 1) {
-    $sel = $('li[data-selectorlist].selector span').text();
-    $sel = '.canvas > svg > ' + $sel;
-  } else {
-    $arr = [];
-
-    $('li[data-selectorlist].selector span').each(function() {
-      $arr.push(this.textContent);
-    });
-    $sel = $arr.join().replace(/,/g, ', ');
-  }
-  
-  $('[data-show]').removeClass('active');
-  $('[data-display=props]').addClass('hide');
-  $('[data-display=props] [data-props]').addClass('hide');
-  $('.playback').removeClass('hide');
-});
-// back to library
-$('[data-backto=library]').click(function() {
-  // is animation playing?
-  if ($('[data-playit=stop]').is(':visible')) {
-    $('[data-playit=stop]').trigger('click');
-  }
-
-  $('.dialog').not('.animationtype').addClass('hide');
-  $('.dialog.librarydialog').removeClass('hide');
-  $('.libraryh').removeClass('hide');
-  $('.keysh').addClass('hide');
-  $('[data-open=animationtype]').removeClass('hide');
-  $('[data-open=animationtype]').text('animate');
-  $('.canvas').empty().append(origCanvas);
-  $('.canvas').removeClass('hide').addClass('r50p').css('bottom', '0');
-  $('.keyframe.active').removeClass('active');
-  $('[data-selected]').removeAttr('style');
-  
-  // reset canvas interactive selection
-  $('.canvas svg *').on('click', function() {
-    // is library visible? if so proceed
-    if ($('.libraryh').is(':visible')) {
-      // is selected already visible? If so remove to select active one
-      if ($('[data-selected]').is(':visible')) {
-        $("[data-selected]").removeAttr("data-selected");
-        $(this).attr('data-selected', '');
-
-        // display selection in library
-        $('[data-display=selector] li').removeClass('selector');
-
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      } else {
-        $(this).attr('data-selected', '');
-
-        // display selection in library
-        $('[data-display=selector] li').removeClass('selector');
-
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      }
-    }
-
-    return false;
-  });
-
-  // remember selector(s) via string
-  $str = "";
-
-  // render selector(s) in canvas
-  $('[data-selectorlist].selector').each(function() {
-    if ($str === "") {
-      $str = ".canvas svg > " + $(this).find('span').text();
-    } else {
-      $str += ", .canvas svg > " + $(this).find('span').text();
-    }
-    $($str).attr("data-selected", "");
-  });
-});
-// close keys entirely
-$('[data-close=keys]').click(function() {
-  // is animation playing?
-  if ($('[data-playit=stop]').is(':visible')) {
-    $('[data-playit=stop]').trigger('click');
-  }
-  
-  $('.dialog').not('.animationtype').addClass('hide');
-  $('.canvas').removeClass('r50p');
-  $('.mainh').removeClass('hide');
-  $('[data-open=animationtype]').removeClass('hide');
-  $('.librarydialog, .libraryh, .keysh').addClass('hide');
-  $('.canvas').empty().append(origCanvas);
-  $('.canvas').removeClass('hide').css('bottom', '0');
-  $('.keyframe.active').removeClass('active');
-  
-  // is selected already visible? If so remove to select active one
-  if ($('[data-selected]').is(':visible')) {
-    $("[data-selected]").removeAttr("data-selected");
-  }
-  
-  // reset canvas interactive selection
-  $('.canvas svg *').on('click', function() {
-    // is library visible? if so proceed
-    if ($('.libraryh').is(':visible')) {
-      // is selected already visible? If so remove to select active one
-      if ($('[data-selected]').is(':visible')) {
-        $("[data-selected]").removeAttr("data-selected");
-        $(this).attr('data-selected', '');
-
-        // display selection in library
-        $('[data-display=selector] li').removeClass('selector');
-
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      } else {
-        $(this).attr('data-selected', '');
-
-        // display selection in library
-        $('[data-display=selector] li').removeClass('selector');
-
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-      }
-    }
-
-    return false;
-  });
-});
-
-// every 10th (.1) of a second is 10px = .key rect[width=10]
-$(".footer").mousedown(function(e) {
-  var $start = e.clientX;
-  $(this).mousemove(function(e) {
-    // detect seconds
-    $num = parseFloat(parseFloat($start - e.clientX) / 10).toFixed(1);
-
-    if ($num < 0 ) {
-      $('[data-keys]').css('margin-left', 0);
-      return false;
-    }
-    
-    $('.defaultcur').text($num);
-    $('[data-keys]').css('margin-left', '-' + parseFloat($('.defaultcur').text() * 100 + 19).toFixed(0) + 'px');
-    updatePreview();
-  });
-}).mouseup(function() {
-    $(this).off('mousemove');
-}).mouseout(function() {
-    $(this).off('mousemove');
-});
-
-// Register touchstart and touchend listeners for element 'source'
-var footer = document.querySelector(".footer");
-jQuery.event.special.touchstart = {
-  setup: function( _, ns, handle ) {
-    this.addEventListener('touchstart', handle, { passive: !ns.includes('noPreventDefault') });
-  }
-};
-jQuery.event.special.touchmove = {
-  setup: function( _, ns, handle ) {
-    this.addEventListener('touchmove', handle, { passive: !ns.includes('noPreventDefault') });
-  }
-};
-function getPos(event) {
-  // Cache the client X coordinates
-  $start = event.touches[0].clientX;
-  
-  footer.addEventListener('touchmove', function(event) {
-    // detect seconds
-    $num = parseFloat(parseFloat($start - event.touches[0].clientX) / 10).toFixed(1);
-
-    if ($num < 0 ) {
-      $('[data-keys]').css('margin-left', 0);
-      return false;
-    }
-    
-    $('.defaultcur').text($num);
-    $('[data-keys]').css('margin-left', '-' + parseFloat($('.defaultcur').text() * 100 + 19).toFixed(0) + 'px');
-    updatePreview();
-  }, false);
-}
-function updateKeyPosition(val) {
-  if (val === 0.0) {
-      $('[data-keys]').css('margin-left', 0);
-  } else {
-    $('[data-keys]').css('margin-left', '-' + parseFloat(parseFloat(val) * 100 + 19).toFixed(0) + 'px');
-  }
-}
-footer.addEventListener('touchstart', function(e) {
-  getPos(e);
-}, false);
-
-// clear event listener
-footer.addEventListener('touchend', function(e) {
-  footer.removeEventListener("touchstart", getPos);
-  footer.removeEventListener("touchmove", getPos);
-}, false);
-
-// animation groups
-$('[data-open=groups]').click(function() {
-  $('[data-groups]').removeClass('hide');
-});
-TweenMax.set("[data-projectGroups]", {xPercent:-50, left:"50%", yPercent:-50, top:"50%", position: "absolute"});
-$("[data-toggle=projectGroups]").click(function() {
-  $("[data-groups]").fadeToggle();
-});
-
-// group triggered
-function triggerGroup(e) {
-  var $sel = $(e).parent().find('div').text();
-  
-  // if keyframe is active deactivate it
-  if ($('.keyframe.active').is(':visible')) {
-    $('.keyframe.active').trigger('click')
-  }
-  
-  $('[data-toggle=projectGroups]').eq(0).trigger('click');
-  $('[data-backto=library]').trigger('click');
-  $('[data-select=none]').trigger('click');
-  
-  $('[data-selectorlist] span').filter(function() {
-    if ($(this).text() === $sel) {
-      $(this).parent().trigger('click');
-      $('[data-open=animationtype]').trigger('click');
+      // lastly remove the select option
+      $('#elms option:selected').remove();
+      $('#elms').trigger('change');
     } else {
       return false;
     }
+  })
+});
+$('[data-editname]').click(function() {
+  swal({
+    title: 'Change tween name?',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      $('#elms option').each(function() {
+        if ($(this).text() != result.value) {
+          $('#elms option:selected').text(result.value);
+        } else {
+          alertify.error('Error: That name already exists!');
+          $('#elms option:selected').text($this);
+          return false;
+        }
+      });
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
   });
-}
+});
 
-// timeline playback
+// enable/disable snippet presets
+$('.props > div > div > input[type=checkbox]').on('change', function() {
+  if (this.checked) {
+    $(this).parent().find('input').removeAttr('disabled');
+    $(this).parent().find('select').removeAttr('disabled');
+  } else {
+    $(this).parent().find('input:not(input[type=checkbox])').attr('disabled', true);
+    $(this).parent().find('select').attr('disabled', true);
+  }
+});
+
+// change input/textarea font size
+$('[data-fontsize]').on('keyup change', function() {
+  $('input, textarea, .CodeMirror').css('font-size', this.value + 'px');
+});
+
+// init animations
 function getCode() {
-  // javascript
-  $code = '';
-  $('[data-function]').each(function() {
-    $code += this.value + '\n';
-  });
-  $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);';
+  // clear the variables
+  jsStr = '';
   
-  $(".canvas").empty().append(origCanvas + '<script>\n      '+ $code +'\n    </script>');
+  // clear and reset the canvas
+  $('[data-canvas]').empty().html(origSVG);
+  applyFilters();
+  
+  // apply the javascript
+  $('textarea.js').each(function() {
+    jsStr += $(this).val() + '\n';
+  });
+  
+//  $code = 'var mainTL = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+//  $code = 'var mainTL = new TimelineMax('+ ($('[data-repeat]').attr('data-repeat') === 'true') ? "{repeat: -1}" : "" +')\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+  
+  if ($('[data-repeat]').attr('data-repeat') === 'true') {
+    $code = 'var mainTL = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+  } else {
+    $code = 'var mainTL = new TimelineMax()\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
+  }
 }
-$('[data-render=play]').click(function() {
-  if (!$("[data-keys]").html()) {
-    alertify.error("Abort Operation: No keys detected!");
+function render() {
+//  alertify.log("coming soon...");
+//  return false;
+  
+  if (!$("[data-canvas]").html()) {
+    alertify.error("Abort Operation: No svg detected!");
+    return false;
+  }
+  
+  // if animation is already playing
+  if ($('[data-play=false]').is(':visible')) {
+    $('[data-play=false]').trigger('click')
+  }
+  
+  getCode();
+  if (jsStr.toString().split(' ').join('').toLowerCase().includes('repeat:-1')) {
+    alertify.error("Error: Indefinite repeat found!");
+    alertify.error("Do NOT use repeat: -1");
+    alertify.error("Use a specific number!!");
+    $('.playback').show();
+    $('[data-render]').hide();
     return false;
   }
 
-  if ($(this).attr('data-render') === 'play') {
-    $('[data-open=library], [data-open=keys], label[for=openfile], [data-toggle=projectSettings]').addClass('hide');
-    $(this).attr('data-render', 'stop');
-    $(this).html('<i class="fa fa-stop"></i>');
+  if ($('[data-render]')[0].textContent.toLowerCase() === 'render') {
+    // hide settings
+    $('[data-call=settings] img').css({
+      width: 0,
+      padding: 0,
+      overflow: 'hidden'
+    });
     
-    getCode();
+    $('[data-midbtns]').hide();
+    $('[data-export]').show();
+    $('[data-render]').text('RENDERING ANIMATION').css('color', '#e71fd8');
+    
+    // close keys
+    $('[data-close=keys]').trigger('click');
+    
+    $('[data-canvas]').empty().html(origSVG);
+    applyFilters();
+    $('[data-canvas]').append('<script>'+ $code +'</script>');
     setTimeout(function() {
-      var fps = $("[data-project=fps]").val();
-      var duration = tl.duration();
+      var fps = $("[data-fps]").val();
+      var duration = mainTL.duration();
 //      var duration = tl.totoalDuration();
 //      var duration = tl.totalDuration();
       var frames   = Math.ceil(duration / 1 * fps);
       var current  = 0;
 
       // canvas
-      var svg  = document.querySelector(".canvas svg");
+      var svg    = document.querySelector("[data-canvas] svg");
       var canvas = document.createElement("canvas");
-      var ctx = canvas.getContext("2d");
-      if (!$("[data-project=size]").val()) {
-        $("[data-project=size]").val("800x600");
-      }
+      var ctx    = canvas.getContext("2d");
 
-      var str = $("[data-project=size]").val();
-      w = str.substr(0, str.indexOf('x'));
-      h = str.substring(str.length, str.indexOf('x') + 1);
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width  = $("[data-project=width]").val();
+      canvas.height = $("[data-project=height]").val();
       var jsonStr = [];
 
       function processImage() {
-        tl.progress(current++ / frames);
+        mainTL.progress(current++ / frames);
 
         var xml  = new XMLSerializer().serializeToString(svg);
         var blob = window.btoa(xml);
@@ -1461,8 +1492,7 @@ $('[data-render=play]').click(function() {
           
           // export gif animation
           document.querySelector("[data-export=gif]").onclick = function() {
-            $('.canvas').addClass('hide');
-            $("body").append('<div class="table" data-show="preloader"><div class="cell"><div class="preloader"><svg class="w100p" viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div></div></div>');
+            $("body").append('<div class="table preloaderbg" data-show="preloader"><div class="cell"><div class="preloader"><svg class="w100p" viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div></div></div>');
 
             gifshot.createGIF({
               images: jsonStr,
@@ -1481,9 +1511,9 @@ $('[data-render=play]').click(function() {
                   if (a.download === undefined) {
                     // do stuff
                   } else {
-                    var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-                    if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-                      projectname = $("[data-project=name]")[0].value = "my-svgmotion-animation";
+                    var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
+                    if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+                      projectname = $("[data-projectname]")[0].value = "_svgMotion";
                     }
 
                     if (bowser.msie && bowser.version <= 6) {
@@ -1504,7 +1534,6 @@ $('[data-render=play]').click(function() {
                   a.click();
 
                   $("[data-show=preloader]").remove();
-                  $('.canvas').removeClass('hide');
                 }
               }
             );
@@ -1519,9 +1548,9 @@ $('[data-render=play]').click(function() {
             }
 
             var content = zip.generate({type:"blob"});
-            var projectname = $("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")
-            if (!$("[data-project=name]")[0].value.toLowerCase().replace(/ /g, "-")) {
-              projectname = $("[data-project=name]")[0].value = "my-svgmotion-animation";
+            var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
+            if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+              projectname = $("[data-projectname]")[0].value = "_svgMotion";
             }
             saveAs(content, projectname + "-sequence.zip");
           };
@@ -1529,930 +1558,202 @@ $('[data-render=play]').click(function() {
 
         if (current <= frames) {
           processImage();
-          $('[data-export=images]').removeClass('hide');
-          $('[data-export=gif]').removeClass('hide');
         } else {
-          tl.play(0).timeScale(1.0);
+          mainTL.play(0).timeScale(1.0);
         }
       }
       processImage();
     }, 2);
   } else {
+    // reset icons
+    $('[data-export]').hide();
+    $('[data-midbtns]').show();
+
     // stop animation
-    // reset initial svg code
-    $(".canvas").empty().append(origCanvas);
-    $('[data-export=images]').addClass('hide');
-    $('[data-export=gif]').addClass('hide');
-    $('[data-open=library], [data-open=keys], label[for=openfile], [data-toggle=projectSettings]').removeClass('hide');
+    $('.playback').show();
+    // play state
+    // if animation is already playing
+    if ($('[data-play=false]').is(':visible')) {
+      $('[data-play=false]').trigger('click')
+    }
+    updateCode();
     
     // reset icon
-    $(this).attr('data-render', 'play');
-    $(this).html('<i class="fa fa-play"></i>');
-    
-    // canvas interactive selection
-    $('.canvas svg *').on('click', function() {
-      // is library visible? if so proceed
-      if ($('.libraryh').is(':visible')) {
-        // is selected already visible? If so remove to select active one
-        if ($('[data-selected]').is(':visible')) {
-          $("[data-selected]").removeAttr("data-selected");
-          $(this).attr('data-selected', '');
-
-          // display selection in library
-          $('[data-display=selector] li').removeClass('selector');
-
-          // remember selector(s) via string
-          $str = "";
-
-          // activate selection in libary from canvas
-          $(".canvas svg [data-selected]").each(function() {
-            $str = $(this).getPath().split(remStr).join('');
-            $('[data-selectorlist]').each(function() {
-              if ($(this).find('span').text() === $str) {
-                $(this).addClass('selector');
-              }
-            });
-          });
-        } else {
-          $(this).attr('data-selected', '');
-
-          // display selection in library
-          $('[data-display=selector] li').removeClass('selector');
-
-          // remember selector(s) via string
-          $str = "";
-
-          // activate selection in libary from canvas
-          $(".canvas svg [data-selected]").each(function() {
-            $str = $(this).getPath().split(remStr).join('');
-            $('[data-selectorlist]').each(function() {
-              if ($(this).find('span').text() === $str) {
-                $(this).addClass('selector');
-              }
-            });
-          });
-        }
-      }
-      
-      return false;
-    });
-  }
-});
-
-$('[data-play=firstframe]').click(function() {
-  str = parseFloat($('.defaultcur').text()).toFixed(1);
-  if (str === '0.0') {
-    alertify.error('You\'re already on the first frame.');
-  } else {
-    $('.defaultcur').text('0.0');
-    updateKeyPosition($('.defaultcur').text());
-    $('[data-keys]').css('margin-left', 0);
-  }
-  updatePreview();
-});
-$('[data-play=nextframe]').click(function() {
-  str = parseFloat($('.defaultcur').text()).toFixed(1);
-  str = parseFloat(str) + .10;
-  $('.defaultcur').text(parseFloat(str).toFixed(1));
-  updateKeyPosition(str);
-  updatePreview();
-});
-$('[data-playit]').click(function() {
-  if ($(this).attr('data-playit') === 'play') {
-    $('[data-export=pngframe]').addClass('hide');
-    $('[data-export=svgframe]').addClass('hide');
-    $('[data-selected]').css('outline', 'none');
-
-    // javascript
-    $code = '';
-    $('[data-function]').each(function() {
-      $code += this.value + '\n';
-    });
-    $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.play(0).timeScale(1);'
+    $('[data-render]').text('RENDER').attr('style', '');
   
-    $(".canvas").empty().append( origCanvas + '<script>\n      '+ $code +'\n    </script>');
-
-    $(this).attr('data-playit', 'stop');
-    $(this).html('<i class="fa fa-stop"></i>');
+    // show settings
+    $('[data-call=settings] img').removeAttr('style');
     
-    $('.canvas').css('bottom', 0);
-    $('.canvas').css('z-index', '1');
-//    $('.dialog.animpanel, .dialog.animtimeline').addClass('hide');
-    $('[data-play=firstframe], [data-play=nextframe], [data-play=prevframe], [data-play=lastframe]').addClass('hide');
-  } else {
-    $('[data-export=pngframe]').removeClass('hide');
-    $('[data-export=svgframe]').removeClass('hide');
-    $('[data-selected]').removeAttr('data-selected');
-
-    // javascript
-    $code = '';
-    $('[data-function]').each(function() {
-      $code += this.value + '\n';
-    });
-    $code = 'var tl = new TimelineMax({repeat:-1})\n\n' + $code + '\nvar fps = '+ $('[data-project=fps]').val() +';\nvar duration = tl.duration();\nvar frames = Math.ceil(duration / 1 * fps);\ntl.pause(0).timeScale(1);'
-  
-    $(".canvas").empty().append( origCanvas + '<script>\n      '+ $code +'\n    </script>');
-
-    $(this).attr('data-playit', 'play');
-    $(this).html('<i class="fa fa-play"></i>');
-    
-    $('.canvas').css('bottom', '110px');
-    $('.canvas').css('z-index', '0');
-//    $('.dialog.animpanel, .dialog.animtimeline').removeClass('hide');
-    $('[data-play=firstframe], [data-play=nextframe], [data-play=prevframe], [data-play=lastframe]').removeClass('hide');
-  }
-});
-$('[data-play=prevframe]').click(function() {
-  str = parseFloat($('.defaultcur').text()).toFixed(1);
-  if (str <= '0.0') {
-    alertify.error('Error: An animation cannot be less than 0 seconds.');
-  } else {
-    str = parseFloat(str) - .10;
-    $('.defaultcur').text(parseFloat(str).toFixed(1));
-    updateKeyPosition(str);
-  }
-  updatePreview();
-});
-$('[data-play=lastframe]').click(function() {
-  $('[data-keys]').css('margin-left', 0);
-  $val = parseFloat(parseFloat($('.keyframe:last').find('.key').css('margin-left')) + 19);
-  $('[data-keys]').css('margin-left', '-' + $val + 'px');
-  updatePreview();
-});
-
-// show/hide key values
-$('[data-show]').on('click', function() {
-  // user can only edit if there's an active keyframe
-  if ($('.keyframe.active').is(':visible')) {
-    $this = $(this).attr('data-show');
-    $('.dialog.props').addClass('animpanel');
-
-    // first detect if active is visible
-    if ($('[data-props='+ $this +']').is(':visible')) {
-      $('[data-show]').removeClass('active');
-      $('[data-display=props], [data-props]').addClass('hide');
-      $('.playback').removeClass('hide');
-    } else {
-      $('[data-show]').removeClass('active');
-      $(this).addClass('active');
-      $('[data-props]').addClass('hide');
-      $('[data-display=props]').removeClass('hide');
-      $('[data-props='+ $this +']').removeClass('hide');
-      $('.playback').addClass('hide');
-    }
-    return false;
-  } else {
-    alertify.error('Error: No keyframe selected!');
-  }
-});
-
-// toggle key props
-$('[data-x]').click(function() {
-  $str = 'x';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('min', '-100').attr('max', '100').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-y]').click(function() {
-  $str = 'y';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('min', '-100').attr('max', '100').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-scalex]').click(function() {
-  $str = 'scalex';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('1').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('1');
-  }
-});
-$('[data-scaley]').click(function() {
-  $str = 'scaley';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('1').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('1');
-  }
-});
-$('[data-scale]').click(function() {
-  $str = 'scale';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('1').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('1');
-  }
-});
-$('[data-rotation]').click(function() {
-  $str = 'rotation';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('min', '-360').attr('max', '360').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-transformOrigin]').click(function() {
-  $str = 'transformOrigin';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('center center').attr('disabled', 'true');
-  }
-});
-$('[data-opacity]').click(function() {
-  $str = 'opacity';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('100').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('100');
-  }
-});
-$('[data-fill]').click(function() {
-  $str = 'fill';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').val($('[data-selected]').css('fill')).removeAttr('disabled');
-    
-    $('[data-animate='+ $str +']').minicolors({
-      opacity: true,
-      format: 'rgb',
-      position: 'top left',
-    //    inline: true,
-      swatches: [$('.defaultswatch')[0].value, $('.defaultswatch')[1].value, $('.defaultswatch')[2].value, $('.defaultswatch')[3].value, $('.defaultswatch')[4].value, $('.defaultswatch')[5].value, $('.defaultswatch')[6].value, $('.defaultswatch')[7].value, $('.defaultswatch')[8].value, $('.defaultswatch')[9].value, $('.defaultswatch')[10].value, $('.defaultswatch')[11].value, $('.defaultswatch')[12].value, $('.defaultswatch')[13].value]
-    });
-
-    // disable scroll with color picker
-    $('[data-animate='+ $str +']').on('focus', function() {
-      $('.dialog').css('overflow', 'hidden');
-      $('.dialog.animtimeline, .dialog.props.animpanel').css('height', '250px');
-      $('.canvas').css('bottom', '250px');
-      $('.minicolors-panel').css('margin-top', '-50px');
-    }).on('blur', function() {
-      $('.dialog').css('overflow', 'auto');
-      $('.dialog.animtimeline, .dialog.props.animpanel').css('height', '55px');
-      $('.minicolors-panel').css('margin-top', '');
-      $('.canvas').css('bottom', '110px');
-    });
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').attr('disabled', 'true');
-    $('[data-animate='+ $str +']').minicolors('destroy');
-  }
-});
-$('[data-stroke]').click(function() {
-  $str = 'stroke';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').val($('[data-selected]').css('stroke')).removeAttr('disabled');
-    
-    $('[data-animate='+ $str +']').minicolors({
-      opacity: true,
-      format: 'rgb',
-      position: 'top left',
-    //    inline: true,
-      swatches: [$('.defaultswatch')[0].value, $('.defaultswatch')[1].value, $('.defaultswatch')[2].value, $('.defaultswatch')[3].value, $('.defaultswatch')[4].value, $('.defaultswatch')[5].value, $('.defaultswatch')[6].value, $('.defaultswatch')[7].value, $('.defaultswatch')[8].value, $('.defaultswatch')[9].value, $('.defaultswatch')[10].value, $('.defaultswatch')[11].value, $('.defaultswatch')[12].value, $('.defaultswatch')[13].value]
-    });
-
-    // disable scroll with color picker
-    $('[data-animate='+ $str +']').on('focus', function() {
-      $('.dialog').css('overflow', 'hidden');
-      $('.dialog.animtimeline, .dialog.props.animpanel').css('height', '250px');
-      $('.canvas').css('bottom', '250px');
-      $('.minicolors-panel').css('margin-top', '-50px');
-    }).on('blur', function() {
-      $('.dialog').css('overflow', 'auto');
-      $('.dialog.animtimeline, .dialog.props.animpanel').css('height', '55px');
-      $('.minicolors-panel').css('margin-top', '');
-      $('.canvas').css('bottom', '110px');
-    });
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').attr('disabled', 'true');
-    $('[data-animate='+ $str +']').minicolors('destroy');
-  }
-});
-$('[data-strokeWidth]').click(function() {
-  $str = 'strokeWidth';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-borderRadius]').click(function() {
-  $str = 'borderRadius';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-ease]').click(function() {
-  $str = 'ease';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +'], [data-animate=easetype]').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +'], [data-animate=easetype]').attr('disabled', 'true');
-  }
-});
-$('[data-duration]').click(function() {
-  $str = 'duration';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('max', '10').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-delay]').click(function() {
-  $str = 'delay';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('max', '10').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-repeat]').click(function() {
-  $str = 'repeat';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').attr('disabled', 'true');
-  }
-});
-$('[data-yoyo]').click(function() {
-  $str = 'yoyo';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').attr('disabled', 'true');
-  }
-});
-$('[data-amount]').click(function() {
-  $str = 'amount';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('0').attr('max', '10').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('0');
-  }
-});
-$('[data-drawPath]').click(function() {
-  // selector(s) name for code
-  $str = 'drawPath';
-
-  // disable drawPath for array of selectors
-  if ($('li[data-selectorlist].selector').length > 1) {
-    alertify.error('Error: Cannot drawPath for an array of selectors!');
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').attr('disabled', 'true').trigger('change');
-    return false;
-  }
-  
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').val('1').attr('max', '10').attr('disabled', 'true');
-    $(this).parent().find('[data-val]').text('1');
-  }
-});
-$('[data-motionPath]').click(function() {
-  $str = 'motionPath';
-  if ($(this).attr('data-' + $str) === 'false') {
-    $(this).attr('data-' + $str, 'true');
-    $('[data-animate='+ $str +']').removeAttr('disabled');
-  } else {
-    $(this).attr('data-' + $str, 'false');
-    $('[data-animate='+ $str +']').attr('disabled', 'true');
-  }
-});
-$('[data-decrement]').on('click', function() {
-  $elm = $(this).parent().parent().find('input[data-animate]');
-  $elm[0].stepDown();
-  
-  $('[data-animate='+ $(this).parent().parent().attr('data-props') +']').trigger('change');
-});
-
-// add/delete keys
-function toggleKey(e) {
-  if ($('.keyframe.active').is(':visible')) {
-    if ($(e).hasClass('active')) {
-//      $('[data-open=editpath]').addClass('hide');
-      $('.keyframe.active').removeClass('active');
-      $(e).removeClass('active');
-  
-      // clear inputs when class is not active
-      $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
-      $('[data-change=keylocation]').addClass('hide');
-    } else {
-      $('.keyframe.active').removeClass('active');
-  
-      // clear inputs when class is not active
-      $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
-      
-      $(e).addClass('active');
-      setTimeout($(e).find('[data-js]').val(), 1);
-//      $('[data-open=editpath]').removeClass('hide');
-      $('[data-change=keylocation]').removeClass('hide');
-    }
-  } else {
-    // clear inputs when class is not active
-    $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
-    
-    $(e).addClass('active');
-    setTimeout($(e).find('[data-js]').val(), 1);
-//    $('[data-open=editpath]').removeClass('hide');
-    $('[data-change=keylocation]').removeClass('hide');
+    $('[data-render]').hide();
   }
 }
-$('[data-key=add]').click(function() {
-  $val = parseFloat($('[data-keys]').css('margin-left')).toString().substr(1);
-  
-  $('.keyframe.active').removeClass('active');
-  
-  // clear inputs when class is not active
-  $('[data-x=true], [data-y=true], [data-scalex=true], [data-scaley=true], [data-scale=true], [data-rotation=true], [data-transformOrigin=true], [data-opacity=true], [data-fill=true], [data-stroke=true], [data-strokeWidth=true], [data-borderRadius=true], [data-ease=true], [data-repeat=true], [data-yoyo=true], [data-duration=true], [data-delay=true], [data-amount=true], [data-drawPath=true], [data-motionPath=true]').trigger('click');
-  
-  if (!$val) {
-    $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: -19px;"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
-  } else {
-    if ($('.defaultcur').text() === '0.0') {
-      $('.keyframe.active').removeClass('active');
-      $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: -19px;"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
-    } else {
-      $('.keyframe.active').removeClass('active');
-      $('[data-keys]').append('<div class="keyframe active pointer" data-timeline="'+ $('.defaultcur').text().split('.').join('_') +'" onclick="toggleKey(this)"><svg class="key" style="margin-left: calc('+ parseFloat($('[data-keys]').css('margin-left')).toString().substr(1) +'px - 19px);"><rect x="20" width="0" height="30" style="fill:rgb(30,126,235)" fill-opacity="1"/><path d="m20,0l-10.71434,15l10.71434,15l10.71434,-15l-10.71434,-15z"></path></svg><span class="hide">'+ $sel +'</span><textarea class="hide" data-function></textarea><textarea class="hide" data-js></textarea></div>');
+$('[data-render]').click(function() {
+  render();
+});
+
+// export files
+function getProjectJSON() {
+  projectJSON = {
+    "version": version,
+    "settings": [{
+      "name"     : $('[data-projectname]')[0].textContent,
+      "width"    : $('[data-project=width]').val(),
+      "height"   : $('[data-project=height]').val(),
+      "framerate": $('[data-fps]').val(),
+      "fontsize" : $('[data-fontsize]').val(),
+      "notepad"  : $('[data-notepad]').val()
+    }],
+    "filters": [{
+      "blurfilter"      : blurfilter.value,
+      "huefilter"       : huefilter.value,
+      "brightnessfilter": brightnessfilter.value,
+      "contrastfilter"  : contrastfilter.value,
+      "saturatefilter"  : saturatefilter.value,
+      "grayscalefilter" : grayscalefilter.value,
+      "sepiafilter"     : sepiafilter.value,
+      "invertfilter"    : invertfilter.value
+    }],
+    "originalSVG": origSVG.toString(),
+    "elmkeys": $("#elms").html(),
+    "keys"   : $("[data-keyscode]").html()
+  };
+};
+function saveCode(filename) {
+  JSZipUtils.getBinaryContent("libraries/gsap/gsap-public.zip", function(err, data) {
+    if(err) {
+      throw err // or handle err
     }
-    
-    // append key to groups (only if this selector doesn't exist)
-    $('[data-groups] ul').filter(function() {
-      if ($(this).find('div').text() != $sel) {
-        $('[data-groups] ul').append('<li><span contenteditable>'+ $sel +'</span><div class="hide">'+ $sel +'</div><a class="fr" onclick="triggerGroup(this)"><i class="fa fa-external-link-square-alt"></i></a></li>');
-      }
-    });
-  }
-//  $('[data-open=editpath]').removeClass('hide');
-});
-$('[data-key=delete]').click(function() {
-  if ($('.keyframe.active').is(':visible')) {
-    
-    // detect if last keyframe for group. If so delete the last group before we delete the last keyframe
-    $('.keyframe span').filter(function() {
-      if ($(this).text() === $sel) {
-        // only 1 of these selectors is visible
-        if ($(this).length >= 1) {
-          $('[data-groups] div').filter(function() {
-            if ($(this).text() === $sel) {
-              // group removed
-              $(this).parent().remove();
-            }
-          });
-        }
-      }
-    });
-    
-    $('.keyframe.active').remove();
-    $('[data-change=keylocation]').addClass('hide');
-//    $('[data-open=editpath]').addClass('hide');
-    updatePreview();
-  } else {
-    alertify.error('Error: Cannot Delete! No keyframe selected!');
-    return false;
-  }
-});
 
-// update keyframe location
-$('[data-change=keylocation]').click(function() {
-  if ($('.keyframe.active').is(':visible')) {
-    swal({
-      title: 'Change Keyframe Location',
-      input: 'number',
-      showCancelButton: true
-    }).then((result) => {
-      if (result.value) {
-        if (parseFloat(result.value) === 0) {
-          $('[data-keys]').css('margin-left', 0);
-          $('.keyframe.active .key').css('margin-left', '-19px');
-          $('.keyframe.active').attr('data-timeline', result.value.toString().split('.').join('_'));
-          $('.defaultcur').text('0.0')
-        } else {
-          $('[data-keys]').css('margin-left', '-' + parseFloat(parseFloat(result.value) * 100 + 19).toFixed(0) + 'px');
-          $('.keyframe.active .key').css('margin-left', 'calc('+ parseFloat('-' + parseFloat(parseFloat(result.value) * 100 + 19).toFixed(0)).toString().substr(1) +'px - 19px)');
-          $('.keyframe.active').attr('data-timeline', result.value.toString().split('.').join('_'));
-          $('.defaultcur').text(parseFloat(result.value).toFixed(1))
-        }
-        $('[data-animate]').trigger('change');
-      } else {
-        alertify.error('Operation Cancelled: No value set!');
-      }
-    });
-  } else {
-    alertify.error('Error: No keyframe selected!');
-  }
-});
+    var zip = new JSZip();
 
-// update preview code
-$('[data-animate]').on('change keyup', function() {
-  // selector(s) name for code
-  if ($('li[data-selectorlist].selector').length === 1) {
-    $sel = $('li[data-selectorlist].selector span').text();
-    $sel = '.canvas > svg > ' + $sel;
-  } else {
-    $arr = [];
+    // Put all application files in subfolder for shell script
+    var zipFolder = zip.folder("libraries");
+    zipFolder.load(data);
 
-    $('li[data-selectorlist].selector span').each(function() {
-      $arr.push(this.textContent);
+    // html
+    // run the code
+    $('[data-canvas]').empty().html(origSVG);
+    applyFilters();
+    
+    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <title>'+ filename +': An svgMotion Animation</title>\n    <meta charset="utf-8" />\n    <meta name="description" content="This animation was created using svgMotion!">\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n    <style>\n    body {margin:0;}</style>\n  </head>\n  <body>\n    <div class="svgmotion">\n      '+ $('.svgmotion').html() +'\n    </div>\n\n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
+
+    // javascript
+    $code = '';
+    $('textarea.js').each(function() {
+      $code += this.value + '\n';
     });
-    $sel = $arr.join().replace(/,/g, ', .canvas > svg > ');
-    $sel = '.canvas > svg > ' + $sel;
-    $sel.split(',').join(', .canvas > svg > ');
-  }
   
-  // grab inputs for animation
-  var $array = [
-    (!$('[data-animate=x]').is(':disabled') ? 'x: ' + $('[data-animate=x]').val() : ''),
-    (!$('[data-animate=y]').is(':disabled') ? 'y: ' + $('[data-animate=y]').val() : ''),
-    (!$('[data-animate=scalex]').is(':disabled') ? 'scaleX: ' + $('[data-animate=scalex]').val() : ''),
-    (!$('[data-animate=scaley]').is(':disabled') ? 'scaleY: ' + $('[data-animate=scaley]').val() : ''),
-    (!$('[data-animate=scale]').is(':disabled') ? 'scale: ' + $('[data-animate=scale]').val() : ''),
-    (!$('[data-animate=rotation]').is(':disabled') ? 'rotation: ' + $('[data-animate=rotation]').val() : ''),
-    (!$('[data-animate=transformOrigin]').is(':disabled') ? 'transformOrigin: \'' + $('[data-animate=transformOrigin]').val() + '\'' : ''),
-    (!$('[data-animate=opacity]').is(':disabled') ? 'opacity: ' + $('[data-animate=opacity]').val() : ''),
-    (!$('[data-animate=fill]').is(':disabled') ? 'fill: \'' + $('[data-animate=fill]').val() + '\'' : ''),
-    (!$('[data-animate=stroke]').is(':disabled') ? 'stroke: \'' + $('[data-animate=stroke]').val() + '\'' : ''),
-    (!$('[data-animate=strokeWidth]').is(':disabled') ? 'strokeWidth: ' + $('[data-animate=strokeWidth]').val() : ''),
-    (!$('[data-animate=borderRadius]').is(':disabled') ? 'borderRadius: ' + $('[data-animate=borderRadius]').val() : ''),
-    (!$('[data-animate=ease]').is(':disabled') ? 'ease: \'' + $('[data-animate=ease]').val() + $('[data-animate=easetype]').val() + '\'' : ''),
-    (!$('[data-animate=amount]').is(':disabled') ? 'stagger: { amount: '+ $('[data-animate=amount]').val() +' }' : ''),
-    (!$('[data-animate=duration]').is(':disabled') ? 'duration: ' + $('[data-animate=duration]').val() : ''),
-    (!$('[data-animate=delay]').is(':disabled') ? 'delay: ' + $('[data-animate=delay]').val() : ''),
-    (!$('[data-animate=repeat]').is(':disabled') ? 'repeat: ' + $('[data-animate=repeat]').val() : ''),
-    (!$('[data-animate=yoyo]').is(':disabled') ? 'yoyo: ' + $('[data-animate=yoyo]').val() : ''),
-    (!$('[data-animate=drawPath]').is(':disabled') ? 'strokeDasharray: document.querySelector(\''+ $sel +'\').getTotalLength() + "," + document.querySelector(\''+ $sel +'\').getTotalLength(), strokeDashoffset: document.querySelector(\''+ $sel +'\').getTotalLength()' : ''),
-    (!$('[data-animate=motionPath]').is(':disabled') ? 'motionPath: {path: "'+ $('[data-animate=motionPath]').val() +'"}' : '')
-  ];
-  $array = $array.filter(function(el) {
-    return el != '';
+    if ($('[data-repeat]').attr('data-repeat') === 'true') {
+      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n})\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
+    } else {
+      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar mainTL = new TimelineMax()\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
+    }
+
+    zip.file("js/animation.js", $code);
+    var content = zip.generate({type:"blob"});
+    saveAs(content, filename + ".zip");
+    $('textarea.js').trigger('change');
   });
+}
+function exportSVGFrame() {
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-") + "-frame-" + time.textContent;
+  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-projectname]")[0].value = "-frame-" + time.textContent;
+  }
+  blob = new Blob([ '<!-- Generator: svgMotion - https://michaelsboost.com/svgMotion/ -->\n' + $(".canvas").html() ], {type: "text/html"});
+  saveAs(blob, projectname + ".svg");
+};
+function exportPNGFrame() {
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-") + "-frame-" + time.textContent;
+  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-projectname]")[0].value = "-frame-" + time.textContent;
+  }
+  saveAsPNG(projectname);
+};
+function exportJSON() {
+  getProjectJSON();
+  var projectname = $('[data-projectname]')[0].value.toLowerCase().replace(/ /g, "-") + '_svgMotion';
+  if (!$('[data-projectname]')[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $('[data-projectname]')[0].value = "_svgMotion";
+  }
+  var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
+  saveAs(blob, projectname + ".json");
+};
+$('[data-project=export]').on('click', function() {
+  exportJSON();
+});
+$('[data-exportframe=svg]').on('click', function() {
+  $(".canvas style").remove();
+  $(".canvas script").remove();
+  exportSVGFrame();
+//  updatePreview();
+});
+$('[data-exportframe=png]').on('click', function() {
+  exportPNGFrame();
+//  updatePreview();
+});
+$('[data-exportzip]').on('click', function() {
+  // if animation is playing stop it
+  $('[data-play=false]').trigger('click');
   
-  var $arrayNoDur = [
-    (!$('[data-animate=x]').is(':disabled') ? 'x: ' + $('[data-animate=x]').val() : ''),
-    (!$('[data-animate=y]').is(':disabled') ? 'y: ' + $('[data-animate=y]').val() : ''),
-    (!$('[data-animate=scalex]').is(':disabled') ? 'scaleX: ' + $('[data-animate=scalex]').val() : ''),
-    (!$('[data-animate=scaley]').is(':disabled') ? 'scaleY: ' + $('[data-animate=scaley]').val() : ''),
-    (!$('[data-animate=scale]').is(':disabled') ? 'scale: ' + $('[data-animate=scale]').val() : ''),
-    (!$('[data-animate=rotation]').is(':disabled') ? 'rotation: ' + $('[data-animate=rotation]').val() : ''),
-    (!$('[data-animate=transformOrigin]').is(':disabled') ? 'transformOrigin: \'' + $('[data-animate=transformOrigin]').val() + '\'' : ''),
-    (!$('[data-animate=opacity]').is(':disabled') ? 'opacity: ' + $('[data-animate=opacity]').val() : ''),
-    (!$('[data-animate=fill]').is(':disabled') ? 'fill: \'' + $('[data-animate=fill]').val() + '\'' : ''),
-    (!$('[data-animate=stroke]').is(':disabled') ? 'stroke: \'' + $('[data-animate=stroke]').val() + '\'' : ''),
-    (!$('[data-animate=strokeWidth]').is(':disabled') ? 'strokeWidth: ' + $('[data-animate=strokeWidth]').val() : ''),
-    (!$('[data-animate=borderRadius]').is(':disabled') ? 'borderRadius: ' + $('[data-animate=borderRadius]').val() : ''),
-    (!$('[data-animate=ease]').is(':disabled') ? 'ease: \'' + $('[data-animate=ease]').val() + $('[data-animate=easetype]').val() + '\'' : ''),
-    (!$('[data-animate=amount]').is(':disabled') ? 'stagger: { amount: '+ $('[data-animate=amount]').val() +' }' : ''),
-    (!$('[data-animate=delay]').is(':disabled') ? 'delay: ' + $('[data-animate=delay]').val() : ''),
-    (!$('[data-animate=repeat]').is(':disabled') ? 'repeat: ' + $('[data-animate=repeat]').val() : ''),
-    (!$('[data-animate=yoyo]').is(':disabled') ? 'yoyo: ' + $('[data-animate=yoyo]').val() : ''),
-    (!$('[data-animate=drawPath]').is(':disabled') ? 'duration: 0, strokeDasharray: document.querySelector(\''+ $sel +'\').getTotalLength() + "," + document.querySelector(\''+ $sel +'\').getTotalLength(), strokeDashoffset: document.querySelector(\''+ $sel +'\').getTotalLength()' : ''),
-    (!$('[data-animate=motionPath]').is(':disabled') ? 'motionPath: {path: "'+ $('[data-animate=motionPath]').val() +'"}' : '')
-  ];
-  $arrayNoDur = $arrayNoDur.filter(function(el) {
-    return el != '';
-  });
-  
-  if ($('.keyframe.active').is(':visible')) {
-    // detect if it's 1 selector or an array of selectors
-    if ($('li[data-selectorlist].selector').length === 1) {
-      if (!$('[data-animate=drawPath]').is(':disabled')) {
-        codeStr = '.to(\''+ $sel +'\', { '+ $arrayNoDur +' }, 0.0)' + (!$('[data-animate=drawPath]').is(':disabled') ? '.to(\''+ $sel +'\', {strokeDashoffset: 0, duration: '+ $('[data-animate=duration]').val() +'}, ' + $('.keyframe.active').attr('data-timeline').toString().split('_').join('.') +')' : '');
-      } else {
-        codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.keyframe.active').attr('data-timeline').toString().split('_').join('.') +')';
-      }
-    } else {
-      codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.keyframe.active').attr('data-timeline').toString().split('_').join('.') +')';
-    }
-
-    $('.keyframe.active').find('[data-function]').html(codeStr);
-    
-    var $jsArr = [
-      (!$('[data-animate=x]').is(':disabled') ? "$('[data-x=false]').trigger('click'); $('[data-animate=x]').attr('min', "+$('[data-animate=x]').attr('min')+"); $('[data-animate=x]').attr('max', "+$('[data-animate=x]').attr('max')+"); $('[data-animate=x]').val("+$('[data-animate=x]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=y]').is(':disabled') ? "$('[data-y=false]').trigger('click'); $('[data-animate=y]').attr('min', "+$('[data-animate=y]').attr('min')+"); $('[data-animate=y]').attr('max', "+$('[data-animate=y]').attr('max')+"); $('[data-animate=y]').val("+$('[data-animate=y]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=scalex]').is(':disabled') ? "$('[data-scalex=false]').trigger('click'); $('[data-animate=scalex]').val("+$('[data-animate=scalex]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=scaley]').is(':disabled') ? "$('[data-scaley=false]').trigger('click'); $('[data-animate=scaley]').val("+$('[data-animate=scaley]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=scale]').is(':disabled') ? "$('[data-scale=false]').trigger('click'); $('[data-animate=scale]').val("+$('[data-animate=scale]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=rotation]').is(':disabled') ? "$('[data-rotation=false]').trigger('click'); $('[data-animate=rotation]').attr('min', "+$('[data-animate=rotation]').attr('min')+"); $('[data-animate=rotation]').attr('max', "+$('[data-animate=rotation]').attr('max')+"); $('[data-animate=rotation]').val("+$('[data-animate=rotation]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=transformOrigin]').is(':disabled') ? "$('[data-transformOrigin=false]').trigger('click'); $('[data-animate=transformOrigin]').val('"+$('[data-animate=transformOrigin]').val()+"').trigger('change');\n" : ''),
-      (!$('[data-animate=opacity]').is(':disabled') ? "$('[data-opacity=false]').trigger('click'); $('[data-animate=opacity]').val("+$('[data-animate=opacity]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=fill]').is(':disabled') ? "$('[data-fill=false]').trigger('click'); $('[data-animate=fill]').val('"+$('[data-animate=fill]').val()+"').trigger('change');\n" : ''),
-      (!$('[data-animate=stroke]').is(':disabled') ? "$('[data-stroke=false]').trigger('click'); $('[data-animate=stroke]').val('"+$('[data-animate=stroke]').val()+"').trigger('change');\n" : ''),
-      (!$('[data-animate=strokeWidth]').is(':disabled') ? "$('[data-strokeWidth=false]').trigger('click'); $('[data-animate=strokeWidth]').attr('min', "+$('[data-animate=strokeWidth]').attr('min')+"); $('[data-animate=strokeWidth]').attr('max', "+$('[data-animate=strokeWidth]').attr('max')+"); $('[data-animate=strokeWidth]').val("+$('[data-animate=strokeWidth]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=borderRadius]').is(':disabled') ? "$('[data-borderRadius=false]').trigger('click'); $('[data-animate=borderRadius]').attr('min', "+$('[data-animate=borderRadius]').attr('min')+"); $('[data-animate=borderRadius]').attr('max', "+$('[data-animate=borderRadius]').attr('max')+"); $('[data-animate=borderRadius]').val("+$('[data-animate=borderRadius]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=ease]').is(':disabled') ? "$('[data-ease=false]').trigger('click'); $('[data-animate=ease]').val('"+$('[data-animate=ease]').val()+"'); $('[data-animate=easetype]').val('"+$('[data-animate=easetype]').val()+"').trigger('change');\n" : ''),
-      (!$('[data-animate=amount]').is(':disabled') ? "$('[data-amount=false]').trigger('click'); $('[data-animate=amount]').attr('min', "+$('[data-animate=amount]').attr('min')+"); $('[data-animate=amount]').attr('max', "+$('[data-animate=amount]').attr('max')+").trigger('change'); $('[data-animate=amount]').val("+$('[data-animate=amount]').val()+");\n" : ''),
-      (!$('[data-animate=duration]').is(':disabled') ? "$('[data-duration=false]').trigger('click'); $('[data-animate=duration]').attr('min', "+$('[data-animate=duration]').attr('min')+"); $('[data-animate=duration]').attr('max', "+$('[data-animate=duration]').attr('max')+"); $('[data-animate=duration]').val("+$('[data-animate=duration]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=delay]').is(':disabled') ? "$('[data-delay=false]').trigger('click'); $('[data-animate=delay]').attr('min', "+$('[data-animate=delay]').attr('min')+"); $('[data-animate=delay]').attr('max', "+$('[data-animate=delay]').attr('max')+"); $('[data-animate=delay]').val("+$('[data-animate=delay]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=repeat]').is(':disabled') ? "$('[data-repeat=false]').trigger('click').trigger('change');\n" : ''),
-      (!$('[data-animate=yoyo]').is(':disabled') ? "$('[data-yoyo=false]').trigger('click').trigger('change');\n" : ''),
-      (!$('[data-animate=drawPath]').is(':disabled') ? "$('[data-drawPath=false]').trigger('click'); $('[data-animate=drawPath]').attr('min', "+$('[data-animate=drawPath]').attr('min')+"); $('[data-animate=drawPath]').attr('max', "+$('[data-animate=drawPath]').attr('max')+"); $('[data-animate=drawPath]').val("+$('[data-animate=drawPath]').val()+").trigger('change');\n" : ''),
-      (!$('[data-animate=motionPath]').is(':disabled') ? "$('[data-motionPath=false]').trigger('click'); $('[data-animate=motionPath]').val('"+$('[data-animate=motionPath]').val()+"').trigger('change');\n" : '')
-    ];
-    $jsArr = $jsArr.filter(function(el) {
-      return el != '';
-    });
-
-    $('.keyframe.active').find('[data-js]').html($jsArr);
-    updatePreview();
+  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
+  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
+    projectname = $("[data-projectname]")[0].value = "_svgMotion";
   } else {
-    // detect if it's 1 selector or an array of selectors
-    if ($('li[data-selectorlist].selector').length === 1) {
-      if (!$('[data-animate=drawPath]').is(':disabled')) {
-        codeStr = '.to(\''+ $sel +'\', { '+ $arrayNoDur +' }, 0.0)' + (!$('[data-animate=drawPath]').is(':disabled') ? '.to(\''+ $sel +'\', {strokeDashoffset: 0, duration: '+ $('[data-animate=duration]').val() +'}, ' + $('.defaultcur').text() +')' : '');
-      } else {
-        codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
-      }
-    } else {
-      codeStr = '.to(\''+ $sel +'\', { '+ $array +' }, ' + $('.defaultcur').text() +')';
-    }
-    
-    return false;
+    projectname = projectname + '_svgMotion';
   }
+  saveCode(projectname);
 });
-$('[data-animate=x], [data-animate=y], [data-animate=rotation]').on('change', function() {
-  $val = this.value;
 
-  if (this.value === this.max) {
-    this.max = parseFloat(parseFloat(100) + parseFloat($val));
-    this.min = parseFloat(parseFloat(-100) + parseFloat($val));
-  } else if (this.value === this.min) {
-    this.max = parseFloat(parseFloat(100) + parseFloat($val));
-    this.min = parseFloat(parseFloat(-100) + parseFloat($val));
-  }
+// hide tools options onload
+$('[data-toolsmenu]').hide();
+$('[data-toolsmenu] [data-toolsoption]').hide();
 
-  $(this).nextAll('[data-val]').text(this.value);
-});
-$('[data-animate=strokeWidth], [data-animate=borderRadius], [data-animate=duration], [data-animate=delay], [data-animate=amount], [data-animate=drawPath]').on('change', function() {
-  $val = this.value;
+// hide dialogs onload
+$('[data-dialogs] [data-dialog]').hide();
+$('[data-tools=zoom]').trigger('click');
 
-  if (this.value === this.max) {
-    this.max = parseFloat(parseFloat(100) + parseFloat($val));
-  }
-
-  $(this).nextAll('[data-val]').text(this.value);
-});
-$('[data-animate=scalex], [data-animate=scaley], [data-animate=scale], [data-animate=opacity]').change(function() {
-  $(this).nextAll('[data-val]').text(this.value);
-});
-$('[data-x], [data-y], [data-scalex], [data-scaley], [data-scale], [data-rotation], [data-transformOrigin], [data-opacity], [data-fill], [data-stroke], [data-strokeWidth], [data-borderRadius], [data-ease], [data-duration], [data-delay], [data-repeat], [data-yoyo], [data-amount], [data-drawPath]').click(function() {
-  if ($(this).attr('data-drawpath')) {
-    // selector(s) name for code
-    if ($('li[data-selectorlist].selector').length === 1) {
-      $sel = $('li[data-selectorlist].selector span').text();
-      $sel = '.canvas > svg > ' + $sel;
+function initDemo() {
+  // set the canvas size
+  $('[data-project=width]').val(1280);
+  $('[data-project=height]').val(800);
+  $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
+  $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
+  
+  // clear and reset the canvas
+  $('[data-canvas]').empty().html(origSVG);
+  
+  // reset setting inputs
+  $('[data-projectname]').val('Character Walking').trigger('change');
+  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween-based animations.');
+  
+  // init filters
+  blurfilter.value = 0;
+  huefilter.value = -6;
+  brightnessfilter.value = 0.76;
+  contrastfilter.value = 1.8;
+  saturatefilter.value = 1;
+  grayscalefilter.value = 0;
+  sepiafilter.value = 30;
+  invertfilter.value = 0;
+  applyFilters();
+  
+  $('[data-call=layers]').trigger('click');
+  $('[data-selectorlist] span').filter(function() {
+    if (this.textContent === 'g > g:nth-child(4)') {
+      $(this).trigger('click');
     } else {
       return false;
     }
-  }
+  });
+  // frame by frame animation string adds " > g"
+  $('[data-close=layers]').trigger('click');
   
-  $(this).parent().find('[data-animate]').trigger('change');
-});
-
-// initate animation type animations
-var anim = gsap.timeline({repeat:-1});
-anim.to("[data-animationtype=stagger] g", {
-  duration: 1,
-  scale: 0.1,
-  transformOrigin: "50% 50%",
-  ease: "none",
-  stagger: {
-    amount: 1.5
-  }
-}, 0);
-anim.to("[data-animationtype=stagger] g", {
-  duration: 1,
-  scale: 1,
-  stagger: {
-    amount: 1.5
-  }
-}, 2.5);
-anim.to("[data-animationtype=to] g", {
-  duration: 1,
-  scale: 0.1,
-  transformOrigin: "50% 50%",
-  ease: "none"
-}, 0);
-anim.to("[data-animationtype=to] g", {
-  duration: 1,
-  scale: 1,
-  transformOrigin: "50% 50%",
-  ease: "none"
-}, 2);
-anim.restart();
-anim.pause();
-
-// alert user for coming soon
-$('[data-comingsoon]').click(function() {
-  alertify.log('coming soon...');
-  return false;
-});
+  // lower font-size
+  $('[data-fontsize]').val(12).trigger('change');
+}
 
 // bot
-function initDemo() {
-  $('[data-project=name]').val('svgMotion Demo').trigger('change');
-//  $('[data-project=size]').val('480x300').trigger('change');
-  $('[data-project=size]').val('960x600').trigger('change');
-  $('[data-open=library]').trigger('click');
-  $('[data-selectorlist] span').filter(function() {
-    if (this.textContent === 'g > g:nth-child(4) > g') {
-      $(this).parent().trigger('click');
-    } else {
-      return false;
-    }
-  });
-  $('[data-open=animationtype]').trigger('click');
-  $('[data-key=add]').trigger('click');
-  $('[data-show=rotation]').trigger('click');
-  $('[data-rotation=false]').trigger('click');
-  $('[data-animate=rotation]').val('-5').trigger('change');
-  $('[data-show=rotation]').trigger('click');
-
-  $('[data-show=transformOrigin]').trigger('click');
-  $('[data-transformOrigin=false]').trigger('click');
-  $('[data-animate=transformOrigin]').val('top center').trigger('change');
-  $('[data-show=transformOrigin]').trigger('click');
-
-  $('[data-show=duration]').trigger('click');
-  $('[data-duration=false]').trigger('click');
-  $('[data-animate=duration]').val('0').trigger('change');
-  $('[data-show=duration]').trigger('click');
-
-  $('[data-key=add]').trigger('click');
-  $('[data-show=rotation]').trigger('click');
-  $('[data-rotation=false]').trigger('click');
-  $('[data-animate=rotation]').val('5').trigger('change');
-  $('[data-show=rotation]').trigger('click');
-
-  $('[data-show=transformOrigin]').trigger('click');
-  $('[data-transformOrigin=false]').trigger('click');
-  $('[data-animate=transformOrigin]').val('top center').trigger('change');
-  $('[data-show=transformOrigin]').trigger('click');
-
-  $('[data-show=ease]').trigger('click');
-  $('[data-ease=false]').trigger('click');
-  $('[data-animate=ease]').val('none').trigger('change');
-  $('[data-animate=easetype]').val('').trigger('change');
-  $('[data-show=ease]').trigger('click');
-
-  $('[data-show=duration]').trigger('click');
-  $('[data-duration=false]').trigger('click');
-  $('[data-animate=duration]').val('0.9').trigger('change');
-  $('[data-show=duration]').trigger('click');
-  
-  $('.defaultcur').text('1.0');
-//  $('[data-keys]').css('margin-left', '-119px');
-  updateKeyPosition(1.0);
-  $('[data-key=add]').trigger('click');
-  $('[data-show=rotation]').trigger('click');
-  $('[data-rotation=false]').trigger('click');
-  $('[data-animate=rotation]').val('-5').trigger('change');
-  $('[data-show=rotation]').trigger('click');
-
-  $('[data-show=transformOrigin]').trigger('click');
-  $('[data-transformOrigin=false]').trigger('click');
-  $('[data-animate=transformOrigin]').val('top center').trigger('change');
-  $('[data-show=transformOrigin]').trigger('click');
-
-  $('[data-show=ease]').trigger('click');
-  $('[data-ease=false]').trigger('click');
-  $('[data-animate=ease]').val('none').trigger('change');
-  $('[data-animate=easetype]').val('').trigger('change');
-  $('[data-show=ease]').trigger('click');
-
-  $('[data-show=duration]').trigger('click');
-  $('[data-duration=false]').trigger('click');
-  $('[data-animate=duration]').val('0.9').trigger('change');
-  $('[data-show=duration]').trigger('click');
-
-  $('[data-backto=library]').trigger('click');
-  $('[data-select=none').trigger('click');
-  $('[data-selectorlist] span').filter(function() {
-    if (this.textContent === 'g > g:nth-child(2) > path:nth-child(1)') {
-      $(this).trigger('click');
-    } else {
-      return false;
-    }
-  });
-  $('[data-open=animationtype]').trigger('click');
-
-  $('[data-play=firstframe]').trigger('click');
-  $('[data-key=add]').trigger('click');
-  $('[data-show=x]').trigger('click');
-  $('[data-x=false]').trigger('click');
-  $('[data-animate=x]').attr('min', '-800').val('-415').trigger('change');
-  $('[data-show=x]').trigger('click');
-
-  $('[data-show=ease]').trigger('click');
-  $('[data-ease=false]').trigger('click');
-  $('[data-animate=ease]').val('none').trigger('change');
-  $('[data-animate=easetype]').val('').trigger('change');
-  $('[data-show=ease]').trigger('click');
-
-  $('[data-show=duration]').trigger('click');
-  $('[data-duration=false]').trigger('click');
-  $('[data-animate=duration]').val('1.9').trigger('change');
-  $('[data-show=duration]').trigger('click');
-
-  $('[data-backto=library]').trigger('click');
-  $('[data-select=none').trigger('click');
-  $('[data-selectorlist] span').filter(function() {
-    if (this.textContent === 'g > g:nth-child(2) > path:nth-child(2)') {
-      $(this).parent().trigger('click');
-    } else {
-      return false;
-    }
-  });
-  $('[data-open=animationtype]').trigger('click');
-
-  $('[data-key=add]').trigger('click');
-  $('[data-show=x]').trigger('click');
-  $('[data-x=false]').trigger('click');
-  $('[data-animate=x]').attr('min', '-1600').val('-894').trigger('change');
-  $('[data-show=x]').trigger('click');
-
-  $('[data-show=ease]').trigger('click');
-  $('[data-ease=false]').trigger('click');
-  $('[data-animate=ease]').val('none').trigger('change');
-  $('[data-animate=easetype]').val('').trigger('change');
-  $('[data-show=ease]').trigger('click');
-
-  $('[data-show=duration]').trigger('click');
-  $('[data-duration=false]').trigger('click');
-  $('[data-animate=duration]').val('1.9').trigger('change');
-  $('[data-show=duration]').trigger('click');
-//  $('[data-close=keys]').trigger('click');
-}
-function editPathDemo() {
-  $('[data-project=name]').val('svgMotion Demo').trigger('change');
-  $('[data-project=size]').val('960x600').trigger('change');
-  $('[data-open=library]').trigger('click');
-  $('[data-selectorlist] span').filter(function() {
-    if (this.textContent === 'g > g:nth-child(4) > g > path') {
-      $(this).trigger('click');
-    } else {
-      return false;
-    }
-  });
-  $('[data-open=animationtype]').trigger('click');
-  $('[data-play=nextframe]').trigger('click');
-  $('[data-key=add]').trigger('click');
-  $('[data-open=editpath]').trigger('click');
-}
 initDemo();
-//editPathDemo();
+$('[data-call=keys]').trigger('click');
+

@@ -1,5 +1,5 @@
 /*
-  Version: 0.401
+  Version: 1.000-dev
   svgMotion, copyright (c) by Michael Schwartz
   Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
   
