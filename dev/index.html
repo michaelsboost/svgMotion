@@ -626,10 +626,10 @@
           </div>
           <div class="selectors" data-keyscode>
             <div data-keyselector="misc" data-animtype="tween" data-keyname="misc">
-              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()"></textarea>
             </div>
             <div data-keyselector="g > g:nth-child(3)" data-animtype="framebyframe" data-keyname="character">
-              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
+              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // character walking
 let groups1 = gsap.utils.toArray(".svgmotion g > g:nth-child(3) > g");
 let wrap1 = gsap.utils.wrap(0, groups1.length - 1);
@@ -650,7 +650,7 @@ mainTL.to({}, {
 }, 0.0)</textarea>
             </div>
             <div data-keyselector="g > g:nth-child(1) > g:nth-child(1)" data-animtype="tween" data-keyname="sidewalk">
-              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
+              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // sidewalk
 mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
   x: 0,
@@ -659,7 +659,7 @@ mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
 }, 0.0)</textarea>
             </div>
             <div data-keyselector="g > g:nth-child(1) > g:nth-child(2)" data-animtype="tween" data-keyname="bricks">
-              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
+              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // bricks
 mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
   x: 0,
@@ -668,7 +668,7 @@ mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
 }, 0.0)</textarea>
             </div>
             <div data-keyselector="g > g:nth-child(2) > ellipse" data-animtype="tween" data-keyname="shadow">
-              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off">
+              <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // shadow
 mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
   scaleX: 0.9,
@@ -825,6 +825,7 @@ mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
     <script src="libraries/gsap/minified/Draggable.min.js"></script>
     
     <link rel="stylesheet" href="libraries/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="libraries/codemirror/addon/fold/foldgutter.css">
     <link rel="stylesheet" href="libraries/codemirror/jqueryminicolors.css">
     <link rel="stylesheet" href="libraries/codemirror/inlet.css">
     <link rel="stylesheet" href="libraries/codemirror/theme.css">
@@ -837,6 +838,7 @@ mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
     <script src="libraries/codemirror/addon/fold/foldcode.js"></script>
     <script src="libraries/codemirror/addon/fold/foldgutter.js"></script>
     <script src="libraries/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="libraries/codemirror/addon/fold/indent-fold.js"></script>
     <script src="libraries/codemirror/addon/fold/comment-fold.js"></script>
 <!--
     <script src="libraries/codemirror/addon/search/search.js"></script>

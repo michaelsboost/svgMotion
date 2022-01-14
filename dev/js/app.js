@@ -999,20 +999,18 @@ function updateCode() {
   // run the code
   $('[data-canvas]').empty().html(origSVG);
   applyFilters();
-  $('[data-canvas]').append('<script>'+ $code +'\n\n  updatePlayer();</script>');
+  $('[data-canvas]').append('<script>'+ $code +'</script>');
+  updatePlayer();
   return false;
 }
-$('textarea.js').on('keyup change', function() {
-  updateCode();
-});
-$('#timescale').on('keyup change', function() {
+$('#timescale').on('change', function() {
   if ($('[data-play]').attr('data-play') === 'true') {
-      // is paused
-      $('textarea.js').trigger('change');
+    // is paused
+    updateCode();
   } else {
     // is playing
     $('[data-play]').trigger('click');
-    $('textarea.js').trigger('change');
+    updateCode();
     $('[data-play]').trigger('click');
   }
 });
@@ -1080,8 +1078,8 @@ $('[data-play]').on('click', function() {
   }
 });
 $('[data-playit=firstframe]').click(function() {
-  time.textContent = parseFloat(0).toFixed(2);
-  mainTL.progress(0);
+  time.textContent = '0.00';
+  mainTL.progress(0.00);
 });
 $('[data-playit=nextframe]').click(function() {
   if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
