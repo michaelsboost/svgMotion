@@ -506,6 +506,10 @@ $('[data-init=draw]').on('click', function() {
       }
 
       alertify.success('Successfully added the "'+ result.value +'" drawPath animation.');
+      
+      // close layers and open the newly added keyframe
+      $('[data-close=layers]').trigger('click');
+      $('[data-open=keys]').trigger('click');
     } else {
       swal(
         'Oops!',
@@ -549,6 +553,10 @@ $('[data-init=tween]').on('click', function() {
         }
         
         alertify.success('Successfully added the "'+ result.value +'" tween.');
+      
+        // close layers and open the newly added keyframe
+        $('[data-close=layers]').trigger('click');
+        $('[data-open=keys]').trigger('click');
       } else {
         swal(
           'Oops!',
@@ -588,6 +596,10 @@ $('[data-init=tween]').on('click', function() {
         }
         
         alertify.success('Successfully added the "'+ result.value +'" tween.');
+      
+        // close layers and open the newly added keyframe
+        $('[data-close=layers]').trigger('click');
+        $('[data-open=keys]').trigger('click');
       } else {
         swal(
           'Oops!',
@@ -624,6 +636,10 @@ $('[data-init=framebyframe]').on('click', function() {
       }
 
       alertify.success('Successfully added the "'+ result.value +'" frame by frame animation.');
+      
+      // close layers and open the newly added keyframe
+      $('[data-close=layers]').trigger('click');
+      $('[data-open=keys]').trigger('click');
     } else {
       swal(
         'Oops!',
