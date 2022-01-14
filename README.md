@@ -35,6 +35,7 @@ svgMotion uses a number of open source projects to work properly:
 * [JSZip](https://stuk.github.io/jszip/) - package zip files in javascript
 * [Normalize](https://github.com/necolas/normalize.css) - CSS reset library
 * [FileSaver.js](https://github.com/eligrey/FileSaver.js/) - Client-side solution for saving files
+* [Codemirror](https://github.com/codemirror/codemirror) - JavaScript component that provides a code editor in the browser
 
 Development
 -------------
