@@ -160,6 +160,12 @@ function loadfile(input) {
       origSVG = $('.canvas').html();
       svgLoaded();
     } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
+      // is animation playing? If so stop
+      if ($('[data-play]').attr('data-play') === 'stop') {
+        // trigger stop
+        $('[data-play=stop]').trigger('click');
+      }
+      
       if ($('[data-keys]').html()) {
         swal({
           title: 'Keys Detected!',
@@ -245,6 +251,125 @@ function loadJSON() {
   $('[data-fontsize]').val(loadedJSON.settings[0].fontsize);
   $('[data-notepad]').val(loadedJSON.settings[0].notepad);
 }
+function dropfile(file) {
+  var reader = new FileReader();  
+  reader.onload = function(e) {
+    if (file.type === "image/svg+xml") {
+      // is animation playing? If so stop
+      if ($('[data-play]').attr('data-play') === 'stop') {
+        // trigger stop
+        $('[data-play=stop]').trigger('click');
+      }
+      
+      var keys = $("[data-keyscode]");
+      if (keys.find('[data-keyselector]').length > 1) {
+        swal({
+          title: 'Keyframes Detected!',
+          text: "Would you like to clear these?",
+          type: 'question',
+          showCancelButton: true
+        }).then((result) => {
+          if (result.value) {
+            keys.find('[data-keyselector]').not('[data-keyselector=misc]').remove();
+            // now update select element (#elms) to reflect cleared keys
+            $("select#elms option").not('select#elms option[value=misc]').remove();
+            keys.find('[data-keyselector=misc]').val('').trigger('change');
+            editor.setValue('');
+            $('[data-clear=filters]').trigger('click');
+          }
+        })
+      } else {
+        // no keyframes detected
+        $("select#elms option").not('select#elms option[value=misc]').remove();
+        keys.find('[data-keyselector=misc]').val('').trigger('change');
+        editor.setValue('');
+        $('[data-clear=filters]').trigger('click');
+      }
+
+      document.querySelector(".canvas").innerHTML = e.target.result;
+      origSVG = $('.canvas').html();
+      svgLoaded();
+    } else 
+      if (file.type === "application/json") {
+        // is animation playing? If so stop
+        if ($('[data-play]').attr('data-play') === 'stop') {
+          // trigger stop
+          $('[data-play=stop]').trigger('click');
+        }
+        
+        if ($('[data-keys]').html()) {
+          swal({
+            title: 'Keys Detected!',
+            text: "Would you like to clear these?",
+            type: 'question',
+            showCancelButton: true
+          }).then((result) => {
+            if (result.value) {
+              $("[data-keyscode]").empty();
+              loadedJSON = JSON.parse(e.target.result);
+              loadJSON();
+              origSVG = $('.canvas').html();
+              svgLoaded();
+              $('#elms option:last').prop('selected', true).trigger('change');
+              $('[data-open=keys]').trigger('click');
+              setTimeout(function() {
+                $('[data-playit=firstframe]').trigger('click');
+              }, 100)
+
+              $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+              $("[data-action=fadeOut]").fadeOut(400, function() {
+                $("[data-action=fadeOut]").remove();
+              });
+            }
+          })
+        } else {
+          $("[data-keyscode]").empty();
+          loadedJSON = JSON.parse(e.target.result);
+          loadJSON();
+          origSVG = $('.canvas').html();
+          svgLoaded();
+          $('#elms option:last').prop('selected', true).trigger('change');
+          $('[data-open=keys]').trigger('click');
+          setTimeout(function() {
+            $('[data-playit=firstframe]').trigger('click');
+          }, 100)
+
+          $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
+          $("[data-action=fadeOut]").fadeOut(400, function() {
+            $("[data-action=fadeOut]").remove();
+          });
+        }
+    } else {
+      alertify.error('Error: File type not supported');
+    }
+  };
+  reader.readAsText(file,"UTF-8"); 
+}
+
+// load svg file on drop
+document.addEventListener("dragover", function(e) {
+  e.preventDefault();
+});
+document.addEventListener("drop", function(e) {
+  // close dialog
+  if ($('[data-close=layers].active').is(':visible')) {
+    $('[data-close=layers].active').trigger('click');
+  }
+  if ($('[data-close=keys].active').is(':visible')) {
+    $('[data-close=keys].active').trigger('click');
+  }
+  if ($('[data-filtericons]').is(':visible')) {
+    $('[data-filtericons]').trigger('click');
+  }
+  if ($('[data-filters]').is(':visible')) {
+    $('[data-close=filter]').trigger('click');
+    $('[data-filtericons]').trigger('click');
+  }
+  
+  e.preventDefault();
+  var file = e.dataTransfer.files[0];
+  dropfile(file);
+});
 
 // update document title when project name changes
 $('[data-projectname]').on('keyup change', function() {
@@ -264,6 +389,7 @@ function detectForFrameByFrame() {
   // detect that this is the only selector
   if ($('[data-selected]').length === 1) {
     $('.librarylinks [data-init=framebyframe]').show();
+    $('.librarylinks [data-init=rig]').show();
     
     // draw is available for these elements
     if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['text', 'ellipse', 'circle', 'rect', 'line', 'path', 'textPath', 'polygon', 'polyline']) !== -1) {
@@ -277,20 +403,24 @@ function detectForFrameByFrame() {
     $('[data-selected]').find('> *').each(function(index) {
       if ($(this).prop('tagName').toLowerCase() != 'g') {
         $('.librarylinks [data-init=framebyframe]').hide();
+        $('.librarylinks [data-init=rig]').hide();
         return false;
       } else {
         $('.librarylinks [data-init=framebyframe]').show();
+        $('.librarylinks [data-init=rig]').show();
       }
     });
   
     // only show frame by frame if there's an array of only group children
     if ($('[data-selected]').children().length === 0) {
       $('.librarylinks [data-init=framebyframe]').hide();
+      $('.librarylinks [data-init=rig]').hide();
       return false;
     }
   } else {
     // hide because this is not the only selector
     $('.librarylinks [data-init=framebyframe]').hide();
+    $('.librarylinks [data-init=rig]').hide();
     $('.librarylinks [data-init=draw]').hide();
   }
 }
@@ -508,6 +638,19 @@ $('[data-call]').on('click', function(val) {
 
 // tools
 // layers
+function rig(selector, val) {
+  val = parseInt(val).toFixed(0);
+  
+  document.querySelectorAll(selector).forEach(function(elm, i) {
+    elm.style.display = 'none';
+    elm.style.opacity = '100%';
+    
+    if (i.toString() === val) {
+      elm.style.display = 'block';
+      elm.style.opacity = '100%';
+    }
+  });
+}
 $('[data-open=layers]').on('click', function() {
   $('[data-topmenu] .mainmenu').hide();
   $('[data-library]').show();
@@ -672,6 +815,45 @@ $('[data-init=tween]').on('click', function() {
       }
     });
   }
+});
+$('[data-init=rig]').on('click', function() {
+  swal({
+    title: 'Give your animation a name!',
+    input: 'text',
+    inputPlaceholder: "something",
+    showCancelButton: true,
+    confirmButtonText: 'Save',
+    showLoaderOnConfirm: true
+  }).then((result) => {
+    if (result.value) {
+      $this = $('#elms option:selected').text();
+      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
+        alertify.error('Error: That name already exists!');
+        $('#elms option:selected').text($this);
+      } else {
+        $selector = '.svgmotion > svg > ' + $('[data-selectorlist].selector').text();
+        
+        // append the option
+        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
+
+        // now append the code
+        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="rig" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to({}, {\n  duration: 1,\n  onStart() {\n    rig("'+ $selector +' > g", 0);\n  },\n  onUpdate() {\n    rig("'+ $selector +' > g", 0);\n  }\n}, '+ time.textContent +');</textarea></div>');
+        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
+      }
+
+      alertify.success('Successfully added the "'+ result.value +'" rig.');
+      
+      // close layers and open the newly added keyframe
+      $('[data-close=layers]').trigger('click');
+      $('[data-open=keys]').trigger('click');
+    } else {
+      swal(
+        'Oops!',
+        console.error().toString(),
+        'error'
+      );
+    }
+  });
 });
 $('[data-init=framebyframe]').on('click', function() {
   swal({
@@ -1654,9 +1836,9 @@ function saveCode(filename) {
     });
   
     if ($('[data-repeat]').attr('data-repeat') === 'true') {
-      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n})\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
+      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nfunction rig(selector, val) {\n  val = parseInt(val).toFixed(0);\n\n    document.querySelectorAll(selector).forEach(function(elm, i) {\n    elm.style.display = 'none';\n    elm.style.opacity = '100%';\n    \n    if (i.toString() === val) {\n      elm.style.display = 'block';\n      elm.style.opacity = '100%';\n    }\n  });\n}\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n});\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
     } else {
-      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nvar mainTL = new TimelineMax()\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
+      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'\n  Create yours today at https://michaelsboost.com/svgMotion\n*/function rig(selector, val) {\n  val = parseInt(val).toFixed(0);\n\n    document.querySelectorAll(selector).forEach(function(elm, i) {\n    elm.style.display = 'none';\n    elm.style.opacity = '100%';\n    \n    if (i.toString() === val) {\n      elm.style.display = 'block';\n      elm.style.opacity = '100%';\n    }\n  });\n}\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n});\n\nvar mainTL = new TimelineMax()\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
     }
 
     zip.file("js/animation.js", $code);
@@ -1736,6 +1918,7 @@ function initDemo() {
   // reset setting inputs
   $('[data-projectname]').val('Character Walking').trigger('change');
   $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween-based animations.');
+//  $('[data-keyselector=misc]').val("function rig(selector, val) {\n  $(selector).hide();\n  $(selector + ':nth-child('+ val +')').css({\n    display: 'block',\n    opacity: '100%'\n  });\n}");
   
   // init filters
   blurfilter.value = 0;
