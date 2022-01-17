@@ -13,7 +13,6 @@ Version
 To Do:
 -------------
  * Tool to Edit Paths (Bezier Curves), Polygons, Lines and Polylines  
- * Integrate filters for user to animate (blur, hue, brightness, contrast, saturate, grayscale, sepia, invert) (adds to element via css: `filter: hue-rotate(119deg) grayscale(30%);`)  
 
 License
 -------------
