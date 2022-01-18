@@ -639,7 +639,7 @@
             <div data-keyselector="g > g:nth-child(3)" data-animtype="framebyframe" data-keyname="character">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // character walking
-let groups1 = gsap.utils.toArray(".svgmotion g > g:nth-child(3) > g");
+let groups1 = gsap.utils.toArray(".svgmotion > svg > g > g:nth-child(3) > g");
 let wrap1 = gsap.utils.wrap(0, groups1.length - 1);
 let frame1 = 0;
 
@@ -660,7 +660,7 @@ mainTL.to({}, {
             <div data-keyselector="g > g:nth-child(1) > g:nth-child(1)" data-animtype="tween" data-keyname="sidewalk">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // sidewalk
-mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
+mainTL.to('.svgmotion > svg > g > g:nth-child(1) > g:nth-child(1)', {
   x: 0,
   ease: 'none',
   duration: 1
@@ -669,7 +669,7 @@ mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(1)', {
             <div data-keyselector="g > g:nth-child(1) > g:nth-child(2)" data-animtype="tween" data-keyname="bricks">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // bricks
-mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
+mainTL.to('.svgmotion > svg > g > g:nth-child(1) > g:nth-child(2)', {
   x: 0,
   ease: 'none',
   duration: 1
@@ -678,7 +678,7 @@ mainTL.to('.svgmotion g > g:nth-child(1) > g:nth-child(2)', {
             <div data-keyselector="g > g:nth-child(2) > ellipse" data-animtype="tween" data-keyname="shadow">
               <textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onchange="updateCode()" onkeyup="updateCode()">
 // shadow
-mainTL.to('.svgmotion g > g:nth-child(2) > ellipse', {
+mainTL.to('.svgmotion > svg > g > g:nth-child(2) > ellipse', {
   scaleX: 0.9,
   scaleY: 0.9,
   transformOrigin: 'center center',
