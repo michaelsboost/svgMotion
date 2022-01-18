@@ -729,7 +729,7 @@ $('[data-init=tween]').on('click', function() {
       $attr = '';
     }
 
-    $selector = '.svgmotion ' + $('[data-selectorlist].selector').text();
+    $selector = '.svgmotion > svg > ' + $('[data-selectorlist].selector').text();
     
     swal({
       title: 'Give your tween a name!',
@@ -770,7 +770,7 @@ $('[data-init=tween]').on('click', function() {
   } else {
     arr = [];
     $('[data-selectorlist].selector').each(function() {
-      arr.push('.svgmotion ' + this.textContent);
+      arr.push('.svgmotion > svg > ' + this.textContent);
     });
     $selector = arr.join(', ');
     
