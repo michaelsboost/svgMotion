@@ -10,10 +10,6 @@ Version
 
 1.000-release
 
-To Do:
--------------
- * Tool to Edit Paths (Bezier Curves), Polygons, Lines and Polylines  
-
 License
 -------------
 
