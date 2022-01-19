@@ -1395,7 +1395,6 @@ $('#timescale').on('change', function() {
     $('[data-play]').trigger('click');
   }
 });
-
 function updatePlayer() {
   $(".playhead").removeAttr('style');
   
@@ -1900,6 +1899,35 @@ $('[data-exportzip]').on('click', function() {
   }
   saveCode(projectname);
 });
+editOnCodepen.onclick = function() {
+  var data = {
+    title       : 'Edit SVG Path\'s Data with the GSAP MotionPathHelper Plugin',
+    html        : '<input type="text" id="pathVal">\n\n<div class="svgmotion">'+ $('[data-canvas] svg')[0].outerHTML +'</div>',
+    css         : 'html, body {\n  height: 100%;\n}\nbody {\n  margin: 0;\n}\n\n.svgmotion, svg {\n  width: 100%;\n  height: 100%;\n}',
+    js          : '// register the plugin (just once)\ngsap.registerPlugin(MotionPathPlugin);\n\n// now edit the path\nMotionPathHelper.editPath("'+ elms.value +'", {\n  selected: true,\n  draggable: true,\n  handleSize: 7,\n  onRelease: () => {\n    // get the new path data\n    pathVal.value = document.querySelector("'+ elms.value +'").getAttribute("d");\n    // copy the path data to the clipboard\n    navigator.clipboard.writeText(pathVal.value);\n  }\n});',
+    js_external : 'https://unpkg.co/gsap@3/dist/gsap.min.js;https://unpkg.com/gsap@3/dist/MotionPathPlugin.min.js;https://assets.codepen.io/16327/MotionPathHelper.min.js',
+    layout: 'left',
+    editors: '1111'
+  };
+  var JSONstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  
+  var form = 
+  '<form id="tempElm" action="https://codepen.io/pen/define" method="POST" target="_blank" style="display: none;">' + 
+    '<input type="hidden" name="data" value=\'' + 
+      JSONstring + 
+      '\'>' + 
+    '<button>Create New Pen with Prefilled Data</button>' +
+  '</form>';
+  
+  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
+    $('body').append(form);
+    $('#tempElm button').trigger('click');
+    $('#tempElm').remove();
+  } else {
+    alertify.error('Error: Only path elements can be manipulated!');
+    return false;
+  }
+};
 
 // hide tools options onload
 $('[data-toolsmenu]').hide();
