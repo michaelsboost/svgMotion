@@ -930,6 +930,13 @@ $('#elms').on('keyup change', function() {
   $('[data-keyselector]').hide();
   $('[data-keyselector="'+ this.value +'"]').show();
   
+  // hide edit path button if a path is not selected
+  if (($(this.value).prop('tagName').toLowerCase() === 'path')) {
+    editOnCodepen.style.display = 'inline-block';
+  } else {
+    editOnCodepen.style.display = 'none';
+  }
+  
   // hide sample snippet button if frame by frame is visible
   if ($('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe' || $('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'drawpath') {
     $('[data-add=snippet]').hide();
