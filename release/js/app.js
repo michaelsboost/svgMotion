@@ -1914,7 +1914,7 @@ editOnCodepen.onclick = function() {
     js          : '// init zooming and panning\nvar drawArea = document.querySelector(".svgmotion");\nvar instance = panzoom(drawArea, {\n  bounds: true,\n  boundsPadding: 0.1\n});\ninitZoom.onchange = function() {\n  if (this.checked) {\n    instance.resume();\n  } else {\n    instance.pause();\n  }\n};\n\n// your path object\nvar selector = "'+ elms.value +'";\n\n// register the plugin (just once)\ngsap.registerPlugin(MotionPathPlugin);\n\n// get the current path data\npathVal.value = document.querySelector(selector).getAttribute("d");\n\n// now edit the path\nMotionPathHelper.editPath(selector, {\n  selected: true,\n  draggable: true,\n  handleSize: 7,\n  onRelease: () => {\n    // get the new path data\n    pathVal.value = document.querySelector(selector).getAttribute("d");\n\n    // copy the path data to the clipboard\n    navigator.clipboard.writeText(pathVal.value);\n  }\n});',
     js_external : 'https://unpkg.co/gsap@3/dist/gsap.min.js;https://unpkg.com/gsap@3/dist/MotionPathPlugin.min.js;https://assets.codepen.io/16327/MotionPathHelper.min.js;https://unpkg.com/panzoom@8.7.3/dist/panzoom.min.js',
     layout: 'left',
-    editors: '1111'
+    editors: '000'
   };
   var JSONstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
   
