@@ -1873,7 +1873,6 @@ editOnCodepen.onclick = function() {
     css         : 'html, body {\n  height: 100%;\n}\nbody {\n  margin: 0;\n  background-color: #131722;\n  background-image: linear-gradient(45deg, #1a1f2c 25%, transparent 25%), linear-gradient(-45deg, #1a1f2c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1f2c 75%), linear-gradient(-45deg, transparent 75%, #1a1f2c 75%);\n  background-size: 20px 20px;\n  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;\n}\n\n.menu {\n  position: absolute;\n  color: #fff;\n  z-index: 1;\n}\n\n.svgmotion, svg {\n  width: 100%;\n  height: 100%;\n}',
     js          : '// init zooming and panning\nvar drawArea = document.querySelector(".svgmotion");\nvar instance = panzoom(drawArea, {\n  bounds: true,\n  boundsPadding: 0.1\n});\ninitZoom.onchange = function() {\n  if (this.checked) {\n    instance.resume();\n  } else {\n    instance.pause();\n  }\n};\n\n// your path object\nvar selector = "'+ elms.value +'";\n\n// register the plugin (just once)\ngsap.registerPlugin(MotionPathPlugin);\n\n// get the current path data\npathVal.value = document.querySelector(selector).getAttribute("d");\n\n// now edit the path\nMotionPathHelper.editPath(selector, {\n  selected: true,\n  draggable: true,\n  handleSize: 7,\n  onRelease: () => {\n    // get the new path data\n    pathVal.value = document.querySelector(selector).getAttribute("d");\n\n    // copy the path data to the clipboard\n    navigator.clipboard.writeText(pathVal.value);\n  }\n});',
     js_external : 'https://unpkg.co/gsap@3/dist/gsap.min.js;https://unpkg.com/gsap@3/dist/MotionPathPlugin.min.js;https://assets.codepen.io/16327/MotionPathHelper.min.js;https://unpkg.com/panzoom@8.7.3/dist/panzoom.min.js',
-    layout: 'left',
     editors: '000'
   };
   var JSONstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -1886,14 +1885,14 @@ editOnCodepen.onclick = function() {
     '<button>Create New Pen with Prefilled Data</button>' +
   '</form>';
   
-  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
+//  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
     $('body').append(form);
     $('#tempElm button').trigger('click');
     $('#tempElm').remove();
-  } else {
-    alertify.error('Error: Only path elements can be manipulated!');
-    return false;
-  }
+//  } else {
+//    alertify.error('Error: Only path elements can be manipulated!');
+//    return false;
+//  }
 };
 
 // hide tools options onload
