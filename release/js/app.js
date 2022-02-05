@@ -166,6 +166,12 @@ function loadJSON() {
   $("[data-canvas]").html(loadedJSON.originalSVG.toString());
   $("#elms").html(loadedJSON.elmkeys);
   $("[data-keyscode]").html(loadedJSON.keys);
+  
+  if ($("textarea.js").length != 0) {
+    $("textarea.js").each(function(i) {
+      $("textarea.js").eq(i).val(loadedJSON.keysCode[i]);
+    });
+  }
     
   if (parseFloat(loadedJSON.version) <= 0.1) {
     swal({
@@ -626,9 +632,6 @@ $('[data-close=layers]').on('click', function() {
   $('[data-canvasbg]').css('right', '');
   $('[data-canvasbg]').css('border', '');
   $('[data-selected]').removeAttr("data-selected");
-  
-  // update JSON when the code changes
-  getProjectJSON();
 });
 $('[data-init=draw]').on('click', function() {
   swal({
@@ -879,9 +882,6 @@ $('[data-close=keys]').on('click', function() {
   $('[data-mainmenu]').show();
   $('[data-canvasbg]').css('bottom', '');
   $('[data-canvasbg]').css('border', '');
-  
-  // update JSON when the code changes
-  getProjectJSON();
 });
 function updateOptionCode() {
   $('[data-keyselector]').hide();
@@ -1755,6 +1755,15 @@ $('[data-render]').click(function() {
 
 // export files
 function getProjectJSON() {
+  if ($('[data-keyname]').length === 0) {
+    $("[data-keyscode]").html();
+  } else {
+    keyscode = [];
+    $('textarea.js').each(function() {
+      keyscode.push(this.value);
+    });
+  }
+  
   projectJSON = {
     "version": version,
     "settings": [{
@@ -1777,7 +1786,8 @@ function getProjectJSON() {
     }],
     "originalSVG": origSVG.toString(),
     "elmkeys": $("#elms").html(),
-    "keys"   : $("[data-keyscode]").html()
+    "keys"   : $("[data-keyscode]").html(),
+    "keysCode"   : keyscode
   };
 };
 function saveCode(filename) {
