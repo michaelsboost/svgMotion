@@ -1885,14 +1885,14 @@ editOnCodepen.onclick = function() {
     '<button>Create New Pen with Prefilled Data</button>' +
   '</form>';
   
-//  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
+  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
     $('body').append(form);
     $('#tempElm button').trigger('click');
     $('#tempElm').remove();
-//  } else {
-//    alertify.error('Error: Only path elements can be manipulated!');
-//    return false;
-//  }
+  } else {
+    alertify.error('Error: Only path elements can be manipulated!');
+    return false;
+  }
 };
 
 // hide tools options onload
