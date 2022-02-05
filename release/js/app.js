@@ -66,59 +66,6 @@ $('[data-info]').click(function() {
   });
 });
 
-// init new project
-function newProj() {
-  // first clear the canvas
-  $('[data-canvas]').empty();
-
-  // reset project name
-  $('[data-projectname]').text('My Project');
-
-  // reset fps
-  $('[data-fps]').val( $('[data-new=fps]').val() );
-
-  // clear audio
-  $('[data-audio]').val('');
-
-  // clear notepad
-  $('[data-notepad]').val('');
-
-  // clear keys
-  $('[data-dialog=keys]').empty();
-
-  // reset filters
-  $('[data-blurfilter]').val(0);
-  $('[data-huefilter]').val(0);
-  $('[data-brightnessfilter]').val(1);
-  $('[data-contrastfilter]').val(1);
-  $('[data-saturatefilter]').val(1);
-  $('[data-grayscalefilter]').val(0);
-  $('[data-sepiafilter]').val(0);
-  $('[data-invertfilter]').val(0).trigger('change');
-}
-$('[data-confirm="newproject"]').click(function() {
-  swal({
-    title: 'Proceed with new project?',
-    text: "Are you sure? All your data will be lost!",
-    type: 'question',
-    showCancelButton: true
-  }).then((result) => {
-    if (result.value) {
-      // initiate a new project
-      newProj();
-  
-      // close new icon
-      $('[data-call=new].active').removeClass('active');
-      $('[data-dialog=new]').hide();
-      
-      // init zoom tool by default
-      $('[data-tools=zoom]').trigger('click');
-    } else {
-      return false;
-    }
-  })
-});
-
 // load file function
 function loadfile(input) {
   var reader = new FileReader();
@@ -244,12 +191,16 @@ function loadJSON() {
   $('#sepiafilter').val(loadedJSON.filters[0].sepiafilter);
   $('#invertfilter').val(loadedJSON.filters[0].invertfilter).trigger('change');
 
-  $('[data-projectname]').text(loadedJSON.settings[0].name);
+  $('[data-projectname]').val(loadedJSON.settings[0].name);
   $('[data-project=width]').val(loadedJSON.settings[0].width);
   $('[data-project=height]').val(loadedJSON.settings[0].height).trigger('change');
   $('[data-fps], [data-new=fps]').val(loadedJSON.settings[0].framerate);
   $('[data-fontsize]').val(loadedJSON.settings[0].fontsize);
   $('[data-notepad]').val(loadedJSON.settings[0].notepad);
+  
+  $('#elms').on('keyup change', function() {
+    updateOptionCode();
+  });
 }
 function dropfile(file) {
   var reader = new FileReader();  
@@ -675,6 +626,9 @@ $('[data-close=layers]').on('click', function() {
   $('[data-canvasbg]').css('right', '');
   $('[data-canvasbg]').css('border', '');
   $('[data-selected]').removeAttr("data-selected");
+  
+  // update JSON when the code changes
+  getProjectJSON();
 });
 $('[data-init=draw]').on('click', function() {
   swal({
@@ -925,30 +879,36 @@ $('[data-close=keys]').on('click', function() {
   $('[data-mainmenu]').show();
   $('[data-canvasbg]').css('bottom', '');
   $('[data-canvasbg]').css('border', '');
+  
+  // update JSON when the code changes
+  getProjectJSON();
 });
-$('#elms').on('keyup change', function() {
+function updateOptionCode() {
   $('[data-keyselector]').hide();
-  $('[data-keyselector="'+ this.value +'"]').show();
-  
-  // hide edit path button if a path is not selected
-  if (($(this.value).prop('tagName').toLowerCase() === 'path')) {
-    editOnCodepen.style.display = 'inline-block';
-  } else {
-    editOnCodepen.style.display = 'none';
-  }
-  
-  // hide sample snippet button if frame by frame is visible
-  if ($('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe' || $('[data-keyselector="'+ this.value +'"]').attr('data-animtype').toLowerCase() === 'drawpath') {
-    $('[data-add=snippet]').hide();
-  } else {
-    $('[data-add=snippet]').show();
-  }
+  $('[data-keyselector="'+ elms.value +'"]').show();
   
   // set code editor value
   editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
 //  mainTL.progress(parseFloat(getDecimal).toFixed(2));
   $('[data-playit=nextframe]').trigger('click');
   $('[data-playit=prevframe]').trigger('click');
+  
+  // hide edit path button if a path is not selected
+  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
+    editOnCodepen.style.display = 'inline-block';
+  } else {
+    editOnCodepen.style.display = 'none';
+  }
+  
+  // hide sample snippet button if frame by frame is visible
+  if ($('[data-keyselector="'+ elms.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe' || $('[data-keyselector="'+ elms.value +'"]').attr('data-animtype').toLowerCase() === 'drawpath') {
+    $('[data-add=snippet]').hide();
+  } else {
+    $('[data-add=snippet]').show();
+  }
+}
+$('#elms').on('keyup change', function() {
+  updateOptionCode();
 });
 
 // selectors for layers
@@ -1798,7 +1758,7 @@ function getProjectJSON() {
   projectJSON = {
     "version": version,
     "settings": [{
-      "name"     : $('[data-projectname]')[0].textContent,
+      "name"     : $('[data-projectname]').val(),
       "width"    : $('[data-project=width]').val(),
       "height"   : $('[data-project=height]').val(),
       "framerate": $('[data-fps]').val(),
