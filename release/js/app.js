@@ -794,7 +794,7 @@ $('[data-init=rig]').on('click', function() {
         $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
 
         // now append the code
-        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="rig" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to({}, {\n  duration: 1,\n  immediateRender: true,\n  onStart() {\n    rig("'+ $selector +' > g", 0);\n  },\n  onUpdate() {\n    rig("'+ $selector +' > g", 0);\n  }\n}, '+ time.textContent +');</textarea></div>');
+        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="rig" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to({}, {\n  duration: 1,\n  immediateRender: true,\n  onUpdate() {\n    rig("'+ $selector +' > g", 0);\n  }\n}, '+ time.textContent +');</textarea></div>');
         $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
       }
 
