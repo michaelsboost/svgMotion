@@ -1427,6 +1427,7 @@ $('[data-play]').on('click', function() {
     getPerc    = (detectInt * 100) / totalInt;
     getPerc    = Math.round(getPerc);
     getDecimal = parseFloat(getPerc) / 100;
+    mainTL.progress(parseFloat(getDecimal).toFixed(2));
   }
 });
 $('[data-playit=firstframe]').click(function() {
@@ -1582,7 +1583,7 @@ function getCode() {
     $code = 'var mainTL = new TimelineMax()\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
   }
 }
-function render() {
+$('[data-render]').click(function() {
 //  alertify.log("coming soon...");
 //  return false;
   
@@ -1605,7 +1606,7 @@ function render() {
     $('[data-render]').hide();
     return false;
   }
-
+  
   if ($('[data-render]')[0].textContent.toLowerCase() === 'render') {
     // hide settings
     $('[data-call=settings] img').css({
@@ -1616,7 +1617,7 @@ function render() {
     
     $('[data-midbtns]').hide();
     $('[data-export]').show();
-    $('[data-render]').text('RENDERING ANIMATION').css('color', '#e71fd8');
+    $('[data-render]').show().text('RENDERING ANIMATION').css('color', '#e71fd8');
     
     // close keys
     $('[data-close=keys]').trigger('click');
@@ -1670,7 +1671,7 @@ function render() {
               progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
               completeCallback: function() { console.log('completed!!!'); },
               numWorkers: 2,
-              },function(obj) {
+            },function(obj) {
                 if(!obj.error) {
                   var a = document.createElement("a");
                   a.href = obj.image;
@@ -1728,11 +1729,16 @@ function render() {
           processImage();
         } else {
           mainTL.play(0).timeScale(1.0);
+          $('[data-render]').text('FINISHED');
         }
       }
       processImage();
     }, 2);
   } else {
+    delete window.duration;
+    delete window.frames;
+    delete window.current;
+
     // reset icons
     $('[data-export]').hide();
     $('[data-midbtns]').show();
@@ -1752,11 +1758,13 @@ function render() {
     // show settings
     $('[data-call=settings] img').removeAttr('style');
     
-    $('[data-render]').hide();
+    $('[data-render]').show();
+    
+    var highestTimeoutId = setTimeout(";");
+    for (var i = 0 ; i < highestTimeoutId ; i++) {
+      clearTimeout(i); 
+    }
   }
-}
-$('[data-render]').click(function() {
-  render();
 });
 
 // export files
