@@ -1421,6 +1421,12 @@ $('[data-play]').on('click', function() {
            .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
     $('[data-render]').hide();
     mainTL.pause();
+
+    detectInt  = parseFloat(time.textContent).toFixed(2);
+    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
+    getPerc    = (detectInt * 100) / totalInt;
+    getPerc    = Math.round(getPerc);
+    getDecimal = parseFloat(getPerc) / 100;
   }
 });
 $('[data-playit=firstframe]').click(function() {
