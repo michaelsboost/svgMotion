@@ -39,7 +39,9 @@ Want to contribute? Great!
 
 You can submit a pull request or simply share the project :)
 
-Of course svgMotion is free and open source, so you can always fork the project and have fun :)
+*As of March 11th, 2022 svgMotion is no longer an active project. All updates as of that date and on are solely contributor based implementations.*
+
+Of course, svgMotion is free and open source, so you can always fork the project and have fun :)
 
 [![ko-fi](https://az743702.vo.msecnd.net/cdn/kofi2.png?v=0)](https://ko-fi.com/michaelsboost)
 
