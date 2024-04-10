@@ -8,7 +8,7 @@ I love making vector animations but finding an app to make vector animations on 
 Version
 -------------
 
-1.000-release
+1.001-alpha
 
 License
 -------------
@@ -20,17 +20,13 @@ Tech
 
 svgMotion uses a number of open source projects to work properly:
 
-* [SweetAlert](https://sweetalert.js.org/guides/) - For the awesome and stylish alert dialogs
-* [AlertifyJS](http://alertifyjs.com/) - For the awesome and stylish notification dialogs
+* [Tailwind CSS](https://tailwindcss.com/) - A low-level CSS framework that's entirely utility-first and provides users with low-level CSS classes in PostCSS that can be used to define components and designs independently.
 * [Font Awesome](https://fontawesome.com/) - a font and icon toolkit
+* [JSZip](https://stuk.github.io/jszip/) - package zip files in javascript
+* [FileSaver.js](https://github.com/eligrey/FileSaver.js/) - Client-side solution for saving files
 * [GifShot](https://yahoo.github.io/gifshot/) - Library to create gif animations from an image sequence
 * [Greensock](https://greensock.com/) - Library responsible for the whole animation process
-* [jQuery](http://jquery.com/) - duh
-* [JQuery MiniColors](https://labs.abeautifulsite.net/jquery-minicolors/index.html) - For the color picker
-* [JSZip](https://stuk.github.io/jszip/) - package zip files in javascript
-* [Normalize](https://github.com/necolas/normalize.css) - CSS reset library
-* [FileSaver.js](https://github.com/eligrey/FileSaver.js/) - Client-side solution for saving files
-* [Codemirror](https://github.com/codemirror/codemirror) - JavaScript component that provides a code editor in the browser
+* [panzoom](https://github.com/anvaka/panzoom/) - Used to pan and zoom the canvas
 
 Development
 -------------
@@ -38,8 +34,6 @@ Development
 Want to contribute? Great!  
 
 You can submit a pull request or simply share the project :)
-
-*As of March 11th, 2022 svgMotion is no longer an active project. All updates as of that date and on are solely contributor based implementations.*
 
 Of course, svgMotion is free and open source, so you can always fork the project and have fun :)
 

@@ -1,0 +1,51 @@
+/* imports */
+@import url('libraries.css');
+
+.timeline {
+  position: relative;
+  height: 8px;
+  margin-left: 15px;
+  margin-right: 15px;
+  overflow: visible;
+}
+.progress-bar, .timeline-track {
+  height: 8px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.timeline-track {
+  background-color: #999;
+  opacity: .6;
+}
+.progress-bar {
+  background-color: #3d99ff;
+  height: 8px;
+  top: 0;
+  width: 0;
+  pointer-events: none;
+}
+.seek-bar {
+  width: 100%;
+  position: absolute;
+  height: 24px;
+  top: -12px;
+  left: 0;
+  background-color: transparent;
+}
+.playhead {
+  position: absolute;
+  top: -5px;
+  transform: translate(-50%,0);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #3d99ff;
+  background-color: #3d99ff;
+  
+  touch-action: manipulation;
+  cursor: ew-resize;
+  user-select: none;
+  left: 0%;
+}

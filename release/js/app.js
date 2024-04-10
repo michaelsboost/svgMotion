@@ -1,1974 +1,485 @@
-/*
-  Version: 1.000-release
-  svgMotion, copyright (c) by Michael Schwartz
-  Distributed under an MIT license: https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE
-  
-  This is svgMotion (https://michaelsboost.github.io/svgMotion/), A vector animation tool
-*/
+// Retrieve project JSON from localStorage or set default
+let project = {
+  version: "1.001-alpha",
+  keyframes: {},
+  svg: `<svg width="100%" height="100%" viewBox="0 0 1280 800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3;">
+  <defs>
+    <clipPath id="clipPath">
+      <rect width="1280" height="800"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clipPath)">
+    <rect x="0" y="0" width="1280" height="800" style="fill:rgb(135,27,208);"/>
+    <g>
+      <path d="M2065.83,900.635L1652.67,900.635L1239.5,900.635L826.333,900.635L413.167,900.635L0,900.635L0,666.466C87.657,666.466 105.578,726.281 206.583,726.281C307.588,726.281 325.51,666.466 413.167,666.466C500.824,666.466 518.745,726.281 619.75,726.281C720.755,726.281 738.676,666.466 826.333,666.466C913.99,666.466 931.912,726.281 1032.92,726.281C1133.92,726.281 1151.84,666.466 1239.5,666.466C1327.16,666.466 1345.08,726.281 1446.08,726.281C1547.09,726.281 1565.01,666.466 1652.67,666.466C1740.32,666.466 1758.25,726.281 1859.25,726.281C1960.26,726.281 1978.18,666.466 2065.83,666.466C2153.49,666.466 2171.41,726.281 2272.42,726.281C2373.42,726.281 2391.34,666.466 2479,666.466L2479,900.635L2065.83,900.635Z" style="fill:white;fill-opacity:0.58;fill-rule:nonzero;"/>
+      <path d="M2634.66,1133.21L1739.32,1133.21L843.986,1133.21L-51.352,1133.21L-946.691,1133.21L-1842.03,1133.21L-1842.03,625.762C-1652.08,625.762 -1613.24,755.382 -1394.36,755.382C-1175.48,755.382 -1136.64,625.762 -946.691,625.762C-756.737,625.762 -717.901,755.382 -499.022,755.382C-280.142,755.382 -241.306,625.762 -51.352,625.762C138.601,625.762 177.437,755.382 396.317,755.382C615.196,755.382 654.032,625.762 843.986,625.762C1033.94,625.762 1072.78,755.382 1291.65,755.382C1510.53,755.382 1549.37,625.762 1739.32,625.762C1929.28,625.762 1968.11,755.382 2186.99,755.382C2405.87,755.382 2444.71,625.762 2634.66,625.762C2824.62,625.762 2863.45,755.382 3082.33,755.382C3301.21,755.382 3340.05,625.762 3530,625.762L3530,1133.21L2634.66,1133.21Z" style="fill:white;fill-rule:nonzero;"/>
+    </g>
+    <g>
+      <path d="M291.853,236.92C291.853,231.619 289.724,227.36 285.465,224.143C281.206,220.926 274.787,218.41 266.21,216.593C257.633,214.776 250.976,212.692 246.241,210.339C241.505,207.986 237.991,205.112 235.698,201.717C233.405,198.322 232.258,194.211 232.258,189.386C232.258,181.762 235.445,175.463 241.818,170.489C248.191,165.516 256.352,163.029 266.299,163.029C277.081,163.029 285.733,165.694 292.255,171.025C298.778,176.356 302.039,183.311 302.039,191.888L291.317,191.888C291.317,186.229 288.949,181.524 284.214,177.771C279.479,174.018 273.507,172.142 266.299,172.142C259.27,172.142 253.627,173.706 249.368,176.833C245.109,179.96 242.979,184.026 242.979,189.029C242.979,193.854 244.751,197.591 248.296,200.242C251.84,202.893 258.303,205.32 267.684,207.524C277.066,209.728 284.095,212.081 288.771,214.583C293.447,217.084 296.917,220.092 299.18,223.607C301.443,227.122 302.575,231.381 302.575,236.384C302.575,244.545 299.284,251.067 292.702,255.951C286.12,260.836 277.528,263.278 266.925,263.278C255.667,263.278 246.539,260.553 239.54,255.102C232.541,249.652 229.041,242.757 229.041,234.418L239.763,234.418C240.18,240.673 242.815,245.542 247.67,249.027C252.525,252.512 258.943,254.254 266.925,254.254C274.37,254.254 280.386,252.616 284.973,249.339C289.56,246.063 291.853,241.923 291.853,236.92ZM409.168,213.689L409.168,212.26C409.168,197.13 412.519,185.142 419.22,176.297C425.921,167.452 435.019,163.029 446.516,163.029C459.68,163.029 469.687,168.271 476.537,178.754L477.073,164.816L487.08,164.816L487.08,259.525C487.08,271.974 483.595,281.832 476.626,289.099C469.657,296.366 460.216,300 448.303,300C441.572,300 435.153,298.496 429.048,295.488C422.943,292.48 418.133,288.474 414.618,283.471L420.605,277.037C428.17,286.33 437.164,290.976 447.588,290.976C456.523,290.976 463.492,288.34 468.495,283.068C473.499,277.797 476.09,270.485 476.269,261.133L476.269,248.982C469.419,258.513 459.442,263.278 446.337,263.278C435.138,263.278 426.144,258.81 419.354,249.875C412.563,240.94 409.168,228.878 409.168,213.689ZM419.979,214.136C419.979,226.466 422.451,236.19 427.395,243.308C432.339,250.426 439.308,253.985 448.303,253.985C461.467,253.985 470.789,248.088 476.269,236.294L476.269,191.352C473.767,185.157 470.163,180.437 465.458,177.19C460.752,173.944 455.093,172.321 448.481,172.321C439.487,172.321 432.488,175.85 427.484,182.909C422.481,189.967 419.979,200.376 419.979,214.136ZM517.458,131.399L532.022,131.399L580.002,246.212L628.161,131.399L642.814,131.399L642.814,261.491L631.825,261.491L631.825,204.844L632.718,146.767L584.291,261.491L575.803,261.491L527.555,147.214L528.448,204.486L528.448,261.491L517.458,261.491L517.458,131.399ZM667.385,213.868L667.385,211.724C667.385,202.431 669.187,194.062 672.791,186.617C676.395,179.171 681.488,173.378 688.07,169.238C694.652,165.099 702.112,163.029 710.451,163.029C723.318,163.029 733.742,167.541 741.723,176.565C749.705,185.589 753.696,197.547 753.696,212.438L753.696,214.672C753.696,224.024 751.894,232.438 748.291,239.913C744.687,247.388 739.609,253.151 733.057,257.202C726.504,261.253 719.029,263.278 710.63,263.278C697.823,263.278 687.414,258.766 679.403,249.741C671.391,240.717 667.385,228.759 667.385,213.868ZM678.107,212.706L678.107,214.672C678.107,226.228 681.1,235.714 687.087,243.13C693.073,250.546 700.921,254.254 710.63,254.254C720.28,254.254 728.098,250.546 734.084,243.13C740.071,235.714 743.064,225.93 743.064,213.779L743.064,211.724C743.064,204.337 741.694,197.576 738.954,191.441C736.214,185.306 732.372,180.556 727.428,177.19C722.484,173.825 716.825,172.142 710.451,172.142C700.921,172.142 693.148,175.88 687.131,183.355C681.115,190.831 678.107,200.615 678.107,212.706ZM781.662,140.066L792.384,140.066L792.384,164.816L812.398,164.816L812.398,173.572L792.384,173.572L792.384,237.992C792.384,243.353 793.352,247.344 795.288,249.965C797.224,252.586 800.455,253.896 804.982,253.896C806.769,253.896 809.658,253.598 813.649,253.003L814.096,261.759C811.296,262.772 807.484,263.278 802.659,263.278C795.332,263.278 790.001,261.148 786.666,256.889C783.33,252.63 781.662,246.361 781.662,238.081L781.662,173.572L763.882,173.572L763.882,164.816L781.662,164.816L781.662,140.066ZM846.529,164.816L846.529,261.491L835.807,261.491L835.807,164.816L846.529,164.816ZM833.931,136.849C833.931,134.824 834.586,133.112 835.897,131.712C837.207,130.312 838.994,129.612 841.258,129.612C843.521,129.612 845.323,130.312 846.663,131.712C848.004,133.112 848.674,134.824 848.674,136.849C848.674,138.874 848.004,140.572 846.663,141.942C845.323,143.312 843.521,143.997 841.258,143.997C838.994,143.997 837.207,143.312 835.897,141.942C834.586,140.572 833.931,138.874 833.931,136.849ZM869.671,213.868L869.671,211.724C869.671,202.431 871.473,194.062 875.076,186.617C878.68,179.171 883.773,173.378 890.355,169.238C896.937,165.099 904.398,163.029 912.737,163.029C925.603,163.029 936.027,167.541 944.009,176.565C951.99,185.589 955.981,197.547 955.981,212.438L955.981,214.672C955.981,224.024 954.179,232.438 950.576,239.913C946.972,247.388 941.894,253.151 935.342,257.202C928.789,261.253 921.314,263.278 912.915,263.278C900.108,263.278 889.699,258.766 881.688,249.741C873.677,240.717 869.671,228.759 869.671,213.868ZM880.392,212.706L880.392,214.672C880.392,226.228 883.385,235.714 889.372,243.13C895.358,250.546 903.206,254.254 912.915,254.254C922.565,254.254 930.383,250.546 936.369,243.13C942.356,235.714 945.349,225.93 945.349,213.779L945.349,211.724C945.349,204.337 943.979,197.576 941.239,191.441C938.499,185.306 934.657,180.556 929.713,177.19C924.769,173.825 919.11,172.142 912.737,172.142C903.206,172.142 895.433,175.88 889.417,183.355C883.4,190.831 880.392,200.615 880.392,212.706ZM978.05,164.816L988.236,164.816L988.594,181.345C992.227,175.388 996.754,170.846 1002.18,167.719C1007.6,164.592 1013.58,163.029 1020.13,163.029C1030.5,163.029 1038.21,165.948 1043.28,171.785C1048.34,177.622 1050.9,186.378 1050.96,198.053L1050.96,261.491L1040.33,261.491L1040.33,197.964C1040.27,189.327 1038.43,182.894 1034.83,178.665C1031.23,174.436 1025.46,172.321 1017.54,172.321C1010.93,172.321 1005.08,174.391 999.986,178.531C994.893,182.67 991.125,188.254 988.683,195.283L988.683,261.491L978.05,261.491L978.05,164.816Z" style="fill:white;fill-rule:nonzero;"/>
+      <g>
+        <path d="M343.305,185.361C342.125,193.062 337.862,199.673 328.368,209.166L327.312,210.222L328.14,211.466C337.708,225.814 353.097,257.416 354.896,261.132L354.896,214.322C354.896,214.188 354.945,214.069 354.972,213.944C354.257,213.703 353.606,213.302 353.07,212.772C351.505,211.208 351.151,208.802 352.201,206.855C353.251,204.907 355.454,203.879 357.621,204.327C359.788,204.774 361.404,206.591 361.596,208.795C361.787,211 360.51,213.068 358.453,213.884C358.489,214.028 358.54,214.167 358.54,214.322L358.542,261.133C360.336,257.43 375.732,225.817 385.299,211.466L386.129,210.224L385.072,209.167C375.579,199.674 371.315,193.063 370.136,185.361L372.391,185.361L375.696,164.816L337.744,164.816L341.05,185.361L343.305,185.361Z" fill="white"/>
+        <line x1="356.438" y1="185.274" x2="356.438" y2="0" stroke-width="8" stroke="rgb(255,255,255)" stroke-opacity="100" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"></line>
+      </g>
+    </g>
+    <g>
+      <rect x="992.75" y="438.797" width="4.219" height="54" style="fill:white;"/>
+      <path d="M949.613,474.059L949.613,473.215C949.613,469.558 950.322,466.265 951.74,463.336C953.158,460.406 955.162,458.127 957.752,456.498C960.342,454.869 963.278,454.055 966.559,454.055C971.621,454.055 975.722,455.83 978.863,459.381C982.004,462.932 983.574,467.637 983.574,473.496L983.574,474.375C983.574,478.055 982.865,481.366 981.447,484.307C980.029,487.248 978.031,489.516 975.453,491.109C972.875,492.703 969.934,493.5 966.629,493.5C961.59,493.5 957.494,491.725 954.342,488.174C951.189,484.623 949.613,479.918 949.613,474.059ZM953.832,473.602L953.832,474.375C953.832,478.922 955.01,482.654 957.365,485.572C959.72,488.49 962.808,489.949 966.629,489.949C970.426,489.949 973.502,488.49 975.857,485.572C978.213,482.654 979.391,478.804 979.391,474.023L979.391,473.215C979.391,470.308 978.852,467.648 977.773,465.234C976.695,462.82 975.183,460.951 973.238,459.627C971.293,458.303 969.066,457.641 966.559,457.641C962.809,457.641 959.75,459.112 957.383,462.053C955.016,464.994 953.832,468.844 953.832,473.602Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M909.289,474.059L909.289,473.215C909.289,469.558 909.998,466.265 911.416,463.336C912.834,460.406 914.838,458.127 917.428,456.498C920.018,454.869 922.953,454.055 926.234,454.055C931.297,454.055 935.398,455.83 938.539,459.381C941.68,462.932 943.25,467.637 943.25,473.496L943.25,474.375C943.25,478.055 942.541,481.366 941.123,484.307C939.705,487.248 937.707,489.516 935.129,491.109C932.551,492.703 929.61,493.5 926.305,493.5C921.266,493.5 917.17,491.725 914.018,488.174C910.865,484.623 909.289,479.918 909.289,474.059ZM913.508,473.602L913.508,474.375C913.508,478.922 914.686,482.654 917.041,485.572C919.396,488.49 922.484,489.949 926.305,489.949C930.102,489.949 933.178,488.49 935.533,485.572C937.888,482.654 939.066,478.804 939.066,474.023L939.066,473.215C939.066,470.308 938.527,467.648 937.449,465.234C936.371,462.82 934.859,460.951 932.914,459.627C930.969,458.303 928.742,457.641 926.234,457.641C922.484,457.641 919.426,459.112 917.059,462.053C914.692,464.994 913.508,468.844 913.508,473.602Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M891.5,445.02L895.719,445.02L895.719,454.758L903.594,454.758L903.594,458.203L895.719,458.203L895.719,483.551C895.719,485.66 896.1,487.231 896.861,488.262C897.623,489.293 898.895,489.809 900.676,489.809C901.379,489.809 902.515,489.692 904.086,489.457L904.262,492.902C903.16,493.301 901.66,493.5 899.762,493.5C896.879,493.5 894.782,492.662 893.469,490.986C892.156,489.311 891.5,486.844 891.5,483.586L891.5,458.203L884.504,458.203L884.504,454.758L891.5,454.758L891.5,445.02Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M832.121,454.758L836.129,454.758L836.27,461.262C837.699,458.918 839.48,457.131 841.613,455.9C843.746,454.67 846.102,454.055 848.68,454.055C852.758,454.055 855.793,455.203 857.785,457.5C859.777,459.797 860.785,463.242 860.809,467.836L860.809,492.797L856.625,492.797L856.625,467.801C856.602,464.402 855.881,461.871 854.463,460.207C853.045,458.543 850.777,457.711 847.66,457.711C845.059,457.711 842.756,458.525 840.752,460.154C838.748,461.783 837.266,463.981 836.305,466.746L836.305,492.797L832.121,492.797L832.121,454.758Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M789.477,474.059L789.477,473.215C789.477,469.558 790.186,466.265 791.604,463.336C793.021,460.406 795.025,458.127 797.615,456.498C800.205,454.869 803.141,454.055 806.422,454.055C811.485,454.055 815.586,455.83 818.727,459.381C821.868,462.932 823.438,467.637 823.438,473.496L823.438,474.375C823.438,478.055 822.729,481.366 821.311,484.307C819.893,487.248 817.895,489.516 815.316,491.109C812.738,492.703 809.797,493.5 806.492,493.5C801.453,493.5 797.358,491.725 794.205,488.174C791.053,484.623 789.477,479.918 789.477,474.059ZM793.695,473.602L793.695,474.375C793.695,478.922 794.873,482.654 797.229,485.572C799.584,488.49 802.672,489.949 806.492,489.949C810.289,489.949 813.366,488.49 815.721,485.572C818.076,482.654 819.254,478.804 819.254,474.023L819.254,473.215C819.254,470.308 818.715,467.648 817.637,465.234C816.559,462.82 815.047,460.951 813.102,459.627C811.157,458.303 808.93,457.641 806.422,457.641C802.672,457.641 799.613,459.112 797.246,462.053C794.879,464.994 793.695,468.844 793.695,473.602Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M780.371,454.758L780.371,492.797L776.152,492.797L776.152,454.758L780.371,454.758ZM775.414,443.754C775.414,442.957 775.672,442.283 776.188,441.732C776.703,441.181 777.406,440.906 778.297,440.906C779.188,440.906 779.897,441.181 780.424,441.732C780.951,442.283 781.215,442.957 781.215,443.754C781.215,444.551 780.951,445.219 780.424,445.758C779.897,446.297 779.188,446.566 778.297,446.566C777.406,446.566 776.703,446.297 776.188,445.758C775.672,445.219 775.414,444.551 775.414,443.754Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M754.848,445.02L759.066,445.02L759.066,454.758L766.941,454.758L766.941,458.203L759.066,458.203L759.066,483.551C759.066,485.66 759.447,487.231 760.209,488.262C760.971,489.293 762.242,489.809 764.023,489.809C764.726,489.809 765.863,489.692 767.434,489.457L767.609,492.902C766.508,493.301 765.008,493.5 763.109,493.5C760.226,493.5 758.129,492.662 756.816,490.986C755.504,489.311 754.848,486.844 754.848,483.586L754.848,458.203L747.852,458.203L747.852,454.758L754.848,454.758L754.848,445.02Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M742.473,492.797L737.973,492.797C737.551,491.602 737.281,489.832 737.164,487.488C735.687,489.41 733.806,490.893 731.521,491.936C729.236,492.979 726.817,493.5 724.262,493.5C720.605,493.5 717.646,492.48 715.385,490.441C713.123,488.402 711.992,485.824 711.992,482.707C711.992,479.004 713.533,476.074 716.615,473.918C719.697,471.762 723.992,470.684 729.5,470.684L737.129,470.684L737.129,466.359C737.129,463.64 736.291,461.502 734.615,459.943C732.94,458.384 730.496,457.605 727.285,457.605C724.356,457.605 721.93,458.355 720.008,459.855C718.086,461.355 717.125,463.16 717.125,465.27L712.906,465.234C712.906,462.211 714.312,459.592 717.125,457.377C719.938,455.162 723.395,454.055 727.496,454.055C731.738,454.055 735.084,455.115 737.533,457.236C739.982,459.357 741.242,462.316 741.313,466.113L741.313,484.113C741.313,487.793 741.7,490.547 742.473,492.375L742.473,492.797ZM724.754,489.773C727.567,489.773 730.08,489.093 732.295,487.734C734.51,486.375 736.121,484.558 737.129,482.285L737.129,473.918L729.605,473.918C725.41,473.965 722.129,474.732 719.762,476.221C717.395,477.709 716.211,479.754 716.211,482.355C716.211,484.488 717.002,486.258 718.584,487.664C720.166,489.07 722.223,489.773 724.754,489.773Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M649.941,454.758L653.984,454.758L654.125,460.945C655.531,458.648 657.289,456.926 659.398,455.777C661.508,454.629 663.852,454.055 666.43,454.055C672.43,454.055 676.238,456.516 677.855,461.438C679.215,459.071 681.032,457.248 683.305,455.971C685.578,454.694 688.086,454.055 690.828,454.055C698.985,454.055 703.145,458.508 703.309,467.414L703.309,492.797L699.09,492.797L699.09,467.73C699.067,464.332 698.334,461.813 696.893,460.172C695.451,458.531 693.101,457.711 689.844,457.711C686.821,457.758 684.266,458.736 682.18,460.646C680.094,462.557 678.934,464.883 678.699,467.625L678.699,492.797L674.48,492.797L674.48,467.414C674.457,464.156 673.689,461.724 672.178,460.119C670.666,458.514 668.34,457.711 665.199,457.711C662.551,457.711 660.278,458.467 658.379,459.979C656.48,461.49 655.074,463.734 654.16,466.711L654.16,492.797L649.941,492.797L649.941,454.758Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M638.727,454.758L638.727,492.797L634.508,492.797L634.508,454.758L638.727,454.758ZM633.77,443.754C633.77,442.957 634.028,442.283 634.543,441.732C635.058,441.181 635.761,440.906 636.652,440.906C637.543,440.906 638.252,441.181 638.779,441.732C639.306,442.283 639.57,442.957 639.57,443.754C639.57,444.551 639.306,445.219 638.779,445.758C638.252,446.297 637.543,446.566 636.652,446.566C635.761,446.566 635.058,446.297 634.543,445.758C634.028,445.219 633.77,444.551 633.77,443.754Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M594.465,454.758L598.473,454.758L598.613,461.262C600.043,458.918 601.824,457.131 603.957,455.9C606.09,454.67 608.445,454.055 611.023,454.055C615.102,454.055 618.137,455.203 620.129,457.5C622.121,459.797 623.129,463.242 623.152,467.836L623.152,492.797L618.969,492.797L618.969,467.801C618.946,464.402 618.225,461.871 616.807,460.207C615.389,458.543 613.121,457.711 610.004,457.711C607.403,457.711 605.1,458.525 603.096,460.154C601.092,461.783 599.609,463.981 598.648,466.746L598.648,492.797L594.465,492.797L594.465,454.758Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M584.41,492.797L579.91,492.797C579.488,491.602 579.219,489.832 579.102,487.488C577.625,489.41 575.744,490.893 573.459,491.936C571.174,492.979 568.754,493.5 566.199,493.5C562.543,493.5 559.584,492.48 557.322,490.441C555.061,488.402 553.93,485.824 553.93,482.707C553.93,479.004 555.471,476.074 558.553,473.918C561.635,471.762 565.93,470.684 571.438,470.684L579.066,470.684L579.066,466.359C579.066,463.64 578.228,461.502 576.553,459.943C574.877,458.384 572.434,457.605 569.223,457.605C566.293,457.605 563.867,458.355 561.945,459.855C560.024,461.355 559.063,463.16 559.063,465.27L554.844,465.234C554.844,462.211 556.25,459.592 559.063,457.377C561.875,455.162 565.332,454.055 569.434,454.055C573.676,454.055 577.022,455.115 579.471,457.236C581.92,459.357 583.18,462.316 583.25,466.113L583.25,484.113C583.25,487.793 583.637,490.547 584.41,492.375L584.41,492.797ZM566.691,489.773C569.504,489.773 572.017,489.093 574.232,487.734C576.447,486.375 578.059,484.558 579.066,482.285L579.066,473.918L571.543,473.918C567.348,473.965 564.066,474.732 561.699,476.221C559.332,477.709 558.148,479.754 558.148,482.355C558.148,484.488 558.939,486.258 560.521,487.664C562.104,489.07 564.16,489.773 566.691,489.773Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M531.852,454.512L531.746,458.344C530.855,458.18 529.906,458.098 528.898,458.098C526.273,458.098 524.053,458.83 522.236,460.295C520.42,461.76 519.125,463.887 518.352,466.676L518.352,492.797L514.168,492.797L514.168,454.758L518.281,454.758L518.352,460.805C520.578,456.305 524.152,454.055 529.074,454.055C530.246,454.055 531.172,454.207 531.852,454.512Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M471.523,474.059L471.523,473.215C471.523,469.558 472.232,466.265 473.65,463.336C475.068,460.406 477.072,458.127 479.662,456.498C482.252,454.869 485.188,454.055 488.469,454.055C493.532,454.055 497.633,455.83 500.773,459.381C503.914,462.932 505.484,467.637 505.484,473.496L505.484,474.375C505.484,478.055 504.775,481.366 503.357,484.307C501.939,487.248 499.941,489.516 497.363,491.109C494.785,492.703 491.844,493.5 488.539,493.5C483.5,493.5 479.404,491.725 476.252,488.174C473.099,484.623 471.523,479.918 471.523,474.059ZM475.742,473.602L475.742,474.375C475.742,478.922 476.92,482.654 479.275,485.572C481.631,488.49 484.719,489.949 488.539,489.949C492.336,489.949 495.412,488.49 497.768,485.572C500.123,482.654 501.301,478.804 501.301,474.023L501.301,473.215C501.301,470.308 500.762,467.648 499.684,465.234C498.605,462.82 497.093,460.951 495.148,459.627C493.203,458.303 490.976,457.641 488.469,457.641C484.719,457.641 481.66,459.112 479.293,462.053C476.926,464.994 475.742,468.844 475.742,473.602Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M453.734,445.02L457.953,445.02L457.953,454.758L465.828,454.758L465.828,458.203L457.953,458.203L457.953,483.551C457.953,485.66 458.334,487.231 459.096,488.262C459.857,489.293 461.129,489.809 462.91,489.809C463.613,489.809 464.75,489.692 466.32,489.457L466.496,492.902C465.395,493.301 463.895,493.5 461.996,493.5C459.113,493.5 457.016,492.662 455.703,490.986C454.39,489.311 453.734,486.844 453.734,483.586L453.734,458.203L446.738,458.203L446.738,454.758L453.734,454.758L453.734,445.02Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M428.387,489.949C431.316,489.949 433.771,489.123 435.752,487.471C437.733,485.818 438.805,483.68 438.969,481.055L443.012,481.055C442.895,483.375 442.168,485.49 440.832,487.4C439.496,489.311 437.721,490.805 435.506,491.883C433.291,492.961 430.918,493.5 428.387,493.5C423.394,493.5 419.439,491.766 416.521,488.297C413.604,484.828 412.145,480.164 412.145,474.305L412.145,473.039C412.145,469.289 412.801,465.973 414.113,463.09C415.426,460.207 417.307,457.981 419.756,456.41C422.205,454.84 425.071,454.055 428.352,454.055C432.523,454.055 435.963,455.297 438.67,457.781C441.377,460.266 442.824,463.535 443.012,467.59L438.969,467.59C438.782,464.613 437.709,462.211 435.752,460.383C433.795,458.555 431.328,457.641 428.352,457.641C424.555,457.641 421.607,459.012 419.51,461.754C417.412,464.496 416.363,468.34 416.363,473.285L416.363,474.516C416.363,479.367 417.412,483.152 419.51,485.871C421.607,488.59 424.566,489.949 428.387,489.949Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M391.859,493.5C388.625,493.5 385.701,492.703 383.088,491.109C380.475,489.516 378.441,487.295 376.988,484.447C375.535,481.6 374.809,478.406 374.809,474.867L374.809,473.355C374.809,469.699 375.518,466.406 376.936,463.477C378.354,460.547 380.328,458.244 382.859,456.568C385.39,454.893 388.133,454.055 391.086,454.055C395.703,454.055 399.365,455.631 402.072,458.783C404.779,461.936 406.133,466.242 406.133,471.703L406.133,474.059L378.992,474.059L378.992,474.867C378.992,479.18 380.228,482.772 382.701,485.643C385.174,488.514 388.285,489.949 392.035,489.949C394.285,489.949 396.271,489.539 397.994,488.719C399.717,487.898 401.281,486.586 402.688,484.781L405.324,486.785C402.231,491.262 397.742,493.5 391.859,493.5ZM391.086,457.641C387.922,457.641 385.256,458.801 383.088,461.121C380.92,463.442 379.602,466.559 379.133,470.473L401.949,470.473L401.949,470.016C401.832,466.359 400.789,463.383 398.82,461.086C396.851,458.789 394.273,457.641 391.086,457.641Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M343.133,454.758L354.805,486.996L366.371,454.758L370.695,454.758L356.492,492.797L353.082,492.797L338.809,454.758L343.133,454.758Z" style="fill:white;fill-rule:nonzero;"/>
+      <path d="M314.41,492.797L309.102,478.453L285.863,478.453L280.59,492.797L276.055,492.797L295.426,441.609L299.539,441.609L318.91,492.797L314.41,492.797ZM297.465,446.883L287.199,474.762L307.73,474.762L297.465,446.883Z" style="fill:white;fill-rule:nonzero;"/>
+    </g>
+  </g>
+</svg>`
+};
 
-// variables
-var version = '1.000',
-    counter = 0,
-    remStr  = "html > body > div:nth-child(2) > div > svg > ",
-    $this, $str, $code, jsStr, origSVG, thisTool, anim, $selector, $attr = '',
-    detectInt, totalInt, getPerc, arr = [],
-    loadedJSON = {}, projectJSON = "",
-    saveAsPNG = function(value) {
-      saveSvgAsPng(document.querySelector(".canvas > svg"), value + ".png");
+const app = {
+  appName: "svgMotion",
+  appVersion: project.version,
+  appUrl: "https://github.com/michaelsboost/svgMotion/tree/gh-pages",
+  appLicense: "https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE",
+
+  // Ajax function to download over http
+  getFile: (url, callback) => {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.send();
+
+    xhr.onreadystatechange = data => {
+      if (xhr.readyState !== 4) {
+        return;
+      }
+
+      if (xhr.status === 200) {
+        callback(xhr.responseText);
+      } else {
+        console.warn("request_error");
+      }
+    };
+  },
+  
+  // zooming and panning function
+  initZoomPan: () => {
+    // variables
+    let canvas = document.getElementById('previewSVG');
+    let canvasH = parseFloat(canvas.clientHeight);
+    let canvasW = parseFloat(canvas.clientWidth / 2);
+  
+    // init panzoom
+    let instance = panzoom(canvas, {
+      bounds: true,
+      boundsPadding: 0.1
+    });
+  
+    let centerCanvas = () => {
+      let canvas = document.getElementById('previewSVG');
+      let canvasH = parseFloat(canvas.clientHeight);
+      let canvasW = parseFloat(canvas.clientWidth / 2);
+      canvasW = parseFloat(canvas.clientWidth);
+      canvasH = parseFloat(canvas.clientHeight);
+
+      // detect if canvas is in portrait mode
+      if (canvasW < canvasH) {
+        // ratio for zoom
+        let zoomRatio = 0.75;
+
+        // to center the canvas horizontally we first need to...
+        // get half the body & canvas's width
+        let bodyW = parseFloat(canvas.parentElement.clientWidth / 2);
+        canvasW = parseFloat(canvas.clientWidth / 2);
+        // then add them together
+        let initialXPos = parseFloat(parseFloat(bodyW) - parseFloat(canvasW) * zoomRatio);
+
+        // to center the canvas vertically we first need to...
+        // get the size of both the body and the canvas
+        let bodyH = parseFloat(canvas.parentElement.clientHeight);
+        bodyH = bodyH / 2;
+        canvasH = canvasH / 2;
+        // then add them together
+        let initialYPos = parseFloat(parseFloat(canvasH) - parseFloat(bodyH) * zoomRatio);
+
+        // set initial zoom
+        instance.zoomAbs(
+            initialXPos, // initial x position
+            initialYPos, // initial y position
+            zoomRatio // initial zoom
+        );
+        instance.moveTo(initialXPos, initialYPos);
+
+        return false
+      }
+  
+      // ratio for zoom
+      let zoomRatio = 0.75;
+
+      // to center the canvas horizontally we first need to...
+      // get half the body & canvas's width
+      let bodyW = parseFloat(canvas.parentElement.clientWidth / 2);
+      canvasW = parseFloat(canvas.clientWidth / 2);
+      // then add them together
+      let initialXPos = parseFloat(parseFloat(bodyW) - parseFloat(canvasW) * zoomRatio);
+
+      // to center the canvas vertically we first need to...
+      // get the size of both the body and the canvas
+      let bodyH = parseFloat(canvas.parentElement.clientHeight);
+      bodyH = bodyH / 2;
+      canvasH = canvasH / 2;
+      // then add them together
+      let initialYPos = parseFloat(parseFloat(bodyH) - parseFloat(canvasH) * zoomRatio);
+
+      // set initial zoom
+      instance.zoomAbs(
+        initialXPos, // initial x position
+        initialYPos, // initial y position
+        zoomRatio // initial zoom
+      );
+      instance.moveTo(initialXPos, initialYPos);
+    };
+    centerCanvas();
+  
+    // enable disable zoom/pan
+    const zoomIcon = document.querySelector('[data-zoom]');
+    zoomIcon.onclick = () => {
+      if (zoomIcon.getAttribute('data-zoom') === 'true') {
+        canvas.selection = false;
+        instance.pause();
+        zoomIcon.innerHTML = '<i class="fa fa-light fa-magnifying-glass-minus"></i>';
+        zoomIcon.setAttribute('data-zoom', false);
+        fill.classList.add('hidden');
+      } else {
+        canvas.selection = true;
+        instance.resume();
+        zoomIcon.innerHTML = '<i class="fa fa-light fa-magnifying-glass-plus"></i>';
+        zoomIcon.setAttribute('data-zoom', true);
+        fill.classList.remove('hidden');
+      }
+    };
+  },
+
+  // export project json
+  exportProjectFile: () => {
+    let blob = new Blob([JSON.stringify(project, null, 2)], {
+      type: "application/json"
+    });
+    saveAs(blob, `${project.title.toString().toLowerCase().replace(/ /g,"")}-kodeWeave.json`);
+
+    // check if menu is checked and if so uncheck
+    if (menu.checked) menu.onchange();
+  },
+
+  // Function to render the svg layers
+  updateLayersContent: () => {
+    const layersContent = document.getElementById('layers');
+    layersContent.innerHTML = ''; // Clear existing content
+  
+    const renderHTMLBlocks = (htmlString, parentElement) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlString, 'text/html');
+      const body = doc.body;
+    
+      const renderElement = (element, parent) => {
+        const newBlock = document.createElement('ul');
+        // newBlock.className = "rounded-md mb-0"
+        newBlock.className = "pl-4 rounded-md mb-0";
+
+        // Set the ID for the newBlock
+        const blockId = Math.floor(Math.random() * 1000); // Generate a random ID
+        newBlock.id = `block_${blockId}`;
+    
+        // Create navigation bar
+        const navBar = document.createElement('nav');
+        navBar.className = 'flex justify-between items-center p-0 h-12 pr-2 mb-1 rounded-md';
+    
+        // Check if the element has nested children
+        const hasNestedChildren = Array.from(element.childNodes).some(child => child.nodeType === Node.ELEMENT_NODE);
+    
+        // Button for expanding and collapsing (if has nested children)
+        const expandCollapseButton = document.createElement('button');
+        expandCollapseButton.classList.add('inline-block', 'w-auto', 'rounded-none', 'm-0', 'ml-2', 'pl-4', 'bg-transparent', 'border-none');
+        expandCollapseButton.innerHTML = hasNestedChildren ? '<i class="fa fa-caret-down"></i>' : '';
+        expandCollapseButton.style.display = hasNestedChildren ? 'inline-block' : 'none';
+    
+        // Button for block name
+        const blockNameButton = document.createElement('button');
+        blockNameButton.classList.add('inline-block', 'w-auto', 'rounded-none', 'm-0', 'ml-2', 'px-0', 'bg-transparent', 'border-none', 'text-white', 'text-xs');
+                
+        // Get the element's ID
+        const elementId = element.getAttribute('id');
+        
+        // Set button text content based on whether the element has an I
+        let tag = element.tagName.toLowerCase();
+        
+        // Check if the element has a data-name4Polyrise attribute and use its value as the tag
+        if (element.hasAttribute('data-name4Polyrise')) {
+          tag = element.getAttribute('data-name4Polyrise');
+        }
+        
+        blockNameButton.textContent = elementId ? `${element.tagName.toLowerCase()}#${elementId}` : tag;
+        
+        // Create box to group buttons
+        const box1 = document.createElement('li');
+        box1.className = "text-white text-xs";
+
+        // Append elements to navigation bar
+        box1.appendChild(expandCollapseButton);
+        box1.appendChild(blockNameButton);
+        navBar.appendChild(box1);
+        
+        const buttonsContainer = document.createElement('ul');
+        navBar.appendChild(buttonsContainer);
+        newBlock.appendChild(navBar);
+    
+        // Render nested elements
+        element.childNodes.forEach(child => {
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            renderElement(child, newBlock);
+          }
+        });
+    
+        // Render buttons recursively
+        const renderButtonsWithDropdown = () => {
+          // Create box to group buttons
+          const box = document.createElement('li');
+          box.className = "text-white text-xs";
+          buttonsContainer.appendChild(box);
+      
+          // Create dropdown container
+          const dropdownContainer = document.createElement('div');
+          dropdownContainer.className = "dropdown dropdown-end";
+          box.appendChild(dropdownContainer);
+      
+          // Create ellipsis button
+          const ellipsisButton = document.createElement('button');
+          ellipsisButton.setAttribute('tabindex', '0');
+          ellipsisButton.classList.add('inline-block', 'w-auto', 'rounded-none', 'm-0', 'py-1', 'px-3', 'border-none', 'bg-transparent');
+          dropdownContainer.appendChild(ellipsisButton);
+      
+          // Create ellipsis icon
+          const ellipsisIcon = document.createElement('i');
+          ellipsisIcon.classList.add('fa', 'fa-ellipsis-vertical');
+          ellipsisButton.appendChild(ellipsisIcon);
+      
+          // Create dropdown menu
+          const dropdownMenu = document.createElement('ul');
+          dropdownMenu.setAttribute('tabindex', '0');
+          dropdownMenu.className = "dropdown-content z-[1] menu menu-horizontal p-2 shadow bg-base-100 rounded-box w-64 text-center";
+          dropdownContainer.appendChild(dropdownMenu);
+          
+          // Add items to dropdown menu
+          const dropdownItems = ['font', 'copy', 'paste', 'clone', 'trash', 'eye'];
+          dropdownItems.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.className = "p-0 m-auto";
+            const button = document.createElement('button');
+            button.className = "m-0 p-2 border-0 bg-transparent text-current text-sm";
+            const icon = document.createElement('i');
+          
+            if (item === 'eye') {
+              if (element.style.display === 'none') {
+                icon.className = `fa fa-eye-slash`;
+              } else {
+                icon.className = `fa fa-eye`;
+              }
+            } else {
+              icon.className = `fa fa-${item}`;
+            }
+            
+            button.appendChild(icon);
+            listItem.appendChild(button);
+            dropdownMenu.appendChild(listItem);
+          });
+          
+          // Add event listener for dropdown menu items
+          dropdownMenu.addEventListener('click', (event) => {
+            // Handle the selected action based on the button's icon (e.g., copy, paste, clone, delete)
+            const selectedItem = event.target;
+            if (selectedItem.classList.contains("fa-font")) {
+              let newName = prompt('Enter the new name:');
+              // Remove any characters that are not lowercase letters, uppercase letters, or numbers
+              newName = newName.replace(/[^a-zA-Z0-9]/g, '');
+  
+              // Set the new name as the text content of the button
+              element.setAttribute('data-name4Polyrise', newName);
+              // Update project HTML with the modified content
+              const updatedHtml = body.innerHTML;
+              project.pages[app.activePage].html = updatedHtml;
+              // Update the display content
+              app.updatePreview();
+              app.updateLayersContent(app.activePage);
+            }
+            if (selectedItem.classList.contains("fa-copy")) {
+              app.copyElement(element);
+            }
+            if (selectedItem.classList.contains("fa-paste")) {
+              app.pasteElement(element);
+            }
+            if (selectedItem.classList.contains("fa-clone")) {
+              // Clone block
+              let clonedElement = element.cloneNode(true);
+              // Insert the cloned element after the original
+              element.parentNode.insertBefore(clonedElement, element.nextSibling);
+          
+              // Update project HTML with the modified content
+              const updatedHtml = body.innerHTML;
+              project.pages[app.activePage].html = updatedHtml;
+        
+              // Update the display content
+              app.updatePreview();
+              app.updateLayersContent(app.activePage);
+            }
+            if (selectedItem.classList.contains("fa-trash")) {
+              element.remove();
+            
+              // Update project HTML with the modified content
+              const updatedHtml = body.innerHTML;
+              project.pages[app.activePage].html = updatedHtml;
+        
+              // Update the display content
+              app.updatePreview();
+              app.updateLayersContent(app.activePage);
+            }
+            if (selectedItem.classList.contains('fa-eye') || selectedItem.classList.contains('fa-eye-slash')) {
+              if (selectedItem.classList.contains('fa-eye')) {
+                selectedItem.className = 'fa fa-eye-slash';
+                element.style.display = 'none';
+              } else if (selectedItem.classList.contains('fa-eye-slash')) {
+                selectedItem.className = 'fa fa-eye';
+                element.removeAttribute('style');
+              }
+              // Update project HTML with the modified content
+              const updatedHtml = body.innerHTML;
+              project.svg = updatedHtml;
+        
+              // Update the display content
+              app.updatePreview();
+              return false;
+            }
+          });
+        };
+        renderButtonsWithDropdown();
+    
+        // Append the new block to the display area
+        parent.appendChild(newBlock);
+        
+        // Add event listener to the expand/collapse button
+        expandCollapseButton.addEventListener('click', () => {
+          // Assuming 'newBlock' is the element you want to find direct children of
+          const directDivChildren = Array.from(newBlock.children).filter(child => child.tagName.toLowerCase() === 'ul');
+    
+          // Iterate through direct children and toggle the 'hidden' class
+          directDivChildren.forEach(child => {
+            child.classList.toggle('hidden');
+          });
+    
+          // Change the caret icon accordingly
+          const caretIcon = expandCollapseButton.querySelector('i');
+          caretIcon.classList.toggle('fa-caret-down');
+          caretIcon.classList.toggle('fa-caret-right');
+        });
+      }
+    
+      // Render elements within the body
+      body.childNodes.forEach(child => {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          renderElement(child, parentElement);
+        }
+      });
+    }
+  
+    const htmlString = project.svg;
+    renderHTMLBlocks(htmlString, layersContent);
+  },
+
+  // place svg code
+  updatePreview: () => {
+    previewSVG.innerHTML = project.svg;
+  },
+
+  // Initiate function
+  init: () => {
+    // Place app name and version
+    document.getElementById("appName").textContent = app.appName;
+    document.getElementById("appVersion").textContent = app.appVersion;
+    document.getElementById("appUrl").href = app.appUrl;
+    document.getElementById("appLicense").href = app.appLicense;
+
+    // toggle menu
+    menu.onchange = () => {
+      document.querySelector('label[for=menu]').classList.toggle('text-blue-500');
+      sidenav.classList.toggle('hidden');
     };
 
-// init code editor
-$('.editor-container').show();
-$('.selectors').hide();
-var editor = CodeMirror(document.getElementById("editor"), {
-  tabMode: "indent",
-  theme: 'nord',
-  styleActiveLine: true,
-  lineNumbers: true,
-  lineWrapping: true,
-  autoCloseTags: true,
-  foldGutter: true,
-  dragDrop: true,
-  lint: false,
-  autoCloseBrackets: true,
-  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-  mode: {name: "javascript", globalVars: false},
-  paletteHints: true
-});
-Inlet(editor);
-editor.on('change', function() {
-  $('[data-keyselector="'+ elms.value +'"] textarea').val(editor.getValue()).trigger('change');
-});
+    // init tabs
+    const tabButtons = document.querySelectorAll("[data-toggletab]");
+    const tabContent = document.querySelectorAll("[data-tabcontent]");
 
-// alertify log
-$('[data-log]').on('click', function() {
-  var val = $(this).attr('data-log');
-  alertify.log(val);
-});
+    tabButtons.forEach(button => {
+      button.addEventListener("click", function () {
+        // Check if the clicked button already has the text-blue-500 class
+        const isAlreadyActive = this.classList.contains("text-blue-500");
 
-// svgMotion info
-$('[data-info]').click(function() {
-//  alertify.log('<div style="font-size: 14px; text-align: center;"><img src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5></div>');
-  
-//  swal({
-//    html: '<img class="logo" src="logo.svg" style="width: 50%;"><br><h1>svgMotion</h1><h5>Version '+ version +'-dev</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
-//  });
-  swal({
-    html: '<svg class="logo" style="isolation:isolate; width: 50%; cursor: pointer;" viewBox="0 0 512 512" onclick="window.open(\'https://github.com/michaelsboost/svgMotion\', \'_blank\')"><path d=" M 166.149 0.009 C 158.748 52.853 130.195 97.698 65.349 162.544 L 58.243 169.65 L 63.815 178.012 C 128.149 274.497 231.636 486.999 243.734 511.991 L 243.734 197.216 C 243.734 196.314 244.063 195.517 244.245 194.677 C 239.436 193.057 235.061 190.359 231.454 186.791 C 220.928 176.276 218.552 160.099 225.611 147.002 C 232.669 133.905 247.487 126.994 262.058 130.004 C 276.628 133.014 287.495 145.232 288.785 160.054 C 290.075 174.876 281.482 188.787 267.651 194.269 C 267.894 195.24 268.24 196.176 268.24 197.216 L 268.249 512 C 280.312 487.095 383.842 274.514 448.177 178.012 L 453.757 169.659 L 446.651 162.553 C 381.805 97.707 353.243 52.853 345.851 0 L 166.149 0.009 Z " /></svg><br><h1>svgMotion</h1><h5>Version '+ version +'-release</h5><a href="https://github.com/michaelsboost/svgMotion/blob/gh-pages/LICENSE" target="_blank">Open Source License</a>'
-  });
-//  $('.swal2-show').css('background', '#000');
-  $('.swal2-show').css('font-size', '14px');
-  $('.swal2-show').css('background', '#131722');
-  $('.swal2-show a').css('color', '#3085d6');
-  $('.swal2-show h1, .swal2-show h5').css({
-    'font-weight': '100',
-    'color': '#fff'
-  });
-});
+        // Remove text-blue-500 from all buttons
+        tabButtons.forEach(btn => btn.classList.remove("text-blue-500", "border-b", "border-blue-500"));
 
-// load file function
-function loadfile(input) {
-  var reader = new FileReader();
-  var path = input.value;
-  reader.onload = function(e) {
-    if (path.toLowerCase().substring(path.length - 4) === ".svg") {
-      // is animation playing? If so stop
-      if ($('[data-play]').attr('data-play') === 'stop') {
-        // trigger stop
-        $('[data-play=stop]').trigger('click');
-      }
-      
-      var keys = $("[data-keyscode]");
-      if (keys.find('[data-keyselector]').length > 1) {
-        swal({
-          title: 'Keyframes Detected!',
-          text: "Would you like to clear these?",
-          type: 'question',
-          showCancelButton: true
-        }).then((result) => {
-          if (result.value) {
-            keys.find('[data-keyselector]').not('[data-keyselector=misc]').remove();
-            // now update select element (#elms) to reflect cleared keys
-            $("select#elms option").not('select#elms option[value=misc]').remove();
-            keys.find('[data-keyselector=misc]').val('').trigger('change');
-            editor.setValue('');
-            $('[data-clear=filters]').trigger('click');
-          }
-        })
-      } else {
-        // no keyframes detected
-        $("select#elms option").not('select#elms option[value=misc]').remove();
-        keys.find('[data-keyselector=misc]').val('').trigger('change');
-        editor.setValue('');
-        $('[data-clear=filters]').trigger('click');
-      }
+        // Hide all tab contents
+        tabContent.forEach(tab => tab.classList.add("hidden"));
 
-      document.querySelector(".canvas").innerHTML = e.target.result;
-      origSVG = $('.canvas').html();
-      svgLoaded();
-    } else if (path.toLowerCase().substring(path.length - 5) === ".json") {
-      // is animation playing? If so stop
-      if ($('[data-play]').attr('data-play') === 'stop') {
-        // trigger stop
-        $('[data-play=stop]').trigger('click');
-      }
-      
-      if ($('[data-keys]').html()) {
-        swal({
-          title: 'Keys Detected!',
-          text: "Would you like to clear these?",
-          type: 'question',
-          showCancelButton: true
-        }).then((result) => {
-          if (result.value) {
-            $("[data-keyscode]").empty();
-            loadedJSON = JSON.parse(e.target.result);
-            loadJSON();
-            origSVG = $('.canvas').html();
-            svgLoaded();
-            $('#elms option:last').prop('selected', true).trigger('change');
-            $('[data-open=keys]').trigger('click');
-            setTimeout(function() {
-              $('[data-playit=firstframe]').trigger('click');
-            }, 100)
+        if (!isAlreadyActive) {
+          // If the clicked button wasn't active, add text-blue-500 and show corresponding tab
+          this.classList.add("text-blue-500", "border-b", "border-blue-500");
+          const tabName = this.getAttribute("data-toggletab");
+          const selectedTab = document.querySelector(
+            `[data-tabcontent="${tabName}"]`
+          );
+          selectedTab.classList.remove("hidden");
 
-            $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-            $("[data-action=fadeOut]").fadeOut(400, function() {
-              $("[data-action=fadeOut]").remove();
-            });
-          }
-        })
-      } else {
-        $("[data-keyscode]").empty();
-        loadedJSON = JSON.parse(e.target.result);
-        loadJSON();
-        origSVG = $('.canvas').html();
-        svgLoaded();
-        $('#elms option:last').prop('selected', true).trigger('change');
-        $('[data-open=keys]').trigger('click');
-        setTimeout(function() {
-          $('[data-playit=firstframe]').trigger('click');
-        }, 100)
-
-        $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-        $("[data-action=fadeOut]").fadeOut(400, function() {
-          $("[data-action=fadeOut]").remove();
-        });
-      }
-    } else {
-      alertify.error('Error: File type not supported');
-    }
-  };
-  reader.readAsText(input.files[0]);
-}
-function loadJSON() {
-  $("#elms").empty();
-  $("[data-canvas]").html(loadedJSON.originalSVG.toString());
-  $("#elms").html(loadedJSON.elmkeys);
-  $("[data-keyscode]").html(loadedJSON.keys);
-  
-  if ($("textarea.js").length != 0) {
-    $("textarea.js").each(function(i) {
-      $("textarea.js").eq(i).val(loadedJSON.keysCode[i]);
-    });
-  }
-    
-  if (parseFloat(loadedJSON.version) <= 0.1) {
-    swal({
-      title: 'Warning!',
-      text: "This project is using a version of svgMotion that's no longer supported.",
-      type: 'warning',
-    })
-  } else 
-  if (parseFloat(version) > parseFloat(loadedJSON.version)) {
-    swal({
-      title: 'Warning!',
-      text: "This project is using an older version of svgMotion. Some features may not work!",
-      type: 'warning',
-    })
-  }
-  
-  $('#blurfilter').val(loadedJSON.filters[0].blurfilter);
-  $('#huefilter').val(loadedJSON.filters[0].huefilter);
-  $('#brightnessfilter').val(loadedJSON.filters[0].brightnessfilter);
-  $('#contrastfilter').val(loadedJSON.filters[0].contrastfilter);
-  $('#saturatefilter').val(loadedJSON.filters[0].saturatefilter);
-  $('#grayscalefilter').val(loadedJSON.filters[0].grayscalefilter);
-  $('#sepiafilter').val(loadedJSON.filters[0].sepiafilter);
-  $('#invertfilter').val(loadedJSON.filters[0].invertfilter).trigger('change');
-
-  $('[data-projectname]').val(loadedJSON.settings[0].name);
-  $('[data-project=width]').val(loadedJSON.settings[0].width);
-  $('[data-project=height]').val(loadedJSON.settings[0].height).trigger('change');
-  $('[data-fps], [data-new=fps]').val(loadedJSON.settings[0].framerate);
-  $('[data-fontsize]').val(loadedJSON.settings[0].fontsize);
-  $('[data-notepad]').val(loadedJSON.settings[0].notepad);
-  
-  $('#elms').on('keyup change', function() {
-    updateOptionCode();
-  });
-}
-function dropfile(file) {
-  var reader = new FileReader();  
-  reader.onload = function(e) {
-    if (file.type === "image/svg+xml") {
-      // is animation playing? If so stop
-      if ($('[data-play]').attr('data-play') === 'stop') {
-        // trigger stop
-        $('[data-play=stop]').trigger('click');
-      }
-      
-      var keys = $("[data-keyscode]");
-      if (keys.find('[data-keyselector]').length > 1) {
-        swal({
-          title: 'Keyframes Detected!',
-          text: "Would you like to clear these?",
-          type: 'question',
-          showCancelButton: true
-        }).then((result) => {
-          if (result.value) {
-            keys.find('[data-keyselector]').not('[data-keyselector=misc]').remove();
-            // now update select element (#elms) to reflect cleared keys
-            $("select#elms option").not('select#elms option[value=misc]').remove();
-            keys.find('[data-keyselector=misc]').val('').trigger('change');
-            editor.setValue('');
-            $('[data-clear=filters]').trigger('click');
-          }
-        })
-      } else {
-        // no keyframes detected
-        $("select#elms option").not('select#elms option[value=misc]').remove();
-        keys.find('[data-keyselector=misc]').val('').trigger('change');
-        editor.setValue('');
-        $('[data-clear=filters]').trigger('click');
-      }
-
-      document.querySelector(".canvas").innerHTML = e.target.result;
-      origSVG = $('.canvas').html();
-      svgLoaded();
-    } else 
-      if (file.type === "application/json") {
-        // is animation playing? If so stop
-        if ($('[data-play]').attr('data-play') === 'stop') {
-          // trigger stop
-          $('[data-play=stop]').trigger('click');
-        }
-        
-        if ($('[data-keys]').html()) {
-          swal({
-            title: 'Keys Detected!',
-            text: "Would you like to clear these?",
-            type: 'question',
-            showCancelButton: true
-          }).then((result) => {
-            if (result.value) {
-              $("[data-keyscode]").empty();
-              loadedJSON = JSON.parse(e.target.result);
-              loadJSON();
-              origSVG = $('.canvas').html();
-              svgLoaded();
-              $('#elms option:last').prop('selected', true).trigger('change');
-              $('[data-open=keys]').trigger('click');
-              setTimeout(function() {
-                $('[data-playit=firstframe]').trigger('click');
-              }, 100)
-
-              $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-              $("[data-action=fadeOut]").fadeOut(400, function() {
-                $("[data-action=fadeOut]").remove();
-              });
-            }
-          })
+					if (tabName === 'layers') {
+            console.log("layers detected");
+					}
+					if (tabName === 'timeline') {
+            console.log("timeline detected");
+					}
         } else {
-          $("[data-keyscode]").empty();
-          loadedJSON = JSON.parse(e.target.result);
-          loadJSON();
-          origSVG = $('.canvas').html();
-          svgLoaded();
-          $('#elms option:last').prop('selected', true).trigger('change');
-          $('[data-open=keys]').trigger('click');
-          setTimeout(function() {
-            $('[data-playit=firstframe]').trigger('click');
-          }, 100)
-
-          $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-          $("[data-action=fadeOut]").fadeOut(400, function() {
-            $("[data-action=fadeOut]").remove();
-          });
-        }
-    } else {
-      alertify.error('Error: File type not supported');
-    }
-  };
-  reader.readAsText(file,"UTF-8"); 
-}
-
-// load svg file on drop
-document.addEventListener("dragover", function(e) {
-  e.preventDefault();
-});
-document.addEventListener("drop", function(e) {
-  // close dialog
-  if ($('[data-close=layers].active').is(':visible')) {
-    $('[data-close=layers].active').trigger('click');
-  }
-  if ($('[data-close=keys].active').is(':visible')) {
-    $('[data-close=keys].active').trigger('click');
-  }
-  if ($('[data-filtericons]').is(':visible')) {
-    $('[data-filtericons]').trigger('click');
-  }
-  if ($('[data-filters]').is(':visible')) {
-    $('[data-close=filter]').trigger('click');
-    $('[data-filtericons]').trigger('click');
-  }
-  
-  e.preventDefault();
-  var file = e.dataTransfer.files[0];
-  dropfile(file);
-});
-
-// update document title when project name changes
-$('[data-projectname]').on('keyup change', function() {
-  document.title = 'svgMotion: ' + this.value;
-});
-
-// detect if selector meets frame by frame animation parameters
-function detectForFrameByFrame() {
-  // first detect if there's a selection
-  if (!$('[data-selectorlist].selector').is(':visible')) {
-    $('.librarylinks [data-init]').hide();
-    return false;
-  } else {
-    $('.librarylinks [data-init]').show();
-  }
-  
-  // detect that this is the only selector
-  if ($('[data-selected]').length === 1) {
-    $('.librarylinks [data-init=framebyframe]').show();
-    $('.librarylinks [data-init=rig]').show();
-    
-    // draw is available for these elements
-    if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['text', 'ellipse', 'circle', 'rect', 'line', 'path', 'textPath', 'polygon', 'polyline']) !== -1) {
-      $('.librarylinks [data-init=draw]').show();
-    } else {
-      $('.librarylinks [data-init=draw]').hide();
-    }
-
-    // if it's the only selector then...
-    // detect if the children are group elements
-    $('[data-selected]').find('> *').each(function(index) {
-      if ($(this).prop('tagName').toLowerCase() != 'g') {
-        $('.librarylinks [data-init=framebyframe]').hide();
-        $('.librarylinks [data-init=rig]').hide();
-        return false;
-      } else {
-        $('.librarylinks [data-init=framebyframe]').show();
-        $('.librarylinks [data-init=rig]').show();
-      }
-    });
-  
-    // only show frame by frame if there's an array of only group children
-    if ($('[data-selected]').children().length === 0) {
-      $('.librarylinks [data-init=framebyframe]').hide();
-      $('.librarylinks [data-init=rig]').hide();
-      return false;
-    }
-  } else {
-    // hide because this is not the only selector
-    $('.librarylinks [data-init=framebyframe]').hide();
-    $('.librarylinks [data-init=rig]').hide();
-    $('.librarylinks [data-init=draw]').hide();
-  }
-}
-var svgLoaded = function() {
-  // clear canvas from layers window
-  $('[data-display=selector]').empty();
-  
-  // locate SVG
-  var $Canvas = document.querySelector(".canvas > svg");
-  if ($Canvas) {
-    // canvas interactive selection
-    canvasClickSelect();
-
-    // remove width/height attributes if detected
-    if ($Canvas.getAttribute("width") || $Canvas.getAttribute("height")) {
-      w = $Canvas.viewBox.baseVal.width;
-      h = $Canvas.viewBox.baseVal.height;
-      $("[data-project=width]").val(w);
-      $("[data-project=height]").val(h).trigger('change');
-      $Canvas.removeAttribute("width");
-      $Canvas.removeAttribute("height");
-      alertify.log("Width/Height attributes removed for fullscreen display.");
-    }
-    
-    $(".canvas > svg *").removeAttr("vector-effect");
-//    $(".canvas > svg").attr("preserveAspectRatio", "xMidYMin");
-
-    $(document.body).append('<div data-action="fadeOut" style="position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: #fff; z-index: 3;"></div>');
-    $("[data-action=fadeOut]").fadeOut(400, function() {
-      $("[data-action=fadeOut]").remove();
-    });
-    $("[data-projectname]").trigger("keyup");
-    
-    // list all elements as list
-    var fullSVGlength = $(".canvas svg *").length;
-    $(".canvas svg *").each(function(i) {
-//      $val = $(this).getPath();
-      $val = $(this).getPath().split(remStr).join('');
-
-      // append layers
-      $elm = '<li data-selectorlist="' + $val + '"><span>' + $val + '</span></li>';
-      $('[data-display=selector]').append($elm);
-
-      // trigger selected element on layer click
-      if (i === parseInt(fullSVGlength - 1)) {
-        $("[data-selectorlist]").on('click', function() {
-          $val = $(this).data('selectorlist');
-
-          // single or an array? user selects
-          $(this).toggleClass('selector');
-          $str = "";
-
-          // clear canvas selector(s)
-          if ($('[data-selected]').is(':visible')) {
-            $("[data-selected]").removeAttr("data-selected");
-          }
-          
-          if ($('[data-selectorlist].selector').is(':visible')) {
-            // show tween and framebyframe init buttons
-            $('.librarylinks [data-init]').show();
-          } else {
-            // hide tween and framebyframe init buttons
-            $('.librarylinks [data-init]').hide();
-          }
-
-          // render selectors in canvas
-          $('[data-selectorlist].selector').each(function() {
-            if ($str === "") {
-              $str = ".canvas svg > " + $(this).find('span').text();
-            } else {
-              $str += ", .canvas svg > " + $(this).find('span').text();
-            }
-            $($str).attr("data-selected", "");
-          
-            // only show animation frame by frame init button if parameters are met
-            detectForFrameByFrame();
-          });
-          return false;
-        });
-      }
-    });
-    
-    origSVG = $('.canvas').html();
-  } else {
-    alertify.error("Error: No svg element detected!");
-  }
-}
-svgLoaded();
-
-// canvas interactive selection
-function canvasClickSelect() {
-  $('.canvas svg *').on('click', function() {
-    // is library visible? if so proceed
-    if ($('.libraryh').is(':visible') && $('[data-zoom=false]').is(':visible')) {
-      // is selected already visible? If so remove to select active one
-      if ($('[data-selected]').is(':visible')) {
-        $("[data-selected]").removeAttr("data-selected");
-        $(this).attr('data-selected', '');
-
-        // display selection in library
-        $('[data-display=selector] li').removeClass('selector');
-
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-        
-        // show tween and framebyframe init buttons
-        $('.librarylinks [data-init]').show();
-
-        // only show frame by frame if there's an array of only group children
-        detectForFrameByFrame();
-      } else {
-        $(this).attr('data-selected', '');
-
-        // display selection in library
-        $('[data-display=selector] li').removeClass('selector');
-
-        // remember selector(s) via string
-        $str = "";
-
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').text() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-        
-        // show tween and framebyframe init buttons
-        $('.librarylinks [data-init]').show();
-
-        // only show frame by frame if there's an array of only group children
-        detectForFrameByFrame();
-      }
-    }
-    return false;
-  });
-}
-
-// size presets
-$('[data-size]').on('click', function() {
-  str = $(this).attr('data-size');
-  w = str.substr(0, str.indexOf('x'));
-  h = str.substring(str.length, str.indexOf('x') + 1);
-  
-  $('[data-new=width]').val(w);
-  $('[data-new=height]').val(h);
-});
-$('[data-projectsize]').on('click', function() {
-  str = $(this).attr('data-projectsize');
-  w = str.substr(0, str.indexOf('x'));
-  h = str.substring(str.length, str.indexOf('x') + 1);
-  
-  $('[data-project=width]').val(w);
-  $('[data-project=height]').val(h).trigger('change');
-});
-$('[data-project=width], [data-project=height]').on('change', function() {
-  $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
-  $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
-});
-
-// init panzoom
-var drawArea = document.querySelector('[data-canvas]');
-var instance = panzoom(drawArea, {
-  bounds: true,
-  boundsPadding: 0.1
-});
-
-// toggle dialogs
-function openDialog(dialog) {
-  // detect active tool
-  $('[data-dialogs] [data-dialog]').hide();
-  $('[data-dialogs] [data-dialog='+ dialog.toString().toLowerCase() +']').show();
-}
-function closeDialogs() {
-  $('[data-dialogs] [data-dialog]').hide();
-}
-$('[data-call]').on('click', function(val) {
-  thisTool = $(this).attr('data-call').toString().toLowerCase();
-  val = thisTool;
-  
-  // if tool is not active
-  if (!$('[data-call].active').is(':visible')) {
-    $(this).addClass('active');
-    openDialog(val);
-  } else {
-    // if tool is active
-    // are you clicking on same tool or not?
-    $(this).each(function(i) {
-      // if you are remove the class
-      if ($('[data-call].active').attr('data-call').toString().toLowerCase() === thisTool) {
-        $('[data-call].active').removeClass('active');
-        closeDialogs()
-
-        // if not remove the class from the original and then add it
-      } else {
-        $('[data-call].active').removeClass('active');
-        $(this).addClass('active');
-        openDialog(val);
-      }
-    });
-  }
-});
-
-// tools
-// layers
-function rig(selector, val) {
-  val = parseInt(val).toFixed(0);
-  
-  document.querySelectorAll(selector).forEach(function(elm, i) {
-    elm.style.display = 'none';
-    elm.style.opacity = '100%';
-    
-    if (i.toString() === val) {
-      elm.style.display = 'block';
-      elm.style.opacity = '100%';
-    }
-  });
-}
-$('[data-open=layers]').on('click', function() {
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-library]').show();
-  $('[data-canvasbg]').css('right', '50%');
-  $('[data-canvasbg]').css('border-right', '0');
-
-  // render selector(s) in canvas
-  $('[data-selectorlist].selector').each(function() {
-    if ($str === "") {
-      $str = ".canvas svg > " + $(this).find('span').text();
-    } else {
-      $str += ", .canvas svg > " + $(this).find('span').text();
-    }
-    $($str).attr("data-selected", "");
-  });
-});
-$('[data-close=layers]').on('click', function() {
-  $('[data-open=layers].active').removeClass('active');
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-dialog=layers]').hide();
-  $('[data-mainmenu]').show();
-  $('[data-canvasbg]').css('right', '');
-  $('[data-canvasbg]').css('border', '');
-  $('[data-selected]').removeAttr("data-selected");
-});
-$('[data-init=draw]').on('click', function() {
-  swal({
-    title: 'Give your animation a name!',
-    input: 'text',
-    inputPlaceholder: "something",
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    showLoaderOnConfirm: true
-  }).then((result) => {
-    if (result.value) {
-      $this = $('#elms option:selected').text();
-      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
-        alertify.error('Error: That name already exists!');
-        $('#elms option:selected').text($this);
-      } else {
-        counter++;
-        
-        // append the option
-        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
-
-        // now append the code
-        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="drawPath" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to(".svgmotion > svg > '+ $('[data-selectorlist].selector').text() +'", {\n  stroke: "#000",\n  strokeWidth: '+ parseFloat($('[data-selected]').css('stroke-width')) +',\n  duration: 0,\n  strokeDasharray: document.querySelector(".svgmotion > svg > '+ $('[data-selectorlist].selector').text() +'").getTotalLength() + "," + document.querySelector(".svgmotion > svg > '+ $('[data-selectorlist].selector').text() +'").getTotalLength(),\n  strokeDashoffset: document.querySelector(".svgmotion '+ $('[data-selectorlist].selector').text() +'").getTotalLength()\n}, 0.0)\n\nmainTL.to(".svgmotion > svg > '+ $('[data-selectorlist].selector').text() +'", {\n  strokeDashoffset: 0,\n  ease: "none",\n  duration: 1\n}, '+ time.textContent +')</textarea></div>');
-        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
-      }
-
-      alertify.success('Successfully added the "'+ result.value +'" drawPath animation.');
-      
-      // close layers and open the newly added keyframe
-      $('[data-close=layers]').trigger('click');
-      $('[data-open=keys]').trigger('click');
-    } else {
-      swal(
-        'Oops!',
-        console.error().toString(),
-        'error'
-      );
-    }
-  });
-});
-$('[data-init=tween]').on('click', function() {
-  if ($('[data-selectorlist].selector').length === 1) {
-    // attribute presets for snippet
-    if ($.inArray($('[data-selected]').prop('tagName').toLowerCase(), ['path', 'polygon']) !== -1) {
-      // matches
-      $attr = '\n  attr: {d: \"'+ $('[data-selected]').attr('d').toString() +'\"},';
-    } else {
-      // does not match
-      // $str = 'attr: {d: "m84.75,23.25l1,1l131,128l-129,121l-3,2l0,-252z"},';';
-      // $attr = '\n  attr: {d: \"'+ $('[data-selected]').attr('d').toString() +'\"},';
-      // $attr = '\n  attr: {attributeKey: "attributeValue"},';
-      $attr = '';
-    }
-
-    $selector = '.svgmotion > svg > ' + $('[data-selectorlist].selector').text();
-    
-    swal({
-      title: 'Give your tween a name!',
-      input: 'text',
-      inputPlaceholder: "something",
-      showCancelButton: true,
-      confirmButtonText: 'Save',
-      showLoaderOnConfirm: true
-    }).then((result) => {
-      if (result.value) {
-        $this = $('#elms option:selected').text();
-        if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
-          alertify.error('Error: That name already exists!');
-          $('#elms option:selected').text($this);
-        } else {
-          // append the option
-          $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
-
-          // now append the code
-          $('[data-keyscode]').append('<div data-keyselector="'+ $selector +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
-          // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
-          $('#elms option[value="'+ $selector +'"]').prop('selected', true);
-        }
-        
-        alertify.success('Successfully added the "'+ result.value +'" tween.');
-      
-        // close layers and open the newly added keyframe
-        $('[data-close=layers]').trigger('click');
-        $('[data-open=keys]').trigger('click');
-      } else {
-        swal(
-          'Oops!',
-          console.error().toString(),
-          'error'
-        );
-      }
-    });
-  } else {
-    arr = [];
-    $('[data-selectorlist].selector').each(function() {
-      arr.push('.svgmotion > svg > ' + this.textContent);
-    });
-    $selector = arr.join(', ');
-    
-    // attribute presets for snippet
-    $attr = '\n  attr: {attributeKey: "attributeValue"},';
-    // $attr = '';
-    
-    swal({
-      title: 'Give your tween a name!',
-      input: 'text',
-      inputPlaceholder: "something",
-      showCancelButton: true,
-      confirmButtonText: 'Save',
-      showLoaderOnConfirm: true
-    }).then((result) => {
-      if (result.value) {
-        $this = $('#elms option:selected').text();
-        if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
-          alertify.error('Error: That name already exists!');
-          $('#elms option:selected').text($this);
-        } else {          
-          // append the option
-          $('#elms').append('<option value="'+ $selector +'">'+ result.value.toString().toLowerCase() +'</option>');
-
-          // now append the code
-          $('[data-keyscode]').append('<div data-keyselector="'+ $selector +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()"></textarea></div>');
-          // $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]')[0].selected = true;
-          $('#elms option[value="'+ $selector +'"]').prop('selected', true);
-        }
-        
-        alertify.success('Successfully added the "'+ result.value +'" tween.');
-      
-        // close layers and open the newly added keyframe
-        $('[data-close=layers]').trigger('click');
-        $('[data-open=keys]').trigger('click');
-      } else {
-        swal(
-          'Oops!',
-          console.error().toString(),
-          'error'
-        );
-      }
-    });
-  }
-});
-$('[data-init=rig]').on('click', function() {
-  swal({
-    title: 'Give your animation a name!',
-    input: 'text',
-    inputPlaceholder: "something",
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    showLoaderOnConfirm: true
-  }).then((result) => {
-    if (result.value) {
-      $this = $('#elms option:selected').text();
-      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
-        alertify.error('Error: That name already exists!');
-        $('#elms option:selected').text($this);
-      } else {
-        $selector = '.svgmotion > svg > ' + $('[data-selectorlist].selector').text();
-        
-        // append the option
-        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
-
-        // now append the code
-        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="rig" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">mainTL.to({}, {\n  duration: 1,\n  immediateRender: true,\n  onUpdate() {\n    rig("'+ $selector +' > g", 0);\n  }\n}, '+ time.textContent +');</textarea></div>');
-        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
-      }
-
-      alertify.success('Successfully added the "'+ result.value +'" rig.');
-      
-      // close layers and open the newly added keyframe
-      $('[data-close=layers]').trigger('click');
-      $('[data-open=keys]').trigger('click');
-    } else {
-      swal(
-        'Oops!',
-        console.error().toString(),
-        'error'
-      );
-    }
-  });
-});
-$('[data-init=framebyframe]').on('click', function() {
-  swal({
-    title: 'Give your animation a name!',
-    input: 'text',
-    inputPlaceholder: "something",
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    showLoaderOnConfirm: true
-  }).then((result) => {
-    if (result.value) {
-      $this = $('#elms option:selected').text();
-      if ($('[data-keyname='+ result.value.toString().toLowerCase() +']').length === 1) {
-        alertify.error('Error: That name already exists!');
-        $('#elms option:selected').text($this);
-      } else {
-        counter++;
-        
-        // append the option
-        $('#elms').append('<option value="'+ $('[data-selectorlist].selector').text() +'">'+ result.value.toString().toLowerCase() +'</option>');
-
-        // now append the code
-        $('[data-keyscode]').append('<div data-keyselector="'+ $('[data-selectorlist].selector').text() +'" data-animtype="tween" data-keyname="'+ result.value.toString().toLowerCase() +'"><textarea class="js" spellcheck="false" autocorrect="off" autocapitalize="off" onkeyup="updateCode()" onchange="updateCode()">let groups'+ counter +' = gsap.utils.toArray(".svgmotion > svg > '+ $('[data-selectorlist].selector').text() +' > g");\nlet wrap'+ counter +' = gsap.utils.wrap(0, groups'+ counter +'.length - 1);\nlet frame'+ counter +' = 0;\n\nmainTL.to({}, {\n  duration: 0.1,\n  repeat: 9,\n  onRepeat() {\n    let last'+ counter +' = groups'+ counter +'[wrap'+ counter +'(frame'+ counter +')];\n    let next'+ counter +' = groups1[wrap'+ counter +'(++frame'+ counter +')];\n\n    last'+ counter +'.style.display = "none";\n    last'+ counter +'.style.opacity = "0";\n    next'+ counter +'.style.display = "block";\n    next'+ counter +'.style.opacity = "100%";\n  }\n}, 0.0)</textarea></div>');
-        $('#elms option[value="'+ $('[data-selectorlist].selector').text() +'"]').prop('selected', true);
-      }
-
-      alertify.success('Successfully added the "'+ result.value +'" frame by frame animation.');
-      
-      // close layers and open the newly added keyframe
-      $('[data-close=layers]').trigger('click');
-      $('[data-open=keys]').trigger('click');
-    } else {
-      swal(
-        'Oops!',
-        console.error().toString(),
-        'error'
-      );
-    }
-  });
-});
-
-// keyframes
-$('[data-add=snippet]').click(function() {
-  if ($(elms.value).length === 1) {
-    var addSnippet = "mainTL.to('"+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: '100%',\n  fill: '"+ $(elms.value).css('fill') +"',\n  stroke: '"+ $(elms.value).css('stroke') +"',\n  strokeWidth: "+ parseInt($(elms.value).css('stroke-width')) +",\n  borderRadius: 0,\n  // eases: none, power1.in, power2.out, power3.inOut, power4, back, elastic, bounce, rough, slow, steps, circ, expo, and sine\n  ease: 'none',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},"+ $attr +"\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, "+ time.textContent +")";
-  } else {
-    var addSnippet = "mainTL.to('"+ elms.value +"', {\n  x: 0,\n  y: 0,\n  scaleX: 1,\n  scaleY: 1,\n  scale: 1,\n  rotation: 0,\n  transformOrigin: 'center center',\n  opacity: '100%',\n  fill: '#fff',\n  stroke: '#fff',\n  strokeWidth: 0,\n  borderRadius: 0,\n  // eases: none, power1, power2, power3, power4, back, elastic, bounce, rough, slow, steps, circ, expo, and sine\n  ease: 'power1.inOut',\n  duration: 1,\n  delay: 0,\n  motionPath: {path: \"path\"},"+ $attr +"\n  onStart: function() {\n    // call function onstart\n  },\n  onComplete: function() {\n    // call function oncomplete\n  },\n  onUpdate: function() {\n    // call function onupdate\n  }\n}, "+ time.textContent +")";
-  }
-  
-  $('[data-keyselector="'+ elms.value +'"] textarea').val($('[data-keyselector="'+ elms.value +'"] textarea').val() + '\n\n' + addSnippet);
-  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
-//  $('[data-add=snippet]').hide();
-});
-$('[data-open=keys]').on('click', function() {
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-keys]').show();
-  $('[data-canvasbg]').css('bottom', '50%');
-  $('[data-canvasbg]').css('border-bottom', '0');
-  $('[data-selected]').removeAttr("data-selected");
-  
-  // only show the selectable key's value
-  $('#elms').trigger('change');
-  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
-});
-$('[data-close=keys]').on('click', function() {
-  $('[data-open=keys].active').removeClass('active');
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-dialog=keys]').hide();
-  $('[data-mainmenu]').show();
-  $('[data-canvasbg]').css('bottom', '');
-  $('[data-canvasbg]').css('border', '');
-});
-function updateOptionCode() {
-  $('[data-keyselector]').hide();
-  $('[data-keyselector="'+ elms.value +'"]').show();
-  
-  // set code editor value
-  editor.setValue($('[data-keyselector="'+ elms.value +'"] textarea').val());
-//  mainTL.progress(parseFloat(getDecimal).toFixed(2));
-  $('[data-playit=nextframe]').trigger('click');
-  $('[data-playit=prevframe]').trigger('click');
-  
-  // hide edit path button if a path is not selected
-  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
-    editOnCodepen.style.display = 'inline-block';
-  } else {
-    editOnCodepen.style.display = 'none';
-  }
-  
-  // hide sample snippet button if frame by frame is visible
-  if ($('[data-keyselector="'+ elms.value +'"]').attr('data-animtype').toLowerCase() === 'framebyframe' || $('[data-keyselector="'+ elms.value +'"]').attr('data-animtype').toLowerCase() === 'drawpath') {
-    $('[data-add=snippet]').hide();
-  } else {
-    $('[data-add=snippet]').show();
-  }
-}
-$('#elms').on('keyup change', function() {
-  updateOptionCode();
-});
-
-// selectors for layers
-$('[data-select]').on('click', function() {
-  $val = $(this).data('select');
-
-  if ($val === 'all') {
-    if (!$('[data-selected]').is(':visible')) {
-      $('[data-display=selector] li').trigger('click');
-      
-      // remember selector(s) via string
-      $str = "";
-
-      // render selector(s) in canvas
-      $('[data-selectorlist].selector').each(function() {
-        if ($str === "") {
-          $str = ".canvas svg > " + $(this).find('span').text();
-        } else {
-          $str += ", .canvas svg > " + $(this).find('span').text();
-        }
-        $($str).attr("data-selected", "");
-      });
-      return false;
-    }
-    
-    // select all the same tags inside the same parent
-    $('[data-selected]').each(function() {
-      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
-      $(this).removeAttr("data-selected").parent().find(tagNombre).attr("data-selected", "");
-    });
-    
-    // remember selector(s) via string
-    $str = "";
-
-    // activate selection in libary from canvas
-    $(".canvas svg [data-selected]").each(function() {
-      $str = $(this).getPath().split(remStr).join('');
-      $('[data-selectorlist]').each(function() {
-        if ($(this).find('span').text() === $str) {
-          $(this).addClass('selector');
+          // If the clicked button was already active, hide it's content
+          const tabName = this.getAttribute("data-toggletab");
+          const selectedTab = document.querySelector(
+            `[data-toggletab="${tabName}"]`);
+          const selectedTabContent = document.querySelector(
+            `[data-tabcontent="${tabName}"]`);
+          selectedTab.classList.remove("text-blue-500", "border-b", "border-blue-500");
+          selectedTabContent.classList.add("hidden");
         }
       });
     });
-      
-    detectForFrameByFrame();
-  } else 
-    if ($val === 'none') {
-    $('[data-display=selector] li').removeClass('selector');
 
-    // clear canvas selector(s)
-    if ($('[data-selected]').is(':visible')) {
-      $("[data-selected]").removeAttr("data-selected");
-    }
+    // place svg code
+    app.updatePreview();
     
-    // hide tween and framebyframe init buttons
-    $('.librarylinks [data-init]').hide();
-    return false;
-  } else 
-    if ($val === 'parent') {
-    if ($('.canvas svg > [data-selected]').is(':visible')) {
-      alertify.error('Error: Cannot select higher than the svg itself.');
-      return false;
-    }
-    
-    if (!$('[data-selected]').is(':visible')) {
-      $('[data-display=selector] li').trigger('click');
-      
-      // remember selector(s) via string
-      $str = "";
+    // init zooming and panning
+    app.initZoomPan();
 
-      // render selector(s) in canvas
-      $('[data-selectorlist].selector').each(function() {
-        if ($str === "") {
-          $str = ".canvas svg > " + $(this).find('span').text();
-        } else {
-          $str += ", .canvas svg > " + $(this).find('span').text();
-        }
-        $($str).attr("data-selected", "");
-      });
-      return false;
-    }
-      
-    $('[data-display=selector] li').removeClass('selector');
-    
-    // select all the same tags inside the same parent
-    $('[data-selected]').each(function() {
-      $(this).removeAttr("data-selected").parent().attr("data-selected", "");
-      return false;
-    });
-    
-    // remember selector(s) via string
-    $str = "";
-
-    // activate selection in libary from canvas
-    $(".canvas svg [data-selected]").each(function() {
-      $str = $(this).getPath().split(remStr).join('');
-      $('[data-selectorlist]').each(function() {
-        if ($(this).find('span').text() === $str) {
-          $(this).addClass('selector');
-          return false;
-        }
-      });
-    });
-      
-    detectForFrameByFrame();
-    return false;
-  } else 
-    if ($val === 'next') {
-    if (!$('[data-selected]').is(':visible')) {
-      $('[data-display=selector] li').trigger('click');
-      
-      // remember selector(s) via string
-      $str = "";
-
-      // render selector(s) in canvas
-      $('[data-selectorlist].selector').each(function() {
-        if ($str === "") {
-          $str = ".canvas svg > " + $(this).find('span').text();
-        } else {
-          $str += ", .canvas svg > " + $(this).find('span').text();
-        }
-        $($str).attr("data-selected", "");
-      });
-      return false;
-    }
-      
-    $('[data-display=selector] li').removeClass('selector');
-    
-    // select all the same tags inside the same parent
-    $('[data-selected]').each(function() {
-      $(this).removeAttr("data-selected").next().attr("data-selected", "");
-    });
-    
-    // remember selector(s) via string
-    $str = "";
-
-    // activate selection in libary from canvas
-    $(".canvas svg [data-selected]").each(function() {
-      $str = $(this).getPath().split(remStr).join('');
-      $('[data-selectorlist]').each(function() {
-        if ($(this).find('span').text() === $str) {
-          $(this).addClass('selector');
-        }
-      });
-    });
-      
-    detectForFrameByFrame();
-    return false;
-  } else 
-    if ($val === 'prev') {
-    if (!$('[data-selected]').is(':visible')) {
-      $('[data-display=selector] li').trigger('click');
-      
-      // remember selector(s) via string
-      $str = "";
-
-      // render selector(s) in canvas
-      $('[data-selectorlist].selector').each(function() {
-        if ($str === "") {
-          $str = ".canvas svg > " + $(this).find('span').text();
-        } else {
-          $str += ", .canvas svg > " + $(this).find('span').text();
-        }
-        $($str).attr("data-selected", "");
-      });
-      return false;
-    }
-      
-    $('[data-display=selector] li').removeClass('selector');
-    
-    // select all the same tags inside the same parent
-    $('[data-selected]').each(function() {
-      $(this).removeAttr("data-selected").prev().attr("data-selected", "");
-    });
-    
-    // remember selector(s) via string
-    $str = "";
-
-    // activate selection in libary from canvas
-    $(".canvas svg [data-selected]").each(function() {
-      $str = $(this).getPath().split(remStr).join('');
-      $('[data-selectorlist]').each(function() {
-        if ($(this).find('span').text() === $str) {
-          $(this).addClass('selector');
-        }
-      });
-    });
-      
-    detectForFrameByFrame();
-    return false;
-  } else 
-    if ($val === 'even') {
-    if (!$('[data-selected]').is(':visible')) {
-      $('[data-display=selector] li:even').trigger('click');
-      
-      // remember selector(s) via string
-      $str = "";
-
-      // render selector(s) in canvas
-      $('[data-selectorlist].selector').each(function() {
-        if ($str === "") {
-          $str = ".canvas svg > " + $(this).find('span').text();
-        } else {
-          $str += ", .canvas svg > " + $(this).find('span').text();
-        }
-        $($str).attr("data-selected", "");
-      });
-      return false;
-    }
-      
-    $('[data-display=selector] li').removeClass('selector');
-      
-    // select all the same tags inside the same parent
-    $('[data-selected]').each(function() {
-      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
-      $(this).removeAttr("data-selected").parent().find(tagNombre + ":even").attr("data-selected", "");
-    });
-    
-    // remember selector(s) via string
-    $str = "";
-
-    // activate selection in libary from canvas
-    $(".canvas svg [data-selected]").each(function() {
-      $str = $(this).getPath().split(remStr).join('');
-      $('[data-selectorlist]').each(function() {
-        if ($(this).find('span').text() === $str) {
-          $(this).addClass('selector');
-        }
-      });
-    });
-      
-    detectForFrameByFrame();
-  } else 
-    if ($val === 'odd') {
-    if (!$('[data-selected]').is(':visible')) {
-      $('[data-display=selector] li:odd').trigger('click');
-      
-      // remember selector(s) via string
-      $str = "";
-
-      // render selector(s) in canvas
-      $('[data-selectorlist].selector').each(function() {
-        if ($str === "") {
-          $str = ".canvas svg > " + $(this).find('span').text();
-        } else {
-          $str += ", .canvas svg > " + $(this).find('span').text();
-        }
-        $($str).attr("data-selected", "");
-      });
-      return false;
-    }
-      
-    $('[data-display=selector] li').removeClass('selector');
-      
-    // select all the same tags inside the same parent
-    $('[data-selected]').each(function() {
-      var tagNombre = $('[data-selected]').prop("tagName").toLowerCase();
-      $(this).removeAttr("data-selected").parent().find(tagNombre + ":odd").attr("data-selected", "");
-    });
-    
-    // remember selector(s) via string
-    $str = "";
-
-    // activate selection in libary from canvas
-    $(".canvas svg [data-selected]").each(function() {
-      $str = $(this).getPath().split(remStr).join('');
-      $('[data-selectorlist]').each(function() {
-        if ($(this).find('span').text() === $str) {
-          $(this).addClass('selector');
-        }
-      });
-    });
-      
-    detectForFrameByFrame();
-  } else 
-    if ($val === 'custom') {
-    swal({
-      title: 'Custom selector',
-      input: 'text',
-      showCancelButton: true
-    }).then((result) => {
-      if (result.value) {
-        // remove currect selection(s)
-        $('[data-display=selector] li').removeClass('selector');
-
-        // clear canvas selector(s)
-        if ($('[data-selected]').is(':visible')) {
-          $("[data-selected]").removeAttr("data-selected");
-        }
-
-        // user's custom selector
-        $elm = result.value.split(',').join(', .canvas svg > ');
-        
-        // activate selection in canvas
-        $(".canvas svg > " + $elm).each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $(this).attr("data-selected", "");
-        });
-        
-        // activate selection in libary from canvas
-        $(".canvas svg [data-selected]").each(function() {
-          $str = $(this).getPath().split(remStr).join('');
-          $('[data-selectorlist]').each(function() {
-            if ($(this).find('span').html() === $str) {
-              $(this).addClass('selector');
-            }
-          });
-        });
-        
-        return false;
-      }
-    });
-      
-    detectForFrameByFrame();
-  } else {
-    alertify.error('Selection error');
-  }
-
-  // clear canvas selector(s)
-  if ($('[data-selected]').is(':visible')) {
-    $("[data-selected]").removeAttr("data-selected");
-  }
-
-  // remember selector(s) via string
-  $str = "";
-
-  // render selector(s) in canvas
-  $('[data-selectorlist].selector').each(function() {
-    if ($str === "") {
-      $str = ".canvas svg > " + $(this).find('span').text();
-    } else {
-      $str += ", .canvas svg > " + $(this).find('span').text();
-    }
-    $($str).attr("data-selected", "");
-    
-    // show tween and framebyframe init buttons
-    detectForFrameByFrame();
-  });
-});
-
-// filters
-$('[data-open=filters]').on('click', function() {
-  if ($('[data-call].active').is(':visible')) {
-    $('[data-call].active').trigger('click');
-  }
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-filtericons]').show();
-});
-$('[data-filter]').on('click', function() {
-  $this = $(this).attr('data-filter');
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-toolsoption]').hide();
-  $('[data-filters]').show();
-  $('[data-toolsoption='+ $this +']').show();
-});
-$('[data-close=filters]').on('click', function() {
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-mainmenu]').show();
-});
-$('[data-close=filter]').on('click', function() {
-  $('[data-topmenu] .mainmenu').hide();
-  $('[data-filtericons]').show();
-});
-$('[data-clear=filters]').on('click', function() {
-  $('.canvas svg').css('filter', '');
-  $('[data-canvas] svg').css('filter', '');
-  blurfilter.value = 0;
-  huefilter.value = 0;
-  brightnessfilter.value = 1;
-  contrastfilter.value = 1;
-  saturatefilter.value = 1;
-  grayscalefilter.value = 0;
-  sepiafilter.value = 0;
-  invertfilter.value = 0;
-
-  $('[data-close=filters]').trigger('click');
-  applyFilters();
-});
-
-// apply filters
-function applyFilters() {
-  $('[data-canvas] svg').css('filter', 'blur('+ blurfilter.value +'px) hue-rotate('+ huefilter.value +'deg) brightness('+ brightnessfilter.value +')  contrast('+ contrastfilter.value +') saturate('+ saturatefilter.value +') grayscale('+ grayscalefilter.value +'%) sepia('+ sepiafilter.value +'%) invert('+ invertfilter.value +'%)');
-}
-$('.filterval').change(function() {
-  applyFilters();
-});
-applyFilters();
-
-// zoom/pan
-$('[data-zoom]').on('click', function() {
-  if ($(this).attr('data-zoom') === 'true') {
-    $('[data-zoom]').attr('data-zoom', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#fff"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#fff"></line><g transform="matrix(1 0 0 1 4 0)"><g transform="matrix(1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g><g transform="matrix(-1 0 0 1 205.5 210)"><line x1="-43.5" y1="-43" x2="43.5" y2="43" stroke-width="45" stroke-linecap="round" stroke="#fff"></line></g></g></svg>');
-    $('[data-resetzoompos]').hide();
-    instance.pause();
-    canvasClickSelect();
-  } else {
-    $('[data-zoom]').attr('data-zoom', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 512 512"><circle cx="209" cy="209" r="158" fill="none" stroke-width="90" stroke="#1e7eeb"></circle><line stroke-width="90" x1="463" y1="463" x2="364" y2="361" stroke-linecap="round" stroke="#1e7eeb"></line></svg>');
-    $('[data-resetzoompos]').show();
-    instance.resume();
-  }
-});
-// reset zoom position
-$('[data-resetzoompos]').click(function() {
-  $('[data-canvas]').css('transform-origin', '')
-                    .css('transform', '');
-  instance.restore();
-});
-
-// init the player
-function updateCode() {
-  // clear the variables
-  jsStr = '';
-
-  // apply the javascript
-  $('textarea.js').each(function() {
-    jsStr += $(this).val() + '\n';
-  });
-
-//  $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
-
-  if ($('[data-repeat]').attr('data-repeat') === 'true') {
-    $code = 'var mainTL = new TimelineMax({repeat: -1, onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
-  } else {
-    $code = 'var mainTL = new TimelineMax({onUpdate: function() {\n  time.textContent = parseFloat(mainTL.progress()).toFixed(2)}, onComplete: function() {$("[data-play]").trigger("click")}})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.pause('+ time.textContent +').timeScale('+ timescale.value +');\n$("[data-timeduration]").text(parseFloat(mainTL.duration()).toFixed(2))';
-  }
-
-  // run the code
-  $('[data-canvas]').empty().html(origSVG);
-  applyFilters();
-  $('[data-canvas]').append('<script>'+ $code +'</script>');
-  updatePlayer();
-  
-  detectInt  = parseFloat(time.textContent).toFixed(2);
-  totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
-  getPerc    = (detectInt * 100) / totalInt;
-  getPerc    = Math.round(getPerc);
-  getDecimal = parseFloat(getPerc) / 100;
-  mainTL.progress(parseFloat(getDecimal).toFixed(2));
-  return false;
-}
-$('#timescale').on('change', function() {
-  if ($('[data-play]').attr('data-play') === 'true') {
-    // is paused
-    updateCode();
-  } else {
-    // is playing
-    $('[data-play]').trigger('click');
-    updateCode();
-    $('[data-play]').trigger('click');
-  }
-});
-function updatePlayer() {
-  $(".playhead").removeAttr('style');
-  
-  var $sequenceTime = $("#time"),
-      sequenceTrackLength,
-      sequenceDragger,
-      draggable;
-
-  mainTL.eventCallback("onUpdate", updateDragger)
-  sequenceTrackLength = $('.seek-bar').width();
-  sequenceDragger = $(".playhead");
-  draggable = Draggable.create(sequenceDragger, {
-    type:"x",
-//    edgeResistance: 1,
-//    overshootTolerance: 0,
-    bounds:{minX:0, maxX:sequenceTrackLength},
-    onDrag: function() {
-      mainTL.progress(this.x / sequenceTrackLength).pause();
-    }
-  })[0];
-
-  function updateDragger() {
-    TweenMax.set(sequenceDragger, {x:sequenceTrackLength * mainTL.progress()})
-    $sequenceTime.html(mainTL.time().toFixed(2))
-
-    detectInt  = parseFloat(time.textContent).toFixed(2);
-    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
-    getPerc    = (detectInt * 100) / totalInt;
-    getPerc    = Math.round(getPerc);
-    getDecimal = parseFloat(getPerc) / 100;
-
-    $('.progress-bar').css('width', getPerc + '%');
-  }
-}
-
-// timeline buttons
-$('[data-play]').on('click', function() {
-  if ($(this).attr('data-play') === 'true') {
-    // pause state
-    $('[data-play]').attr('data-play', false)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.142 201.143 C 73.142 211.235 81.336 219.429 91.429 219.429 L 91.429 219.429 C 101.521 219.429 109.715 211.235 109.715 201.143 L 109.715 54.857 C 109.715 44.765 101.521 36.571 91.429 36.571 L 91.429 36.571 C 81.336 36.571 73.142 44.765 73.142 54.857 L 73.142 201.143 Z "/><path d=" M 146.286 201.143 C 146.286 211.235 154.48 219.429 164.572 219.429 L 164.572 219.429 C 174.664 219.429 182.858 211.235 182.858 201.143 L 182.858 54.857 C 182.858 44.765 174.664 36.571 164.572 36.571 L 164.572 36.571 C 154.48 36.571 146.286 44.765 146.286 54.857 L 146.286 201.143 Z "/></svg>');
-    
-//    // stop symbol
-//           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 54.836 219.429 C 44.744 219.429 36.55 211.235 36.55 201.143 L 36.55 54.857 C 36.55 44.765 44.744 36.571 54.836 36.571 L 201.164 36.571 C 211.256 36.571 219.45 44.765 219.45 54.857 L 219.45 201.143 C 219.45 211.235 211.256 219.429 201.164 219.429 L 54.836 219.429 Z " /></svg>');
-    $('[data-render]').show();
-    
-    if(mainTL.progress() < 1) {
-      mainTL.play();
-    } else {
-      mainTL.restart();
-      $('.playhead').attr('style', 'left: 0%;');
-    }
-    
-  } else {
-    // play state
-    $('[data-play]').attr('data-play', true)
-           .html('<svg style="isolation:isolate" viewBox="0 0 256 256"><path d=" M 73.143 219.429 L 73.143 219.429 C 63.051 219.429 54.857 211.235 54.857 201.143 L 54.857 158.476 L 54.857 97.524 L 54.857 54.857 C 54.857 44.765 63.051 36.571 73.143 36.571 L 73.143 36.571 C 83.235 36.571 201.143 99 201.143 128 C 201.143 157 83.235 219.429 73.143 219.429 Z "/></svg>');
-    $('[data-render]').hide();
-    mainTL.pause();
-
-    detectInt  = parseFloat(time.textContent).toFixed(2);
-    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
-    getPerc    = (detectInt * 100) / totalInt;
-    getPerc    = Math.round(getPerc);
-    getDecimal = parseFloat(getPerc) / 100;
-    mainTL.progress(parseFloat(getDecimal).toFixed(2));
-  }
-});
-$('[data-playit=firstframe]').click(function() {
-  time.textContent = '0.00';
-//  mainTL.seek(0);
-  mainTL.progress(0);
-//  $('.progress-bar').css('width', '0%');
-});
-$('[data-playit=nextframe]').click(function() {
-  // detect if is already last frame
-  if ($('[data-timeduration]').text() === time.textContent) {
-    $('[data-playit=firstframe]').trigger('click');
-    return false;
-  }
-  
-  if (parseFloat(time.textContent).toFixed(2) >= 0 || time.textContent < parseFloat(mainTL.progress()).toFixed(2)) {
-//    time.textContent = parseFloat(0.01 + parseFloat(mainTL.progress())).toFixed(2);
-    time.textContent = parseFloat(0.01 + parseFloat(time.textContent)).toFixed(2);
-//    mainTL.seek(parseFloat(time.textContent));
-    
-    detectInt  = parseFloat(time.textContent).toFixed(2);
-    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
-    getPerc    = (detectInt * 100) / totalInt;
-    getPerc    = Math.round(getPerc);
-    getDecimal = parseFloat(getPerc) / 100;
-    mainTL.progress(parseFloat(getDecimal).toFixed(2));
-//    $('.progress-bar').css('width', getPerc + '%');
-  }
-});
-$('[data-playit=prevframe]').click(function() {
-  // detect if is already first frame
-  if (time.textContent === '0.00') {
-    $('[data-playit=lastframe]').trigger('click');
-    return false;
-  }
-  
-  if (parseFloat(time.textContent).toFixed(2) > 0 || time.textContent > parseFloat(mainTL.progress()).toFixed(2)) {
-//    time.textContent = parseFloat(parseFloat(mainTL.progress()) - 0.01).toFixed(2);
-    time.textContent = parseFloat(parseFloat(time.textContent - 0.01)).toFixed(2);
-//    mainTL.seek(parseFloat(time.textContent));
-    
-    detectInt  = parseFloat(time.textContent).toFixed(2);
-    totalInt   = parseFloat($('[data-timeduration]').text()).toFixed(2);
-    getPerc    = (detectInt * 100) / totalInt;
-    getPerc    = Math.round(getPerc);
-    getDecimal = parseFloat(getPerc) / 100;
-    mainTL.progress(parseFloat(getDecimal).toFixed(2));
-//    $('.progress-bar').css('width', getPerc + '%');
-  }
-});
-$('[data-playit=lastframe]').click(function() {
-  time.textContent = $('[data-timeduration]').text();
-//  mainTL.seek(time.textContent);
-  mainTL.progress(1);
-//  $('.progress-bar').css('width', '100%');
-});
-$('[data-repeat]').on('click', function() {
-  if ($(this).attr('data-repeat') === 'true') {
-    // no loop
-    $('[data-repeat]').attr('data-repeat', false);
-    $('textarea.js').trigger('change');
-  } else {
-    // repeat/loop
-    $('[data-repeat]').attr('data-repeat', true);
-    $('textarea.js').trigger('change');
-  }
-});
-$('[data-delit]').click(function() {
-  swal({
-    title: 'Proceed with deleting tween?',
-    text: "Are you sure? All your data will be lost!",
-    type: 'question',
-    showCancelButton: true
-  }).then((result) => {
-    if (result.value) {
-      // remove the div
-      $('.selectors [data-keyselector="'+ elms.value +'"]').remove();
-      
-      // lastly remove the select option
-      $('#elms option:selected').remove();
-      $('#elms').trigger('change');
-    } else {
-      return false;
-    }
-  })
-});
-$('[data-editname]').click(function() {
-  swal({
-    title: 'Change tween name?',
-    input: 'text',
-    inputPlaceholder: "something",
-    showCancelButton: true,
-    confirmButtonText: 'Save',
-    showLoaderOnConfirm: true
-  }).then((result) => {
-    if (result.value) {
-      $this = $('#elms option:selected').text();
-      $('#elms option').each(function() {
-        if ($(this).text() != result.value) {
-          $('#elms option:selected').text(result.value);
-        } else {
-          alertify.error('Error: That name already exists!');
-          $('#elms option:selected').text($this);
-          return false;
-        }
-      });
-    } else {
-      swal(
-        'Oops!',
-        console.error().toString(),
-        'error'
-      );
-    }
-  });
-});
-
-// enable/disable snippet presets
-$('.props > div > div > input[type=checkbox]').on('change', function() {
-  if (this.checked) {
-    $(this).parent().find('input').removeAttr('disabled');
-    $(this).parent().find('select').removeAttr('disabled');
-  } else {
-    $(this).parent().find('input:not(input[type=checkbox])').attr('disabled', true);
-    $(this).parent().find('select').attr('disabled', true);
-  }
-});
-
-// change input/textarea font size
-$('[data-fontsize]').on('keyup change', function() {
-  $('input, textarea, .CodeMirror').css('font-size', this.value + 'px');
-});
-
-// init animations
-function getCode() {
-  // clear the variables
-  jsStr = '';
-  
-  // clear and reset the canvas
-  $('[data-canvas]').empty().html(origSVG);
-  applyFilters();
-  
-  // apply the javascript
-  $('textarea.js').each(function() {
-    jsStr += $(this).val() + '\n';
-  });
-  
-//  $code = 'var mainTL = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
-//  $code = 'var mainTL = new TimelineMax('+ ($('[data-repeat]').attr('data-repeat') === 'true') ? "{repeat: -1}" : "" +')\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
-  
-  if ($('[data-repeat]').attr('data-repeat') === 'true') {
-    $code = 'var mainTL = new TimelineMax({repeat: -1})\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
-  } else {
-    $code = 'var mainTL = new TimelineMax()\n' + jsStr + 'var fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');\n';
-  }
-}
-$('[data-render]').click(function() {
-//  alertify.log("coming soon...");
-//  return false;
-  
-  if (!$("[data-canvas]").html()) {
-    alertify.error("Abort Operation: No svg detected!");
-    return false;
-  }
-  
-  // if animation is already playing
-  if ($('[data-play=false]').is(':visible')) {
-    $('[data-play=false]').trigger('click')
-  }
-  
-  getCode();
-  if (jsStr.toString().split(' ').join('').toLowerCase().includes('repeat:-1')) {
-    alertify.error("Error: Indefinite repeat found!");
-    alertify.error("Do NOT use repeat: -1");
-    alertify.error("Use a specific number!!");
-    $('.playback').show();
-    $('[data-render]').hide();
-    return false;
-  }
-  
-  if ($('[data-render]')[0].textContent.toLowerCase() === 'render') {
-    // hide settings
-    $('[data-call=settings] img').css({
-      width: 0,
-      padding: 0,
-      overflow: 'hidden'
-    });
-    
-    $('[data-midbtns]').hide();
-    $('[data-export]').show();
-    $('[data-render]').show().text('RENDERING ANIMATION').css('color', '#e71fd8');
-    
-    // close keys
-    $('[data-close=keys]').trigger('click');
-    
-    $('[data-canvas]').empty().html(origSVG);
-    applyFilters();
-    $('[data-canvas]').append('<script>'+ $code +'</script>');
-    setTimeout(function() {
-      var fps = $("[data-fps]").val();
-      var duration = mainTL.duration();
-//      var duration = tl.totoalDuration();
-//      var duration = tl.totalDuration();
-      var frames   = Math.ceil(duration / 1 * fps);
-      var current  = 0;
-
-      // canvas
-      var svg    = document.querySelector("[data-canvas] svg");
-      var canvas = document.createElement("canvas");
-      var ctx    = canvas.getContext("2d");
-
-      canvas.width  = $("[data-project=width]").val();
-      canvas.height = $("[data-project=height]").val();
-      var jsonStr = [];
-
-      function processImage() {
-        mainTL.progress(current++ / frames);
-
-        var xml  = new XMLSerializer().serializeToString(svg);
-        var blob = window.btoa(xml);
-        var img  = new Image();
-        img.src  = "data:image/svg+xml;base64," + blob;
-
-        img.crossOrigin = "Anonymous";
-        img.onload = function() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(this, 0, 0);
-          var imgType = canvas.toDataURL("image/png");
-          var image = new Image();
-          image.src = imgType;
-          jsonStr.push(imgType);
-          
-          // export gif animation
-          document.querySelector("[data-export=gif]").onclick = function() {
-            $("body").append('<div class="table preloaderbg" data-show="preloader"><div class="cell"><div class="preloader"><svg class="w100p" viewBox="0 0 600 150"><text y="93.75" x="75" style="line-height:125%;" font-weight="400" font-size="80" font-family="Lato" letter-spacing="0" word-spacing="0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><tspan>Creating GIF</tspan></text></svg></div></div></div>');
-
-            gifshot.createGIF({
-              images: jsonStr,
-              gifWidth: canvas.width,
-              gifHeight: canvas.height,
-              interval: fps / 1000, // seconds
-              progressCallback: function(captureProgress) { console.log('progress: ', captureProgress); },
-              completeCallback: function() { console.log('completed!!!'); },
-              numWorkers: 2,
-            },function(obj) {
-                if(!obj.error) {
-                  var a = document.createElement("a");
-                  a.href = obj.image;
-                  a.target = "_blank";
-                  
-                  if (a.download === undefined) {
-                    // do stuff
-                  } else {
-                    var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
-                    if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-                      projectname = $("[data-projectname]")[0].value = "_svgMotion";
-                    }
-
-                    if (bowser.msie && bowser.version <= 6) {
-                      // hello ie
-                    } else if (bowser.firefox) {
-                      // hello firefox
-                      a.download = projectname + ".gif";
-                    } else if (bowser.chrome) {
-                      // hello chrome
-                      a.download = projectname + ".gif";
-                    } else if (bowser.safari) {
-                      // hello safari
-                    } else if(bowser.iphone || bowser.android) {
-                      // hello mobile
-                    }
-                  }
-                  
-                  a.click();
-
-                  $("[data-show=preloader]").remove();
-                }
-              }
-            );
-          };
-          
-          // export image sequence
-          document.querySelector("[data-export=images]").onclick = function() {
-            var zip = new JSZip();
-
-            for (var i = 0; i < jsonStr.length; i++) {
-              zip.file("frame-"+[i]+".png", jsonStr[i].split('base64,')[1],{base64: true});
-            }
-
-            var content = zip.generate({type:"blob"});
-            var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")
-            if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-              projectname = $("[data-projectname]")[0].value = "_svgMotion";
-            }
-            saveAs(content, projectname + "-sequence.zip");
-          };
-        };
-
-        if (current <= frames) {
-          processImage();
-        } else {
-          mainTL.play(0).timeScale(1.0);
-          $('[data-render]').text('FINISHED');
-        }
-      }
-      processImage();
-    }, 2);
-  } else {
-    delete window.duration;
-    delete window.frames;
-    delete window.current;
-
-    // reset icons
-    $('[data-export]').hide();
-    $('[data-midbtns]').show();
-
-    // stop animation
-    $('.playback').show();
-    // play state
-    // if animation is already playing
-    if ($('[data-play=false]').is(':visible')) {
-      $('[data-play=false]').trigger('click')
-    }
-    updateCode();
-    
-    // reset icon
-    $('[data-render]').text('RENDER').attr('style', '');
-  
-    // show settings
-    $('[data-call=settings] img').removeAttr('style');
-    
-    $('[data-render]').show();
-    
-    var highestTimeoutId = setTimeout(";");
-    for (var i = 0 ; i < highestTimeoutId ; i++) {
-      clearTimeout(i); 
-    }
-  }
-});
-
-// export files
-function getProjectJSON() {
-  if ($('[data-keyname]').length === 0) {
-    $("[data-keyscode]").html();
-  } else {
-    keyscode = [];
-    $('textarea.js').each(function() {
-      keyscode.push(this.value);
-    });
-  }
-  
-  projectJSON = {
-    "version": version,
-    "settings": [{
-      "name"     : $('[data-projectname]').val(),
-      "width"    : $('[data-project=width]').val(),
-      "height"   : $('[data-project=height]').val(),
-      "framerate": $('[data-fps]').val(),
-      "fontsize" : $('[data-fontsize]').val(),
-      "notepad"  : $('[data-notepad]').val()
-    }],
-    "filters": [{
-      "blurfilter"      : blurfilter.value,
-      "huefilter"       : huefilter.value,
-      "brightnessfilter": brightnessfilter.value,
-      "contrastfilter"  : contrastfilter.value,
-      "saturatefilter"  : saturatefilter.value,
-      "grayscalefilter" : grayscalefilter.value,
-      "sepiafilter"     : sepiafilter.value,
-      "invertfilter"    : invertfilter.value
-    }],
-    "originalSVG": origSVG.toString(),
-    "elmkeys": $("#elms").html(),
-    "keys"   : $("[data-keyscode]").html(),
-    "keysCode"   : keyscode
-  };
-};
-function saveCode(filename) {
-  JSZipUtils.getBinaryContent("libraries/gsap/gsap-public.zip", function(err, data) {
-    if(err) {
-      throw err // or handle err
-    }
-
-    var zip = new JSZip();
-
-    // Put all application files in subfolder for shell script
-    var zipFolder = zip.folder("libraries");
-    zipFolder.load(data);
-
-    // html
-    // run the code
-    $('[data-canvas]').empty().html(origSVG);
-    applyFilters();
-    
-    zip.file("index.html", '<!DOCTYPE html>\n<html>\n  <head>\n    <title>'+ filename +': An svgMotion Animation</title>\n    <meta charset="utf-8" />\n    <meta name="description" content="This animation was created using svgMotion!">\n    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1">\n    <style>\n    body {margin:0;}</style>\n  </head>\n  <body>\n    <div class="svgmotion">\n      '+ $('.svgmotion').html() +'\n    </div>\n\n    <script src="libraries/gsap-public/minified/gsap.min.js"></script>\n    <script src="libraries/gsap-public/minified/MotionPathPlugin.min.js"></script>\n    <script src="js/animation.js"></script>\n  </body>\n</html>');
-
-    // javascript
-    $code = '';
-    $('textarea.js').each(function() {
-      $code += this.value + '\n';
-    });
-  
-    if ($('[data-repeat]').attr('data-repeat') === 'true') {
-      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'-release\n  Create yours today at https://michaelsboost.com/svgMotion\n*/\n\nfunction rig(selector, val) {\n  val = parseInt(val).toFixed(0);\n\n    document.querySelectorAll(selector).forEach(function(elm, i) {\n    elm.style.display = "none";\n    elm.style.opacity = "100%";\n    \n    if (i.toString() === val) {\n      elm.style.display = "block";\n      elm.style.opacity = "100%";\n    }\n  });\n}\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n});\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
-    } else {
-      $code = '/*\n  This animation was created using svgMotion v'+ version.toString() +'-release\n  Create yours today at https://michaelsboost.com/svgMotion\n*/function rig(selector, val) {\n  val = parseInt(val).toFixed(0);\n\n    document.querySelectorAll(selector).forEach(function(elm, i) {\n    elm.style.display = "none";\n    elm.style.opacity = "100%";\n    \n    if (i.toString() === val) {\n      elm.style.display = "block";\n      elm.style.opacity = "100%";\n    }\n  });\n}\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n});\n\nvar mainTL = new TimelineMax({\n  repeat: -1\n});\n\nvar mainTL = new TimelineMax()\n\n' + $code + '\nvar fps = '+ $('[data-fps]').val() +';\nvar duration = mainTL.duration();\nvar frames = Math.ceil(duration / 1 * fps);\nmainTL.play(0).timeScale('+ timescale.value +');'
-    }
-
-    zip.file("js/animation.js", $code);
-    var content = zip.generate({type:"blob"});
-    saveAs(content, filename + ".zip");
-    $('textarea.js').trigger('change');
-  });
-}
-function exportSVGFrame() {
-  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-") + "-frame-" + time.textContent;
-  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-projectname]")[0].value = "-frame-" + time.textContent;
-  }
-  blob = new Blob([ '<!-- Generator: svgMotion - https://michaelsboost.com/svgMotion/ -->\n' + $(".canvas").html() ], {type: "text/html"});
-  saveAs(blob, projectname + ".svg");
-};
-function exportPNGFrame() {
-  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-") + "-frame-" + time.textContent;
-  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-projectname]")[0].value = "-frame-" + time.textContent;
-  }
-  saveAsPNG(projectname);
-};
-function exportJSON() {
-  getProjectJSON();
-  var projectname = $('[data-projectname]')[0].value.toLowerCase().replace(/ /g, "-") + '_svgMotion';
-  if (!$('[data-projectname]')[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $('[data-projectname]')[0].value = "_svgMotion";
-  }
-  var blob = new Blob([JSON.stringify(projectJSON)], {type: "application/json;charset=utf-8"});
-  saveAs(blob, projectname + ".json");
-};
-$('[data-project=export]').on('click', function() {
-  exportJSON();
-});
-$('[data-exportframe=svg]').on('click', function() {
-  $(".canvas style").remove();
-  $(".canvas script").remove();
-  exportSVGFrame();
-//  updatePreview();
-});
-$('[data-exportframe=png]').on('click', function() {
-  exportPNGFrame();
-//  updatePreview();
-});
-$('[data-exportzip]').on('click', function() {
-  // if animation is playing stop it
-  $('[data-play=false]').trigger('click');
-  
-  var projectname = $("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-");
-  if (!$("[data-projectname]")[0].value.toLowerCase().replace(/ /g, "-")) {
-    projectname = $("[data-projectname]")[0].value = "_svgMotion";
-  } else {
-    projectname = projectname + '_svgMotion';
-  }
-  saveCode(projectname);
-});
-editOnCodepen.onclick = function() {
-  var data = {
-    title       : 'Edit SVG Path\'s Data with the GSAP MotionPathHelper Plugin',
-    html        : '<div class="menu">\n  <input type="checkbox" id="initZoom" checked>\n  <label for="initZoom">Zoom </label>\n  <input type="text" id="pathVal">\n</div>\n\n<div class="svgmotion">'+ $('[data-canvas] svg')[0].outerHTML +'</div>',
-    css         : 'html, body {\n  height: 100%;\n}\nbody {\n  margin: 0;\n  background-color: #131722;\n  background-image: linear-gradient(45deg, #1a1f2c 25%, transparent 25%), linear-gradient(-45deg, #1a1f2c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1f2c 75%), linear-gradient(-45deg, transparent 75%, #1a1f2c 75%);\n  background-size: 20px 20px;\n  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;\n}\n\n.menu {\n  position: absolute;\n  color: #fff;\n  z-index: 1;\n}\n\n.svgmotion, svg {\n  width: 100%;\n  height: 100%;\n}',
-    js          : '// init zooming and panning\nvar drawArea = document.querySelector(".svgmotion");\nvar instance = panzoom(drawArea, {\n  bounds: true,\n  boundsPadding: 0.1\n});\ninitZoom.onchange = function() {\n  if (this.checked) {\n    instance.resume();\n  } else {\n    instance.pause();\n  }\n};\n\n// your path object\nvar selector = "'+ elms.value +'";\n\n// register the plugin (just once)\ngsap.registerPlugin(MotionPathPlugin);\n\n// get the current path data\npathVal.value = document.querySelector(selector).getAttribute("d");\n\n// now edit the path\nMotionPathHelper.editPath(selector, {\n  selected: true,\n  draggable: true,\n  handleSize: 7,\n  onRelease: () => {\n    // get the new path data\n    pathVal.value = document.querySelector(selector).getAttribute("d");\n\n    // copy the path data to the clipboard\n    navigator.clipboard.writeText(pathVal.value);\n  }\n});',
-    js_external : 'https://unpkg.co/gsap@3/dist/gsap.min.js;https://unpkg.com/gsap@3/dist/MotionPathPlugin.min.js;https://assets.codepen.io/16327/MotionPathHelper.min.js;https://unpkg.com/panzoom@8.7.3/dist/panzoom.min.js',
-    editors: '000'
-  };
-  var JSONstring = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;");
-  
-  var form = 
-  '<form id="tempElm" action="https://codepen.io/pen/define" method="POST" target="_blank" style="display: none;">' + 
-    '<input type="hidden" name="data" value=\'' + 
-      JSONstring + 
-      '\'>' + 
-    '<button>Create New Pen with Prefilled Data</button>' +
-  '</form>';
-  
-  if (($(elms.value).prop('tagName').toLowerCase() === 'path')) {
-    $('body').append(form);
-    $('#tempElm button').trigger('click');
-    $('#tempElm').remove();
-  } else {
-    alertify.error('Error: Only path elements can be manipulated!');
-    return false;
+    // render layers
+    app.updateLayersContent();
   }
 };
 
-// hide tools options onload
-$('[data-toolsmenu]').hide();
-$('[data-toolsmenu] [data-toolsoption]').hide();
-
-// hide dialogs onload
-$('[data-dialogs] [data-dialog]').hide();
-$('[data-tools=zoom]').trigger('click');
-
-function initDemo() {
-  // set the canvas size
-  $('[data-project=width]').val(1280);
-  $('[data-project=height]').val(800);
-  $('[data-canvas]').css('width', $('[data-project=width]').val() + 'px');
-  $('[data-canvas]').css('height', $('[data-project=height]').val() + 'px');
-  
-  // clear and reset the canvas
-  $('[data-canvas]').empty().html(origSVG);
-  
-  // reset setting inputs
-  $('[data-projectname]').val('Character Walking').trigger('change');
-  $('[data-notepad]').val('This demo demonstrates frame by frame animation utilized with tween-based animations.');
-//  $('[data-keyselector=misc]').val("function rig(selector, val) {\n  $(selector).hide();\n  $(selector + ':nth-child('+ val +')').css({\n    display: 'block',\n    opacity: '100%'\n  });\n}");
-  
-  // init filters
-  blurfilter.value = 0;
-  huefilter.value = -6;
-  brightnessfilter.value = 0.76;
-  contrastfilter.value = 1.8;
-  saturatefilter.value = 1;
-  grayscalefilter.value = 0;
-  sepiafilter.value = 30;
-  invertfilter.value = 0;
-  applyFilters();
-  
-  $('[data-call=layers]').trigger('click');
-  $('[data-selectorlist] span').filter(function() {
-    if (this.textContent === 'g > g:nth-child(4)') {
-      $(this).trigger('click');
-    } else {
-      return false;
-    }
-  });
-  // frame by frame animation string adds " > g"
-  $('[data-close=layers]').trigger('click');
-  
-  // lower font-size
-  $('[data-fontsize]').val(12).trigger('change');
+// check if FileReader API is available
+if (!window.FileReader) {
+  alert("File API & FileReader API not supported!");
 }
 
-// bot
-initDemo();
-$('[data-call=keys]').trigger('click');
-
+app.init();
